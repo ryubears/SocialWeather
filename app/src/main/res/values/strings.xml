@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">SocialWeather</string>
 
+    <string name="FACEBOOK_APP_ID">124609074805010</string>
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">16d492afae21592cab554488bc579c48</string>
+    <string name="ak_login_protocol_scheme">ak124609074805010</string>
+    <string name="fb_login_protocol_scheme">fb124609074805010</string>
+
     <string name="login_app_name">Social Weather</string>
     <string name="login_phone_button_text">Login With Phone</string>
     <string name="login_email_button_text">Login With Email</string>
 
     <string name="social_logout_button_text">Log Out</string>
-
-    <string name="FACEBOOK_APP_ID">124609074805010</string>
-    <string name="ACCOUNT_KIT_CLIENT_TOKEN">16d492afae21592cab554488bc579c48</string>
-    <string name="ak_login_protocol_scheme">ak124609074805010</string>
 </resources>
