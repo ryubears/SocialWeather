@@ -10,5 +10,6 @@
     <string name="login_phone_button_text">Login With Phone</string>
     <string name="login_email_button_text">Login With Email</string>
 
-    <string name="social_logout_button_text">Log Out</string>
+    <string name="main_logout_button_text">Log Out</string>
+    <string name="main_permission_message">Social Weather requires permission to access your friend list</string>
 </resources>

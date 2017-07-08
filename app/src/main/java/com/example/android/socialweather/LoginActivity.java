@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         mFacebookButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                launchSocialActivity();
+                launchMainActivity();
             }
 
             @Override
@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         com.facebook.AccessToken loginToken = com.facebook.AccessToken.getCurrentAccessToken();
         if(accessToken != null || loginToken != null) {
             //if previously logged in, proceed to social activity
-            launchSocialActivity();
+            launchMainActivity();
         }
     }
 
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
             } else if(loginResult.getAccessToken() != null) {
                 //proceed to social activity if login was successful
-                launchSocialActivity();
+                launchMainActivity();
             }
         }
     }
@@ -129,8 +129,8 @@ public class LoginActivity extends AppCompatActivity {
         onLogin(LoginType.EMAIL);
     }
 
-    private void launchSocialActivity() {
-        Intent intent = new Intent(this, SocialActivity.class);
+    private void launchMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
