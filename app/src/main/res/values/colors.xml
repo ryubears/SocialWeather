@@ -7,4 +7,9 @@
     <color name="colorRainPrimary">#1698A1</color>
     <color name="colorRainDark">#0f6a70</color>
     <color name="colorRainAccent">#a11f16</color>
+
+    <color name="accountBackgroundColor">#8acbd0</color>
+    <color name="accountLabelColor">#0f6a70</color>
+    <color name="accountTextColor">#083c40</color>
+    <color name="accountLogoutColor">#fc6240</color>
 </resources>

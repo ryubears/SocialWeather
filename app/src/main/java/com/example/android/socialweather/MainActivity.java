@@ -1,11 +1,11 @@
 package com.example.android.socialweather;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,21 +16,12 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
 import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
-import com.facebook.accountkit.PhoneNumber;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,19 +29,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-    @BindView(R.id.main_id_text_view) TextView mIdTextView;
-    @BindView(R.id.main_info_text_view) TextView mInfoTextView;
-    @BindView(R.id.main_logout_button) Button mLogoutButton;
-    @BindView(R.id.main_profile_image_view) ImageView mProfileImageView;
     @BindView(R.id.main_friends_text_view) TextView mFriendsTextView;
-    @BindView(R.id.main_user_location_text_view) TextView mUserLocationTextView;
 
     private AccessToken mAccessToken;
     private CallbackManager mCallbackManager;
@@ -63,23 +47,14 @@ public class MainActivity extends AppCompatActivity {
         //bind views with butterknife
         ButterKnife.bind(this);
 
-        //tracks changes to profile
-        new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                if(currentProfile != null) {
-                    //displays the changed profile info
-                    displayProfileInfo(currentProfile);
-                }
-            }
-        };
 
         //callback manager for login permissions
         mCallbackManager = CallbackManager.Factory.create();
 
         //facebook access token
         mAccessToken = AccessToken.getCurrentAccessToken();
-        if(mAccessToken != null) { //if user logged in through facebook
+        if(mAccessToken != null) {
+            //if user logged in through facebook
             if(mAccessToken.getPermissions().contains("user_friends")) {
                 //if user-friends permission is granted, fetch friends list
                 fetchFriends();
@@ -89,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 loginManager.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        //granted permission
+                        //when granted permission
                         fetchFriends();
                     }
 
@@ -119,16 +94,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if(mAccessToken.getPermissions().contains("user_location")) {
-                //fetch user location and display it
-                fetchLocation();
+                //permission granted
             } else {
                 //if user did not grant user_location permission, open permission dialog
                 LoginManager loginManager = LoginManager.getInstance();
                 loginManager.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        //if user granted permission
-                        fetchLocation();
+                        //success
                     }
 
                     @Override
@@ -150,37 +123,14 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
                     }
                 });
-
                 loginManager.logInWithReadPermissions(this, Arrays.asList("user_location"));
             }
-
-            //get current profile
-            Profile profile = Profile.getCurrentProfile();
-            if(profile != null) {
-                //displays profile
-                displayProfileInfo(profile);
-            } else {
-                //fetch profile info and calls onCurrentProfileChanged
-                Profile.fetchProfileForCurrentAccessToken();
-            }
-        } else { //if user logged in through account kit
+        } else {
+            //if user logged in through account kit
             AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
                 @Override
                 public void onSuccess(Account account) {
-                    //get account kit id
-                    String accountKitId = account.getId();
-                    mIdTextView.setText(accountKitId);
-
-                    PhoneNumber phoneNumber = account.getPhoneNumber();
-                    if(phoneNumber != null) {
-                        //if phone number is available, display it
-                        String formattedPhoneNumber = formatPhoneNumber(phoneNumber.toString());
-                        mInfoTextView.setText(formattedPhoneNumber);
-                    } else {
-                        //if email address is available, display it
-                        String emailString = account.getEmail();
-                        mInfoTextView.setText(emailString);
-                    }
+                    //success
                 }
 
                 @Override
@@ -193,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //to handle login permissions results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -200,39 +151,32 @@ public class MainActivity extends AppCompatActivity {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    //helper method that fetches user location and displays it
-    private void fetchLocation() {
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "location");
-        new GraphRequest(
-                mAccessToken,
-                "/me",
-                parameters,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        if(response.getError() != null) {
-                            String toastMessage = response.getError().getErrorMessage();
-                            Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        JSONObject jsonResponse = response.getJSONObject();
-                        try {
-                            JSONObject jsonLocation = jsonResponse.getJSONObject("location");
-                            String locationId = jsonLocation.getString("id");
-                            String locationString = jsonLocation.getString("name");
-
-                            mUserLocationTextView.setText(locationId + " " + locationString);
-                        } catch(JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-        ).executeAsync();
+    //inflates menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = new MenuInflater(this);
+        inflater.inflate(R.menu.main, menu);
+        return true;
     }
 
+    //handles menu clicks
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id) {
+            case R.id.menu_account_info:
+                Intent intent = new Intent(this, AccountActivity.class);
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //launches LoginActivity and finishes current activity
+    private void launchLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     //method that makes the API call to fetch friends list
     private void fetchFriends() {
@@ -261,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<String> friendPics = new ArrayList<String>();
 
                         //extract data
-
                         JSONObject jsonResponse = response.getJSONObject();
                         try {
                             JSONArray jsonData = jsonResponse.getJSONArray("data");
@@ -290,60 +233,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         ).executeAsync();
-    }
-
-    @OnClick(R.id.main_logout_button)
-    public void onLogout() {
-        //logout from current account
-        AccountKit.logOut();
-        LoginManager.getInstance().logOut();
-        launchLoginActivity();
-    }
-
-    private void displayProfileInfo(Profile profile) {
-        //set profile id
-        String profileId = profile.getId();
-        mIdTextView.setText(profileId);
-
-        //set user name
-        String name = profile.getName();
-        mInfoTextView.setText(name);
-
-        //set user profile picture
-        Uri profilePicUri = profile.getProfilePictureUri(100, 100);
-        displayProfilePic(profilePicUri);
-    }
-
-    private void launchLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    //helper method for formatting phone numbers
-    private String formatPhoneNumber(String phoneNumber) {
-        try {
-            PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
-            Phonenumber.PhoneNumber pn = pnu.parse(phoneNumber, Locale.getDefault().getCountry());
-            phoneNumber = pnu.format(pn, PhoneNumberUtil.PhoneNumberFormat.NATIONAL);
-        } catch (NumberParseException e) {
-            e.printStackTrace();
-        }
-        return phoneNumber;
-    }
-
-    //helper method for displaying profile pictures
-    private void displayProfilePic(Uri uri) {
-        //transform profile picture in a circular frame
-        Transformation transformation = new RoundedTransformationBuilder()
-                .cornerRadiusDp(30)
-                .oval(false)
-                .build();
-
-        //inserts profile picture to profile image view
-        Picasso.with(MainActivity.this)
-                .load(uri)
-                .transform(transformation)
-                .into(mProfileImageView);
     }
 }

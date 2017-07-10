@@ -10,8 +10,17 @@
     <string name="login_phone_button_text">Login With Phone</string>
     <string name="login_email_button_text">Login With Email</string>
 
-    <string name="main_logout_button_text">Log Out</string>
+    <string name="account_label">Account Info</string>
+    <string name="account_id_label_text">Account ID</string>
+    <string name="account_phone_label_text">Phone Number</string>
+    <string name="account_email_label_text">Email</string>
+    <string name="account_name_label_text">Name</string>
+    <string name="account_location_label_text">Location</string>
+    <string name="account_location_default_text">Unknown</string>
+    <string name="account_logout_button_text">Log Out</string>
 
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>
     <string name="location_permission_message">Your friends won\'t be able to see your weather info.</string>
+
+    <string name="main_menu_account_info">Account Info</string>
 </resources>
