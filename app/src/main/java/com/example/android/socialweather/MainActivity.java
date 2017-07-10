@@ -45,11 +45,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-    @BindView(R.id.social_id_text_view) TextView mIdTextView;
-    @BindView(R.id.social_info_text_view) TextView mInfoTextView;
-    @BindView(R.id.social_logout_button) Button mLogoutButton;
-    @BindView(R.id.social_profile_image_view) ImageView mProfileImageView;
-    @BindView(R.id.social_friends_text_view) TextView mFriendsTextView;
+    @BindView(R.id.main_id_text_view) TextView mIdTextView;
+    @BindView(R.id.main_info_text_view) TextView mInfoTextView;
+    @BindView(R.id.main_logout_button) Button mLogoutButton;
+    @BindView(R.id.main_profile_image_view) ImageView mProfileImageView;
+    @BindView(R.id.main_friends_text_view) TextView mFriendsTextView;
+    @BindView(R.id.main_user_location_text_view) TextView mUserLocationTextView;
 
     private AccessToken mAccessToken;
     private CallbackManager mCallbackManager;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onCancel() {
                         //canceled dialog, display that app couldn't access user friend's list
-                        String permissionMessage = getResources().getString(R.string.main_permission_message);
+                        String permissionMessage = getResources().getString(R.string.friends_permission_message);
                         Toast.makeText(MainActivity.this, permissionMessage, Toast.LENGTH_LONG).show();
 
                         //(temporary) log out and return to login activity
@@ -112,7 +113,45 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
                     }
                 });
+
+                //login with the permission whether it is granted or not
                 loginManager.logInWithReadPermissions(this, Arrays.asList("user_friends"));
+            }
+
+            if(mAccessToken.getPermissions().contains("user_location")) {
+                //fetch user location and display it
+                fetchLocation();
+            } else {
+                //if user did not grant user_location permission, open permission dialog
+                LoginManager loginManager = LoginManager.getInstance();
+                loginManager.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        //if user granted permission
+                        fetchLocation();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        //canceled dialog, display that user's weather info would not be available to user's friends
+                        String toastMessage = getResources().getString(R.string.location_permission_message);
+                        Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+
+                        //(temporary) log out and return to login activity
+                        AccountKit.logOut();
+                        LoginManager.getInstance().logOut();
+                        launchLoginActivity();
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        //display error message
+                        String toastMessage = error.getMessage();
+                        Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                loginManager.logInWithReadPermissions(this, Arrays.asList("user_location"));
             }
 
             //get current profile
@@ -161,6 +200,40 @@ public class MainActivity extends AppCompatActivity {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    //helper method that fetches user location and displays it
+    private void fetchLocation() {
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "location");
+        new GraphRequest(
+                mAccessToken,
+                "/me",
+                parameters,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        if(response.getError() != null) {
+                            String toastMessage = response.getError().getErrorMessage();
+                            Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        JSONObject jsonResponse = response.getJSONObject();
+                        try {
+                            JSONObject jsonLocation = jsonResponse.getJSONObject("location");
+                            String locationId = jsonLocation.getString("id");
+                            String locationString = jsonLocation.getString("name");
+
+                            mUserLocationTextView.setText(locationId + " " + locationString);
+                        } catch(JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        ).executeAsync();
+    }
+
+
     //method that makes the API call to fetch friends list
     private void fetchFriends() {
         Bundle parameters = new Bundle();
@@ -188,38 +261,38 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<String> friendPics = new ArrayList<String>();
 
                         //extract data
-                        if(response.getError() == null) {
-                            JSONObject jsonResponse = response.getJSONObject();
-                            try {
-                                JSONArray jsonData = jsonResponse.getJSONArray("data");
-                                for(int i = 0; i < jsonData.length(); i++) {
-                                    JSONObject jsonUser = jsonData.getJSONObject(i);
-                                    String id = jsonUser.getString("id");
-                                    String name = jsonUser.getString("name");
-                                    String image = jsonUser.getJSONObject("picture").getJSONObject("data").getString("url");
+
+                        JSONObject jsonResponse = response.getJSONObject();
+                        try {
+                            JSONArray jsonData = jsonResponse.getJSONArray("data");
+                            for(int i = 0; i < jsonData.length(); i++) {
+                                JSONObject jsonUser = jsonData.getJSONObject(i);
+                                String id = jsonUser.getString("id");
+                                String name = jsonUser.getString("name");
+                                String image = jsonUser.getJSONObject("picture").getJSONObject("data").getString("url");
 
 
-                                    friendIds.add(id);
-                                    friendNames.add(name);
-                                    friendPics.add(image);
-                                }
-
-                                //temporary friends string to verify that data is being extracted correctly
-                                String friendsString = "";
-                                for(int x = 0; x < friendIds.size(); x++) {
-                                    friendsString += friendIds.get(x) + " " + friendNames.get(x) + " " + friendPics.get(x) + "\n";
-                                }
-                                mFriendsTextView.setText(friendsString);
-                            } catch(JSONException e) {
-                                e.printStackTrace();
+                                friendIds.add(id);
+                                friendNames.add(name);
+                                friendPics.add(image);
                             }
+
+                            //temporary friends string to verify that data is being extracted correctly
+                            String friendsString = "";
+                            for(int x = 0; x < friendIds.size(); x++) {
+                                friendsString += friendIds.get(x) + " " + friendNames.get(x) + " " + friendPics.get(x) + "\n";
+                            }
+                            mFriendsTextView.setText(friendsString);
+                        } catch(JSONException e) {
+                            e.printStackTrace();
                         }
+
                     }
                 }
         ).executeAsync();
     }
 
-    @OnClick(R.id.social_logout_button)
+    @OnClick(R.id.main_logout_button)
     public void onLogout() {
         //logout from current account
         AccountKit.logOut();

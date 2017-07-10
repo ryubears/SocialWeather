@@ -11,5 +11,7 @@
     <string name="login_email_button_text">Login With Email</string>
 
     <string name="main_logout_button_text">Log Out</string>
-    <string name="main_permission_message">Social Weather requires permission to access your friend list</string>
+
+    <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>
+    <string name="location_permission_message">Your friends won\'t be able to see your weather info.</string>
 </resources>
