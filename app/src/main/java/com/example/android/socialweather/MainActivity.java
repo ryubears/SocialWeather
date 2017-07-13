@@ -1,11 +1,21 @@
 package com.example.android.socialweather;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,12 +26,21 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.accountkit.Account;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
+import com.facebook.accountkit.PhoneNumber;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,13 +48,39 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-    @BindView(R.id.main_friends_text_view) TextView mFriendsTextView;
+    @BindView(R.id.main_toolbar) Toolbar mToolbar;
+    @BindView(R.id.main_drawer_layout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.main_nav_view) NavigationView mNavigationView;
 
+    //views in navigation header
+    private View mHeader;
+    private ImageView mHeaderBackground;
+    private ImageView mHeaderProfile;
+    private TextView mHeaderInfo;
+    private TextView mHeaderLocation;
+
+    //index to identify current nav menu item
+    public static int navItemIndex = 0;
+
+    //fragment tags
+    private static final String TAG_HOME = "home";
+    private static final String TAG_SETTINGS = "settings";
+    public static String CURRENT_TAG = TAG_HOME;
+
+    //toolbar titles respected to selected nav menu item
+    private String[] mActivityTitles;
+
+    //flag to load home fragment when user presses back key
+    private boolean shouldLoadHomeFragOnBackPress = true;
+    private Handler mHandler;
+
+    //facebook access token and a callback manager to handle permission dialogs
     private AccessToken mAccessToken;
     private CallbackManager mCallbackManager;
 
@@ -47,14 +92,51 @@ public class MainActivity extends AppCompatActivity {
         //bind views with butterknife
         ButterKnife.bind(this);
 
+        //set action bar to use customized toolbar
+        setSupportActionBar(mToolbar);
+
+        //initialize handler
+        mHandler = new Handler();
+
+        //initialize header views
+        mHeader = mNavigationView.getHeaderView(0);
+        mHeaderInfo = (TextView) mHeader.findViewById(R.id.nav_header_info);
+        mHeaderLocation = (TextView) mHeader.findViewById(R.id.nav_header_location);
+        mHeaderBackground = (ImageView) mHeader.findViewById(R.id.nav_header_background);
+        mHeaderProfile = (ImageView) mHeader.findViewById(R.id.nav_header_profile);
+
+        //get activity titles
+        mActivityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
 
         //callback manager for login permissions
         mCallbackManager = CallbackManager.Factory.create();
+
+        //tracks changes to profile
+        new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                if(currentProfile != null) {
+                    //displays the changed profile info
+                    displayProfileInfo(currentProfile);
+                }
+            }
+        };
 
         //facebook access token
         mAccessToken = AccessToken.getCurrentAccessToken();
         if(mAccessToken != null) {
             //if user logged in through facebook
+
+            //get current profile and display profile info in navigation header
+            Profile profile = Profile.getCurrentProfile();
+            if(profile != null) {
+                //display profile information
+                displayProfileInfo(profile);
+            } else {
+                //fetch updated profile and triggers onCurrentProfileChanged
+                Profile.fetchProfileForCurrentAccessToken();
+            }
+
             if(mAccessToken.getPermissions().contains("user_friends")) {
                 //if user-friends permission is granted, fetch friends list
                 fetchFriends();
@@ -89,12 +171,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                //login with the permission whether it is granted or not
+                //login with the permission whether granted or not
                 loginManager.logInWithReadPermissions(this, Arrays.asList("user_friends"));
             }
 
             if(mAccessToken.getPermissions().contains("user_location")) {
                 //permission granted
+                fetchLocation();
             } else {
                 //if user did not grant user_location permission, open permission dialog
                 LoginManager loginManager = LoginManager.getInstance();
@@ -102,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         //success
+                        fetchLocation();
                     }
 
                     @Override
@@ -123,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
                     }
                 });
+
+                //login with the permission whether granted or not
                 loginManager.logInWithReadPermissions(this, Arrays.asList("user_location"));
             }
         } else {
@@ -130,7 +216,16 @@ public class MainActivity extends AppCompatActivity {
             AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
                 @Override
                 public void onSuccess(Account account) {
-                    //success
+                    PhoneNumber phoneNumber = account.getPhoneNumber();
+                    if(phoneNumber != null) {
+                        //when logged in with phone number
+                        String formattedPhoneNumber = formatPhoneNumber(phoneNumber.toString());
+                        mHeaderInfo.setText(formattedPhoneNumber);
+                    } else {
+                        //when logged in with email
+                        String emailString = account.getEmail();
+                        mHeaderInfo.setText(emailString);
+                    }
                 }
 
                 @Override
@@ -141,34 +236,185 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        //set up navigation item selection events
+        setUpNavigationView();
+
+        //display home fragment if activity is freshly opened
+        if(savedInstanceState == null) {
+            navItemIndex = 0;
+            CURRENT_TAG = TAG_HOME;
+            loadFragment();
+        }
     }
 
-    //to handle login permissions results
+    private void setUpNavigationView() {
+        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            // This method will trigger on item Click of navigation menu
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                //Check to see which item was being clicked and perform appropriate action
+                switch (menuItem.getItemId()) {
+                    //Replacing the main content with ContentFragment Which is our Inbox View;
+                    case R.id.nav_home:
+                        navItemIndex = 0;
+                        CURRENT_TAG = TAG_HOME;
+                        break;
+                    case R.id.nav_settings:
+                        navItemIndex = 1;
+                        CURRENT_TAG = TAG_SETTINGS;
+                        break;
+                    case R.id.nav_about_us:
+                        // launch new intent instead of loading fragment
+                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    case R.id.nav_privacy_policy:
+                        // launch new intent instead of loading fragment
+                        startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    case R.id.nav_logout:
+                        //logout from current account
+                        AccountKit.logOut();
+                        LoginManager.getInstance().logOut();
+                        launchLoginActivity();
+                        return true;
+                    default:
+                        navItemIndex = 0;
+                }
+
+                //load home fragment as default
+                loadFragment();
+
+                return true;
+            }
+        });
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                //triggered when drawer closes
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                //triggered when drawer opens
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        //Setting the actionbarToggle to drawer layout
+        mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
+
+        //necessary for hamburger icon to show up
+        actionBarDrawerToggle.syncState();
+    }
+
+    /***
+     * Returns respected fragment that user
+     * selected from navigation menu
+     */
+    private void loadFragment() {
+        //selecting appropriate nav menu item
+        selectNavMenu();
+
+        //set appropriate toolbar title
+        setToolbarTitle();
+
+        // if user select the current navigation menu again, don't do anything
+        // just close the navigation drawer
+        if(getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
+            mDrawerLayout.closeDrawers();
+            return;
+        }
+
+        //sometimes, when fragment has huge data, screen seems hanging
+        //when switching between navigation menus
+        //so using runnable, the fragment is loaded with cross fade effect
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // update the main content by replacing fragments
+                Fragment fragment = getFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.main_fragment, fragment, CURRENT_TAG);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        };
+
+        //if mPendingRunnable is not null, then add to the message queue
+        if(mPendingRunnable != null) {
+            mHandler.post(mPendingRunnable);
+        }
+
+        //closing drawer on item click
+        mDrawerLayout.closeDrawers();
+
+        //refresh toolbar menu
+        invalidateOptionsMenu();
+    }
+
+    private Fragment getFragment() {
+        switch(navItemIndex) {
+            case 0:
+                HomeFragment homeFragment = new HomeFragment();
+                return homeFragment;
+            case 1:
+                SettingsFragment settingsFragment = new SettingsFragment();
+                return settingsFragment;
+            default:
+                return new HomeFragment();
+        }
+    }
+
+    //assign appropriate title for toolbar
+    private void setToolbarTitle() {
+        getSupportActionBar().setTitle(mActivityTitles[navItemIndex]);
+    }
+
+    //set selected menu item as checked
+    private void selectNavMenu() {
+        mNavigationView.getMenu().getItem(navItemIndex).setChecked(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+            return;
+        }
+
+        //This code loads home fragment when back key is pressed
+        //when user is in other fragment than home
+        if(shouldLoadHomeFragOnBackPress) {
+            //checking if user is on other navigation menu
+            //rather than home
+            if(navItemIndex != 0) {
+                navItemIndex = 0;
+                CURRENT_TAG = TAG_HOME;
+                loadFragment();
+                return;
+            }
+        }
+
+        super.onBackPressed();
+    }
+
+
+    //handles login permissions results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    //inflates menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = new MenuInflater(this);
-        inflater.inflate(R.menu.main, menu);
-        return true;
-    }
-
-    //handles menu clicks
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch(id) {
-            case R.id.menu_account_info:
-                Intent intent = new Intent(this, AccountActivity.class);
-                startActivity(intent);
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     //launches LoginActivity and finishes current activity
@@ -225,7 +471,6 @@ public class MainActivity extends AppCompatActivity {
                             for(int x = 0; x < friendIds.size(); x++) {
                                 friendsString += friendIds.get(x) + " " + friendNames.get(x) + " " + friendPics.get(x) + "\n";
                             }
-                            mFriendsTextView.setText(friendsString);
                         } catch(JSONException e) {
                             e.printStackTrace();
                         }
@@ -233,5 +478,81 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         ).executeAsync();
+    }
+
+    //helper method that fetches user location and displays it
+    private void fetchLocation() {
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "location");
+        new GraphRequest(
+                mAccessToken,
+                "/me",
+                parameters,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        if(response.getError() != null) {
+                            //display error message
+                            String toastMessage = response.getError().getErrorMessage();
+                            Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        //extract location info
+                        JSONObject jsonResponse = response.getJSONObject();
+                        try {
+                            JSONObject jsonLocation = jsonResponse.getJSONObject("location");
+                            String locationString = jsonLocation.getString("name");
+
+                            //check if location string is empty
+                            if(!TextUtils.isEmpty(locationString)) {
+                                mHeaderLocation.setText(locationString);
+                            }
+                        } catch(JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        ).executeAsync();
+    }
+
+    //helper method that displays profile information
+    private void displayProfileInfo(Profile profile) {
+
+        //set user name
+        String name = profile.getName();
+        mHeaderInfo.setText(name);
+
+        //set user profile picture
+        Uri profilePicUri = profile.getProfilePictureUri(100, 100);
+        displayProfilePic(profilePicUri);
+    }
+
+    //helper method for displaying profile pictures
+    private void displayProfilePic(Uri uri) {
+        //transform profile picture in a circular frame
+        Transformation transformation = new RoundedTransformationBuilder()
+                .cornerRadiusDp(30)
+                .oval(false)
+                .build();
+
+        //inserts profile picture to profile image view
+        Picasso.with(MainActivity.this)
+                .load(uri)
+                .transform(transformation)
+                .into(mHeaderProfile);
+    }
+
+    //helper method for formatting phone numbers
+    private String formatPhoneNumber(String phoneNumber) {
+        try {
+            PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
+            Phonenumber.PhoneNumber pn = pnu.parse(phoneNumber, Locale.getDefault().getCountry());
+            phoneNumber = pnu.format(pn, PhoneNumberUtil.PhoneNumberFormat.NATIONAL);
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+        }
+        return phoneNumber;
     }
 }
