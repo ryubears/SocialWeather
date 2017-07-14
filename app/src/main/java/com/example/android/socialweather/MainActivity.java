@@ -55,7 +55,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ListFragment.ListItemClickListener {
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
     @BindView(R.id.main_drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.main_nav_view) NavigationView mNavigationView;
@@ -562,5 +562,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return phoneNumber;
+    }
+
+    //handles item clicks for list items
+    @Override
+    public void onListItemItemClick(int position) {
+
     }
 }
