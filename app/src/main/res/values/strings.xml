@@ -32,23 +32,20 @@
     <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="nav_location_default">Unknown</string>
 
-    <!-- Account Activity -->
-    <string name="account_label">Account Info</string>
-    <string name="account_id_label_text">Account ID</string>
-    <string name="account_phone_label_text">Phone Number</string>
-    <string name="account_email_label_text">Email</string>
-    <string name="account_name_label_text">Name</string>
-    <string name="account_location_label_text">Location</string>
-    <string name="account_location_default_text">Unknown</string>
-    <string name="account_logout_button_text">Log Out</string>
-
-    <!-- Permission Canceled Toast Messages -->
-
-    <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>
-    <string name="location_permission_message">Your friends won\'t be able to see your weather info.</string>
-
     <!-- Main Activity -->
     <string name="main_menu_account_info">Account Info</string>
+
+    <!-- Settings Activity -->
+    <string name="pref_units_label">Temperature Units</string>
+    <string name="pref_units_lable_celsius">Celsius</string>
+    <string name="pref_units_label_fahrenheit">Fahrenheit</string>
+    <string name="pref_units_key" translatable="false">units</string>
+    <string name="pref_units_celsius" translatable="false">celsius</string>
+    <string name="pref_units_fahrenheit" translatable="false">fahrenheit</string>
+
+    <!-- Permission Canceled Toast Messages -->
+    <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>
+    <string name="location_permission_message">Your friends won\'t be able to see your weather info.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

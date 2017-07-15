@@ -45,7 +45,8 @@
             android:id="@+id/nav_header_location"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
-            android:text="@string/account_location_default_text"/>
+            android:text="@string/nav_location_default"/>
 
     </LinearLayout>
+
 </RelativeLayout>

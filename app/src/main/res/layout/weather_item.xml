@@ -67,8 +67,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 tools:text="Minneapolis, Minnesota"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:layout_marginLeft="4dp"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         </LinearLayout>
 
