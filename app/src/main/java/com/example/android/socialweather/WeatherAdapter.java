@@ -12,6 +12,8 @@ import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -20,15 +22,15 @@ import butterknife.ButterKnife;
  */
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
-    private long[] mIds;
-    private String[] mProfiles;
-    private String[] mNames;
-    private String[] mLocations;
+    private ArrayList<String> mIds;
+    private ArrayList<String> mProfiles;
+    private ArrayList<String> mNames;
+    private ArrayList<String> mLocations;
 
     //onClickListener to pass on click event to fragment
     final private WeatherItemClickListener mOnClickListener;
 
-    public WeatherAdapter(WeatherItemClickListener listener, long[] ids, String[] profiles, String[] names, String[] locations) {
+    public WeatherAdapter(WeatherItemClickListener listener, ArrayList<String> ids, ArrayList<String> profiles, ArrayList<String> names, ArrayList<String> locations) {
         mOnClickListener = listener;
         mIds = ids;
         mProfiles = profiles;
@@ -63,7 +65,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         if(mIds == null) {
             return 0;
         }
-        return mIds.length;
+        return mIds.size();
     }
 
     public class WeatherViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -92,13 +94,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
             //load profile image
             Picasso.with(itemView.getContext())
-                    .load(mProfiles[position])
+                    .load(mProfiles.get(position))
                     .transform(transformation)
                     .into(mProfileImageView);
 
             //set name and location info
-            mNameTextView.setText(mNames[position]);
-            mLocationTextView.setText(mLocations[position]);
+            mNameTextView.setText(mNames.get(position));
+            mLocationTextView.setText(mLocations.get(position));
 
             //temporary
             mIconImageView.setImageResource(R.drawable.rain_logo);

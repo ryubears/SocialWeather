@@ -5,7 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.*;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -44,11 +45,9 @@ import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -139,17 +138,14 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                 Profile.fetchProfileForCurrentAccessToken();
             }
 
-            if(mAccessToken.getPermissions().contains("user_friends")) {
-                //if user-friends permission is granted, fetch friends list
-                fetchFriends();
-            } else {
+            //check user-friends permission
+            if(!mAccessToken.getPermissions().contains("user_friends")) {
                 //if user-friends permission is not granted, open permission dialog
                 LoginManager loginManager = LoginManager.getInstance();
                 loginManager.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         //when granted permission
-                        fetchFriends();
                     }
 
                     @Override
@@ -157,12 +153,6 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                         //canceled dialog, display that app couldn't access user friend's list
                         String permissionMessage = getResources().getString(R.string.friends_permission_message);
                         Toast.makeText(MainActivity.this, permissionMessage, Toast.LENGTH_LONG).show();
-
-                        //(temporary) log out and return to login activity
-                        //TODO: display cached information in future
-                        AccountKit.logOut();
-                        LoginManager.getInstance().logOut();
-                        launchLoginActivity();
                     }
 
                     @Override
@@ -170,6 +160,11 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                         //display error message
                         String toastMessage = error.getMessage();
                         Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+
+                        //automatically logout
+                        AccountKit.logOut();
+                        LoginManager.getInstance().logOut();
+                        launchLoginActivity();
                     }
                 });
 
@@ -177,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                 loginManager.logInWithReadPermissions(this, Arrays.asList("user_friends"));
             }
 
+            //check user-location permission
             if(mAccessToken.getPermissions().contains("user_location")) {
                 //permission granted
                 fetchLocation();
@@ -195,11 +191,6 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                         //canceled dialog, display that user's weather info would not be available to user's friends
                         String toastMessage = getResources().getString(R.string.location_permission_message);
                         Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
-
-                        //(temporary) log out and return to login activity
-                        AccountKit.logOut();
-                        LoginManager.getInstance().logOut();
-                        launchLoginActivity();
                     }
 
                     @Override
@@ -207,6 +198,11 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                         //display error message
                         String toastMessage = error.getMessage();
                         Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+
+                        //automatically logout
+                        AccountKit.logOut();
+                        LoginManager.getInstance().logOut();
+                        launchLoginActivity();
                     }
                 });
 
@@ -235,6 +231,11 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                     //display error message
                     String toastMessage = accountKitError.getErrorType().getMessage();
                     Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
+
+                    //automatically logout
+                    AccountKit.logOut();
+                    LoginManager.getInstance().logOut();
+                    launchLoginActivity();
                 }
             });
         }
@@ -289,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                         navItemIndex = 0;
                 }
 
-                //load home fragment as default
+                //load current fragment
                 loadFragment();
 
                 return true;
@@ -432,61 +433,7 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
         finish();
     }
 
-    //method that makes the API call to fetch friends list
-    private void fetchFriends() {
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,picture"); //fields to extract data from
-        parameters.putInt("limit", 100); //limit number of friends in list to 100
-        new GraphRequest(
-                mAccessToken,
-                "/me/friends",
-                parameters,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        if(response.getError() != null) {
-                            //display error message and end early
-                            String toastMessage = response.getError().getErrorMessage();
-                            Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
-                            return;
-                        }
 
-                        //data extracted from friends list
-                        //TODO: attach to recycler view adapter
-                        ArrayList<String> friendIds = new ArrayList<String>();
-                        ArrayList<String> friendNames = new ArrayList<String>();
-                        ArrayList<String> friendPics = new ArrayList<String>();
-
-                        //extract data
-                        JSONObject jsonResponse = response.getJSONObject();
-                        try {
-                            JSONArray jsonData = jsonResponse.getJSONArray("data");
-                            for(int i = 0; i < jsonData.length(); i++) {
-                                JSONObject jsonUser = jsonData.getJSONObject(i);
-                                String id = jsonUser.getString("id");
-                                String name = jsonUser.getString("name");
-                                String image = jsonUser.getJSONObject("picture").getJSONObject("data").getString("url");
-
-
-                                friendIds.add(id);
-                                friendNames.add(name);
-                                friendPics.add(image);
-                            }
-
-                            //temporary friends string to verify that data is being extracted correctly
-                            String friendsString = "";
-                            for(int x = 0; x < friendIds.size(); x++) {
-                                friendsString += friendIds.get(x) + " " + friendNames.get(x) + " " + friendPics.get(x) + "\n";
-                            }
-                        } catch(JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-        ).executeAsync();
-    }
 
     //helper method that fetches user location and displays it
     private void fetchLocation() {
@@ -510,12 +457,14 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                         //extract location info
                         JSONObject jsonResponse = response.getJSONObject();
                         try {
-                            JSONObject jsonLocation = jsonResponse.getJSONObject("location");
-                            String locationString = jsonLocation.getString("name");
+                            if(!jsonResponse.isNull("location")) {
+                                JSONObject jsonLocation = jsonResponse.getJSONObject("location");
+                                String locationString = jsonLocation.getString("name");
 
-                            //check if location string is empty
-                            if(!TextUtils.isEmpty(locationString)) {
-                                mHeaderLocation.setText(locationString);
+                                //check if location string is empty
+                                if(!TextUtils.isEmpty(locationString)) {
+                                    mHeaderLocation.setText(locationString);
+                                }
                             }
                         } catch(JSONException e) {
                             e.printStackTrace();

@@ -8,6 +8,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,6 +31,12 @@ public class ListFragment extends Fragment implements WeatherAdapter.WeatherItem
     //onClickListener to pass list item clicks that was received to MainActivity
     private ListItemClickListener mCallback;
     private WeatherAdapter mAdapter;
+    private AccessToken mAccessToken;
+
+    private ArrayList<String> mFriendIds = new ArrayList<>();
+    private ArrayList<String> mFriendNames = new ArrayList<>();
+    private ArrayList<String> mFriendProfiles = new ArrayList<>();
+    private ArrayList<String> mFriendLocations = new ArrayList<>();
 
     @Override
     public void onWeatherItemClick(int position) {
@@ -41,67 +59,23 @@ public class ListFragment extends Fragment implements WeatherAdapter.WeatherItem
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, rootView);
 
-        long[] ids = {
-                100000000000000L,
-                100000000000001L,
-                100000000000002L,
-                100000000000003L,
-                100000000000004L,
-                100000000000005L,
-                100000000000006L,
-                100000000000007L,
-                100000000000008L,
-                100000000000009L
-        };
-
-        String[] profileUrls = {
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087",
-                "https://scontent.xx.fbcdn.net/v/t1.0-1/c1.0.480.480/p480x480/16299556_776268709186751_2918404937696595424_n.jpg?oh=60cf38250a8aa7388741b958bb409468&oe=5A0C4087"
-        };
-
-        String[] names = {
-                "Yehyun Ryu",
-                "Yehyun Ryu",
-                "Yehyun Ryu",
-                "Yehyun Ryu",
-                "Yehyun Ryu",
-                "Yehyun Ryu",
-                "Yehyun Ryu",
-                "Yehyun Ryu",
-                "Yehyun Ryu",
-                "Yehyun Ryu"
-        };
-
-        String[] locations = {
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota",
-                "Minneapolis, Minnesota"
-        };
-
         //sets adapter to recycler view
-        mAdapter = new WeatherAdapter(this, ids, profileUrls, names, locations);
+        mAdapter = new WeatherAdapter(this, mFriendIds, mFriendProfiles, mFriendNames, mFriendLocations);
         mWeatherRecyclerView.setAdapter(mAdapter);
 
         //sets layout manager to recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mWeatherRecyclerView.setLayoutManager(layoutManager);
-
         mWeatherRecyclerView.setHasFixedSize(true);
+
+        mAccessToken = AccessToken.getCurrentAccessToken();
+        if(mAccessToken != null && mAccessToken.getPermissions().contains("user_friends")
+                && mAccessToken.getPermissions().contains("user_location")) {
+            //when user logged in with facebook with all permissions
+            fetchFriends();
+        } else {
+
+        }
 
         // Inflate the layout for this fragment
         return rootView;
@@ -119,5 +93,57 @@ public class ListFragment extends Fragment implements WeatherAdapter.WeatherItem
             throw new ClassCastException(context.toString() +
               " must implement ListItemClickListener");
         }
+    }
+
+    //method that makes the API call to fetch friends list
+    private void fetchFriends() {
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "name,picture.height(200).width(200),location"); //fields to extract data from
+        parameters.putInt("limit", 100); //limit number of friends in list to 100
+        new GraphRequest(
+                mAccessToken,
+                "/me/friends",
+                parameters,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        if(response.getError() != null) {
+                            //display error message and end early
+                            String toastMessage = response.getError().getErrorMessage();
+                            Toast.makeText(getContext(), toastMessage, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        //extract data
+                        JSONObject jsonResponse = response.getJSONObject();
+                        try {
+                            JSONArray jsonData = jsonResponse.getJSONArray("data");
+                            for(int i = 0; i < jsonData.length(); i++) {
+                                JSONObject jsonUser = jsonData.getJSONObject(i);
+                                String id = jsonUser.getString("id");
+                                String name = jsonUser.getString("name");
+                                String image = jsonUser.getJSONObject("picture").getJSONObject("data").getString("url");
+
+
+                                mFriendIds.add(id);
+                                mFriendNames.add(name);
+                                mFriendProfiles.add(image);
+
+                                String location = "";
+                                if(jsonUser.isNull("location")) {
+                                    location = "Unknown";
+                                } else {
+                                    location = jsonUser.getJSONObject("location").getString("name");
+                                }
+                                mFriendLocations.add(location);
+                            }
+                            mAdapter.notifyDataSetChanged();
+                        } catch(JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        ).executeAsync();
     }
 }

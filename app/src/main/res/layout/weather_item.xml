@@ -23,12 +23,12 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/weather_item_height">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/weather_item_profile"
-            android:layout_width="@dimen/profile_width"
-            android:layout_height="@dimen/profile_height"
+            android:layout_width="@dimen/weather_item_profile_width"
+            android:layout_height="@dimen/weather_item_profile_height"
             android:src="@drawable/profile_default"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -47,8 +47,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/weather_item_profile"
             app:layout_constraintLeft_toRightOf="@+id/weather_item_profile"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="12dp"
             android:layout_marginStart="8dp">
 
             <TextView
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
-                android:gravity="center_vertical"
+                android:gravity="bottom"
                 tools:text="Yehyun Ryu"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
@@ -65,9 +65,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
+                android:gravity="top"
                 tools:text="Minneapolis, Minnesota"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:layout_marginLeft="2dp"
+                android:layout_marginStart="2dp"/>
 
         </LinearLayout>
 
