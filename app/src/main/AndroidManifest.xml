@@ -74,6 +74,12 @@
 
         <activity android:name=".PrivacyPolicyActivity" />
 
+        <!-- Content Provider -->
+        <provider
+            android:name=".data.WeatherProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false" />
+
     </application>
 
 </manifest>
