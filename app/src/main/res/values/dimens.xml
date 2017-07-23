@@ -20,11 +20,11 @@
     <dimen name="nav_profile_height">75dp</dimen>
 
     <!-- Weather Recycler View -->
-    <dimen name="weather_item_height">96dp</dimen>
-    <dimen name="weather_item_profile_width">75dp</dimen>
-    <dimen name="weather_item_profile_height">75dp</dimen>
-    <dimen name="weather_icon_width">40dp</dimen>
-    <dimen name="weather_icon_height">40dp</dimen>
+    <dimen name="weather_item_height">216dp</dimen>
+    <dimen name="weather_item_profile_width">72dp</dimen>
+    <dimen name="weather_item_profile_height">72dp</dimen>
+    <dimen name="weather_item_edit_width">32dp</dimen>
+    <dimen name="weather_item_edit_height">32dp</dimen>
 
     <!--General -->
     <dimen name="margin_small">8dp</dimen>

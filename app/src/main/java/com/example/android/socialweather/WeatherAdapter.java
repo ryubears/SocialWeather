@@ -1,12 +1,14 @@
 package com.example.android.socialweather;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Yehyun Ryu on 7/14/2017.
@@ -27,20 +30,11 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
     private ArrayList<String> mNames;
     private ArrayList<String> mLocations;
 
-    //onClickListener to pass on click event to fragment
-    final private WeatherItemClickListener mOnClickListener;
-
-    public WeatherAdapter(WeatherItemClickListener listener, ArrayList<String> ids, ArrayList<String> profiles, ArrayList<String> names, ArrayList<String> locations) {
-        mOnClickListener = listener;
+    public WeatherAdapter(ArrayList<String> ids, ArrayList<String> profiles, ArrayList<String> names, ArrayList<String> locations) {
         mIds = ids;
         mProfiles = profiles;
         mNames = names;
         mLocations = locations;
-    }
-
-    //onClickListener interface
-    public interface WeatherItemClickListener {
-        void onWeatherItemClick(int position);
     }
 
     @Override
@@ -68,11 +62,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         return mIds.size();
     }
 
-    public class WeatherViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class WeatherViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.weather_item_card_view) CardView mCardView;
         @BindView(R.id.weather_item_profile) ImageView mProfileImageView;
         @BindView(R.id.weather_item_name) TextView mNameTextView;
         @BindView(R.id.weather_item_location) TextView mLocationTextView;
-        @BindView(R.id.weather_item_icon) ImageView mIconImageView;
+        @BindView(R.id.weather_item_temperature) TextView mTemperatureTextView;
 
         private int mPosition;
 
@@ -103,13 +98,16 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             mLocationTextView.setText(mLocations.get(position));
 
             //temporary
-            mIconImageView.setImageResource(R.drawable.rain_logo);
+            mTemperatureTextView.setText("13°");
+
+            //temporary testing for clicks
+            mCardView.setTag(R.string.weather_item_position_tag, position);
         }
 
-
-        @Override
-        public void onClick(View view) {
-            mOnClickListener.onWeatherItemClick(mPosition);
+        @OnClick(R.id.weather_item_card_view)
+        public void onClick() {
+            //temporary testing
+            Toast.makeText(itemView.getContext(), "Selected: " + mCardView.getTag(R.string.weather_item_position_tag), Toast.LENGTH_SHORT).show();
         }
     }
 }

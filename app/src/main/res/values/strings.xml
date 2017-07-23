@@ -33,10 +33,10 @@
     <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="nav_location_default">Unknown</string>
 
-    <!-- Main Activity -->
-    <string name="main_menu_account_info">Account Info</string>
+    <!-- Home Fragment -->
+    <string name="weather_item_position_tag" translatable="false">position</string>
 
-    <!-- Settings Activity -->
+    <!-- Settings Fragment -->
     <string name="pref_units_label">Temperature Units</string>
     <string name="pref_units_lable_celsius">Celsius</string>
     <string name="pref_units_label_fahrenheit">Fahrenheit</string>
@@ -48,6 +48,4 @@
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>
     <string name="location_permission_message">Your friends won\'t be able to see your weather info.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

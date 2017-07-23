@@ -1,6 +1,5 @@
 package com.example.android.socialweather;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,11 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ListFragment extends Fragment implements WeatherAdapter.WeatherItemClickListener {
+public class HomeFragment extends Fragment {
     @BindView(R.id.weather_recycler_view) RecyclerView mWeatherRecyclerView;
 
-    //onClickListener to pass list item clicks that was received to MainActivity
-    private ListItemClickListener mCallback;
     private WeatherAdapter mAdapter;
     private AccessToken mAccessToken;
 
@@ -38,17 +35,7 @@ public class ListFragment extends Fragment implements WeatherAdapter.WeatherItem
     private ArrayList<String> mFriendProfiles = new ArrayList<>();
     private ArrayList<String> mFriendLocations = new ArrayList<>();
 
-    @Override
-    public void onWeatherItemClick(int position) {
-        mCallback.onListItemItemClick(position);
-    }
-
-    //onClickListener interface
-    public interface ListItemClickListener {
-        void onListItemItemClick(int position);
-    }
-
-    public ListFragment() {
+    public HomeFragment() {
         // Required empty public constructor
     }
 
@@ -56,11 +43,11 @@ public class ListFragment extends Fragment implements WeatherAdapter.WeatherItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //inflate layout for this fragment and bind views using butterknife
-        final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
         //sets adapter to recycler view
-        mAdapter = new WeatherAdapter(this, mFriendIds, mFriendProfiles, mFriendNames, mFriendLocations);
+        mAdapter = new WeatherAdapter(mFriendIds, mFriendProfiles, mFriendNames, mFriendLocations);
         mWeatherRecyclerView.setAdapter(mAdapter);
 
         //sets layout manager to recycler view
@@ -79,20 +66,6 @@ public class ListFragment extends Fragment implements WeatherAdapter.WeatherItem
 
         // Inflate the layout for this fragment
         return rootView;
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        //checks if MainActivity implemented ListItemClickListener interface
-        try {
-            mCallback = (ListItemClickListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() +
-              " must implement ListItemClickListener");
-        }
     }
 
     //method that makes the API call to fetch friends list
