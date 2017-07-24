@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.socialweather.DetailsActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/details_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <ImageView
+            android:id="@+id/details_profile"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            android:src="@drawable/profile_default"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/details_guideline"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginEnd="24dp" />
+
+        <TextView
+            android:id="@+id/details_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yehyun Ryu"
+            android:textColor="@color/textPrimary"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-light"
+            app:layout_constraintTop_toTopOf="@+id/details_profile"
+            app:layout_constraintBottom_toBottomOf="@+id/details_profile"
+            app:layout_constraintLeft_toRightOf="@+id/details_profile"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/details_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Minneapolis, Minnesota"
+            android:textColor="@color/textSecondary"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-light"
+            app:layout_constraintTop_toBottomOf="@+id/details_name"
+            app:layout_constraintLeft_toLeftOf="@+id/details_name"
+            app:layout_constraintRight_toRightOf="@+id/details_name" />
+
+        <View
+            android:id="@+id/details_dark_background"
+            android:layout_width="0dp"
+            android:layout_height="208dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/details_profile"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorPrimary" />
+
+        <ImageView
+            android:id="@+id/details_weather_icon"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            android:src="@drawable/login_rain_logo"
+            app:layout_constraintTop_toTopOf="@+id/details_dark_background"
+            app:layout_constraintBottom_toBottomOf="@id/details_dark_background"
+            app:layout_constraintLeft_toLeftOf="@+id/details_name"
+            app:layout_constraintRight_toRightOf="@+id/details_name" />
+
+        <TextView
+            android:id="@+id/details_current_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="13°"
+            android:textColor="@android:color/white"
+            android:textSize="56sp"
+            android:fontFamily="sans-serif-light"
+            app:layout_constraintTop_toTopOf="@+id/details_weather_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/details_weather_icon"
+            app:layout_constraintRight_toLeftOf="@+id/details_weather_icon"
+            app:layout_constraintLeft_toLeftOf="@+id/details_dark_background"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/details_minmax_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12° / 18°"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/details_current_temperature"
+            app:layout_constraintLeft_toLeftOf="@+id/details_current_temperature"
+            app:layout_constraintRight_toRightOf="@+id/details_current_temperature" />
+
+        <TextView
+            android:id="@+id/details_pressure_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pressure"
+            android:textColor="@color/textPrimary"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/details_dark_background"
+            app:layout_constraintLeft_toLeftOf="@+id/details_current_temperature"
+            app:layout_constraintRight_toRightOf="@+id/details_current_temperature" />
+
+        <TextView
+            android:id="@+id/details_pressure_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1019 hPa"
+            android:textColor="@color/textSecondary"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toTopOf="@+id/details_pressure_label"
+            app:layout_constraintBottom_toBottomOf="@+id/details_pressure_label"
+            app:layout_constraintLeft_toLeftOf="@+id/details_name"
+            app:layout_constraintRight_toRightOf="@+id/details_name" />
+
+        <TextView
+            android:id="@+id/details_humidity_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Humidity"
+            android:textColor="@color/textPrimary"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/details_pressure_label"
+            app:layout_constraintLeft_toLeftOf="@+id/details_current_temperature"
+            app:layout_constraintRight_toRightOf="@+id/details_current_temperature" />
+
+        <TextView
+            android:id="@+id/details_humidity_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="89 %"
+            android:textColor="@color/textSecondary"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-light"
+            app:layout_constraintTop_toTopOf="@+id/details_humidity_label"
+            app:layout_constraintBottom_toBottomOf="@+id/details_humidity_label"
+            app:layout_constraintLeft_toLeftOf="@+id/details_name"
+            app:layout_constraintRight_toRightOf="@+id/details_name" />
+
+        <TextView
+            android:id="@+id/details_wind_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wind"
+            android:textColor="@color/textPrimary"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginTop="24dp"
+            android:paddingBottom="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/details_humidity_label"
+            app:layout_constraintLeft_toLeftOf="@+id/details_current_temperature"
+            app:layout_constraintRight_toRightOf="@+id/details_current_temperature" />
+
+        <TextView
+            android:id="@+id/details_wind_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5.1 km/h"
+            android:textColor="@color/textSecondary"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-light"
+            android:paddingBottom="24dp"
+            app:layout_constraintTop_toTopOf="@+id/details_wind_label"
+            app:layout_constraintBottom_toBottomOf="@+id/details_wind_label"
+            app:layout_constraintLeft_toLeftOf="@+id/details_name"
+            app:layout_constraintRight_toRightOf="@+id/details_name" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
+

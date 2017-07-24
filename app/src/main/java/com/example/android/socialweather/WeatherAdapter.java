@@ -1,6 +1,7 @@
 package com.example.android.socialweather;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -99,15 +99,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
             //temporary
             mTemperatureTextView.setText("13°");
-
-            //temporary testing for clicks
-            mCardView.setTag(R.string.weather_item_position_tag, position);
         }
 
         @OnClick(R.id.weather_item_card_view)
         public void onClick() {
-            //temporary testing
-            Toast.makeText(itemView.getContext(), "Selected: " + mCardView.getTag(R.string.weather_item_position_tag), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(itemView.getContext(), DetailsActivity.class);
+            itemView.getContext().startActivity(intent);
         }
     }
 }

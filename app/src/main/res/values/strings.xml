@@ -44,6 +44,9 @@
     <string name="pref_units_celsius" translatable="false">celsius</string>
     <string name="pref_units_fahrenheit" translatable="false">fahrenheit</string>
 
+    <!-- Details Activity -->
+    <string name="activity_title_details">Weather Forecast</string>
+
     <!-- Permission Canceled Toast Messages -->
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>
     <string name="location_permission_message">Your friends won\'t be able to see your weather info.</string>
