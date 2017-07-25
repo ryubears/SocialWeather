@@ -35,6 +35,7 @@
 
     <!-- Home Fragment -->
     <string name="weather_item_position_tag" translatable="false">position</string>
+    <string name="home_empty_view">It looks pretty lonely here.\nWhy not share this app with your friends?</string>
 
     <!-- Settings Fragment -->
     <string name="pref_units_label">Temperature Units</string>
@@ -46,6 +47,11 @@
 
     <!-- Details Activity -->
     <string name="activity_title_details">Weather Forecast</string>
+
+    <!-- data -->
+    <string name="picture_empty" translatable="false">picture_empty</string>
+    <string name="location_empty" translatable="false">location_empty</string>
+    <string name="location_default">Unknown</string>
 
     <!-- Permission Canceled Toast Messages -->
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>

@@ -102,6 +102,20 @@
             android:authorities="@string/content_authority"
             android:exported="false" />
 
+        <!-- Immediate Sync Service -->
+        <service
+            android:name=".utils.WeatherSyncIntentService"
+            android:exported="false" />
+
+        <!-- Schedule Sync Service -->
+        <service
+            android:name=".utils.WeatherFirebaseJobService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
