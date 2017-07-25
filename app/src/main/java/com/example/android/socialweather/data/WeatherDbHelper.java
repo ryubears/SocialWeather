@@ -32,6 +32,14 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 WeatherEntry.COLUMN_PERSON_NAME + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_PERSON_PROFILE + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_PERSON_LOCATION + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_WEATHER_ID + " INTEGER, " +
+                WeatherEntry.COLUMN_WEATHER_DESCRIPTION + " TEXT, " +
+                WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP + " REAL, " +
+                WeatherEntry.COLUMN_WEATHER_MIN_TEMP + " REAL, " +
+                WeatherEntry.COLUMN_WEATHER_MAX_TEMP + " REAL, " +
+                WeatherEntry.COLUMN_WEATHER_PRESSURE + " INTEGER, " +
+                WeatherEntry.COLUMN_WEATHER_HUMIDITY + " INTEGER, " +
+                WeatherEntry.COLUMN_WEATHER_WIND_SPEED + " REAL, " +
                 " UNIQUE (" + WeatherEntry.COLUMN_PERSON_ID + ") ON CONFLICT REPLACE);";
 
         //execute the SQL statement above

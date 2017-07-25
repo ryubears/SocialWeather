@@ -41,5 +41,28 @@ public class WeatherContract {
         //person current city location
         public static final String COLUMN_PERSON_LOCATION = "person_location";
 
+        //weather id
+        public static final String COLUMN_WEATHER_ID = "weather_id";
+
+        //weather description
+        public static final String COLUMN_WEATHER_DESCRIPTION = "weather_description";
+
+        //weather current temperature
+        public static final String COLUMN_WEATHER_CURRENT_TEMP = "weather_current_temp";
+
+        //weather min temperature
+        public static final String COLUMN_WEATHER_MIN_TEMP = "weather_min_temp";
+
+        //weather max temperature
+        public static final String COLUMN_WEATHER_MAX_TEMP = "weather_max_temp";
+
+        //weather pressure
+        public static final String COLUMN_WEATHER_PRESSURE = "weather_pressure";
+
+        //weather humidity
+        public static final String COLUMN_WEATHER_HUMIDITY = "weather_humidity";
+
+        //weather wind speed
+        public static final String COLUMN_WEATHER_WIND_SPEED = "weather_wind_speed";
     }
 }

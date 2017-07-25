@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.socialweather.data.WeatherContract;
+import com.example.android.socialweather.utils.NetworkUtils;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -91,6 +92,9 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                 checkEmpty();
             }
         }
+
+        //temporary test
+        new TestNetwork().execute();
 
         // Inflate the layout for this fragment
         return rootView;
@@ -279,5 +283,15 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onSaveInstanceState(outState);
         //save friend initialization state
         outState.putBoolean(INITIALIZE_KEY, mFriendInitialized);
+    }
+
+    //temporary test
+    private class TestNetwork extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            NetworkUtils.fetchWeather("Minneapolis, Minnesota");
+            return null;
+        }
     }
 }
