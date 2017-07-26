@@ -22,7 +22,7 @@
             android:id="@+id/details_profile"
             android:layout_width="144dp"
             android:layout_height="144dp"
-            android:src="@drawable/profile_default"
+            android:src="@drawable/profile_color"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/details_guideline"
             android:layout_marginTop="24dp"
@@ -71,11 +71,12 @@
             android:id="@+id/details_weather_icon"
             android:layout_width="144dp"
             android:layout_height="144dp"
-            android:src="@drawable/login_rain_logo"
+            tools:src="@drawable/rain_color"
             app:layout_constraintTop_toTopOf="@+id/details_dark_background"
             app:layout_constraintBottom_toBottomOf="@id/details_dark_background"
             app:layout_constraintLeft_toLeftOf="@+id/details_name"
-            app:layout_constraintRight_toRightOf="@+id/details_name" />
+            app:layout_constraintRight_toRightOf="@+id/details_name"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/details_current_temperature"

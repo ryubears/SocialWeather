@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.socialweather.data.WeatherContract.WeatherEntry;
+import com.example.android.socialweather.utils.WeatherUtils;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -110,12 +111,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         mMaxTemp = data.getDouble(indexMaxTemp);
         mPressure = data.getDouble(indexPressure);
         mHumidity = data.getInt(indexHumidity);
-        System.out.println(mHumidity);
         mWindSpeed = data.getDouble(indexWindSpeed);
 
         //attach data to views
         if(mProfilePic.equals(getString(R.string.picture_empty))) {
-            mProfileImageView.setImageResource(R.drawable.profile_default);
+            mProfileImageView.setImageResource(R.drawable.profile_color);
         } else {
             //transform profile picture in a circular frame
             Transformation transformation = new RoundedTransformationBuilder()
@@ -137,6 +137,9 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         } else {
             mLocationTextView.setText(mLocation);
         }
+
+        int icon = WeatherUtils.getColorWeatherIcon(mWeatherId);
+        mIconImageView.setImageResource(icon);
 
         //TODO: handle empty cases
         mCurrentTempTextView.setText(String.valueOf(mCurrentTemp));

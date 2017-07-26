@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.socialweather.utils.WeatherUtils;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -74,6 +75,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
     public class WeatherViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.weather_item_card_view) CardView mCardView;
+        @BindView(R.id.weather_item_background) ImageView mBackgroundImageView;
         @BindView(R.id.weather_item_profile) ImageView mProfileImageView;
         @BindView(R.id.weather_item_name) TextView mNameTextView;
         @BindView(R.id.weather_item_location) TextView mLocationTextView;
@@ -83,6 +85,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         private String mName;
         private String mProfilePic;
         private String mLocation;
+        private int mWeatherId;
         private double mTemperature;
 
         public WeatherViewHolder(View view) {
@@ -98,13 +101,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             int indexFriendName = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_NAME);
             int indexFriendProfilePic = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_PROFILE);
             int indexFriendLocation = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_LOCATION);
+            int indexWeatherId = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ID);
             int indexTemperature = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP);
 
             mId = mCursor.getInt(indexId);
-            System.out.println(mId);
             mName = mCursor.getString(indexFriendName);
             mProfilePic = mCursor.getString(indexFriendProfilePic);
             mLocation = mCursor.getString(indexFriendLocation);
+            mWeatherId = mCursor.getInt(indexWeatherId);
             mTemperature = mCursor.getDouble(indexTemperature);
 
             //set name
@@ -113,7 +117,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             //set profile picture
             if(mProfilePic.equals(itemView.getContext().getString(R.string.picture_empty))) {
                 //if user profile picture does not exist
-                mProfileImageView.setImageResource(R.drawable.profile_default);
+                mProfileImageView.setImageResource(R.drawable.profile_color);
             } else {
                 //transform profile picture in a circular frame
                 Transformation transformation = new RoundedTransformationBuilder()
@@ -135,6 +139,9 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             } else {
                 mLocationTextView.setText(mLocation);
             }
+
+            int background = WeatherUtils.getWeatherBackground(mWeatherId);
+            mBackgroundImageView.setImageResource(background);
 
             //set current temperature
             mTemperatureTextView.setText(String.valueOf(mTemperature));

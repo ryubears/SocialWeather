@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/login_background_rain"
+        android:src="@drawable/rain_background"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,11 +29,11 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/login_weather_icon"
             android:layout_width="@dimen/login_logo_image_width"
             android:layout_height="@dimen/login_logo_image_height"
             android:scaleType="centerCrop"
-            android:src="@drawable/login_rain_logo"
+            android:src="@drawable/rain_white"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_small" />
 

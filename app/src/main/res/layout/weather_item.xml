@@ -26,7 +26,7 @@
                 android:id="@+id/weather_item_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/login_background_rain"
+                tools:src="@drawable/rain_background"
                 android:scaleType="centerCrop" />
 
             <TextView
@@ -56,7 +56,7 @@
                 android:id="@+id/weather_item_profile"
                 android:layout_width="@dimen/weather_item_profile_width"
                 android:layout_height="@dimen/weather_item_profile_height"
-                android:src="@drawable/profile_default"
+                android:src="@drawable/profile_color"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
