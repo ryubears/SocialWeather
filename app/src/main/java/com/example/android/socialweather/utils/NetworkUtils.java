@@ -131,7 +131,7 @@ public class NetworkUtils {
             double currentTemp = main.getDouble("temp");
             double minTemp = main.getDouble("temp_min");
             double maxTemp = main.getDouble("temp_max");
-            int pressure = main.getInt("pressure");
+            double pressure = main.getDouble("pressure");
             int humidity = main.getInt("humidity");
 
             //weather wind speed

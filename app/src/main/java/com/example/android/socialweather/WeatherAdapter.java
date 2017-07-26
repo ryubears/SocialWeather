@@ -64,13 +64,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
     //method loader will use to update recycler view
     public void swapCursor(Cursor newCursor) {
-        //close existing cursor
-        if(mCursor != null) mCursor.close();
-
         //swap with new cursor
         mCursor = newCursor;
         if(mCursor != null && mCursor.getCount() != 0) {
-            //notify data change to make adapter refresh
+            //notify data change to make refresh adapter
             notifyDataSetChanged();
         }
     }
@@ -82,7 +79,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         @BindView(R.id.weather_item_location) TextView mLocationTextView;
         @BindView(R.id.weather_item_temperature) TextView mTemperatureTextView;
 
-        private String mId;
+        private int mId;
         private String mName;
         private String mProfilePic;
         private String mLocation;
@@ -97,13 +94,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
         private void bind() {
             //extract data from cursor
-            int indexFriendId = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_ID);
+            int indexId = mCursor.getColumnIndex(WeatherEntry._ID);
             int indexFriendName = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_NAME);
             int indexFriendProfilePic = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_PROFILE);
             int indexFriendLocation = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_LOCATION);
             int indexTemperature = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP);
 
-            mId = mCursor.getString(indexFriendId);
+            mId = mCursor.getInt(indexId);
+            System.out.println(mId);
             mName = mCursor.getString(indexFriendName);
             mProfilePic = mCursor.getString(indexFriendProfilePic);
             mLocation = mCursor.getString(indexFriendLocation);
@@ -145,6 +143,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         @OnClick(R.id.weather_item_card_view)
         public void onClick() {
             Intent intent = new Intent(itemView.getContext(), DetailsActivity.class);
+            intent.putExtra(WeatherEntry._ID, mId);
             itemView.getContext().startActivity(intent);
         }
     }
