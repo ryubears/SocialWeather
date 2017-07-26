@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.socialweather.data.WeatherContract;
-import com.example.android.socialweather.utils.NetworkUtils;
+import com.example.android.socialweather.sync.WeatherSyncUtils;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -92,9 +92,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                 checkEmpty();
             }
         }
-
-        //temporary test
-        new TestNetwork().execute();
 
         // Inflate the layout for this fragment
         return rootView;
@@ -188,7 +185,9 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                 //check if location data is empty
                                 String location = "";
                                 if(jsonUser.isNull("location")) {
-                                    location = getString(R.string.location_empty);
+                                    //location = getString(R.string.location_empty);
+                                    //temporary testing
+                                    location = "Minneapolis, Minnesota";
                                 } else {
                                     location = jsonUser.getJSONObject("location").getString("name");
                                 }
@@ -227,6 +226,8 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                 WeatherContract.WeatherEntry.CONTENT_URI,
                                 contentValues
                         );
+
+                        WeatherSyncUtils.initialize(getContext());
                     }
                 }
         ).executeAsync();
@@ -283,15 +284,5 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onSaveInstanceState(outState);
         //save friend initialization state
         outState.putBoolean(INITIALIZE_KEY, mFriendInitialized);
-    }
-
-    //temporary test
-    private class TestNetwork extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            NetworkUtils.fetchWeather("Minneapolis, Minnesota");
-            return null;
-        }
     }
 }

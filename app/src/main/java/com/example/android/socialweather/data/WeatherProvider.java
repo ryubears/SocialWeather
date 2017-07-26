@@ -112,12 +112,12 @@ public class WeatherProvider extends ContentProvider {
         Cursor cursor;
         switch(sUriMatcher.match(uri)) {
             case CODE_SINGLE_WEATHER: {
-                String personId = uri.getLastPathSegment();
-                selectionArgs = new String[] {personId};
+                String id = uri.getLastPathSegment();
+                selectionArgs = new String[] {id};
                 cursor = mDbHelper.getReadableDatabase().query(
                         WeatherContract.WeatherEntry.TABLE_NAME,
                         projection,
-                        WeatherContract.WeatherEntry.COLUMN_PERSON_ID + "=?",
+                        WeatherContract.WeatherEntry._ID + "=?",
                         selectionArgs,
                         null,
                         null,
@@ -157,11 +157,11 @@ public class WeatherProvider extends ContentProvider {
 
         switch(sUriMatcher.match(uri)) {
             case CODE_SINGLE_WEATHER:
-                String personId = uri.getLastPathSegment();
-                selectionArgs = new String[] {personId};
+                String id = uri.getLastPathSegment();
+                selectionArgs = new String[] {id};
                 numRowsDeleted = mDbHelper.getWritableDatabase().delete(
                         WeatherContract.WeatherEntry.TABLE_NAME,
-                        WeatherContract.WeatherEntry.COLUMN_PERSON_ID + "=?",
+                        WeatherContract.WeatherEntry._ID + "=?",
                         selectionArgs);
                 break;
             case CODE_ALL_WEATHER:
@@ -189,13 +189,13 @@ public class WeatherProvider extends ContentProvider {
 
         switch(sUriMatcher.match(uri)) {
             case CODE_SINGLE_WEATHER:
-                String personId = uri.getLastPathSegment();
-                selectionArgs = new String[] {personId};
+                String id = uri.getLastPathSegment();
+                selectionArgs = new String[] {id};
 
                 numRowsUpdated = mDbHelper.getWritableDatabase().update(
                         WeatherContract.WeatherEntry.TABLE_NAME,
                         values,
-                        WeatherContract.WeatherEntry.COLUMN_PERSON_ID + "=?",
+                        WeatherContract.WeatherEntry._ID + "=?",
                         selectionArgs);
                 break;
             default:

@@ -27,9 +27,14 @@ import static com.example.android.socialweather.data.WeatherContract.WeatherEntr
 
 public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
-    private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
-    private static final String API_KEY = "&appid=" +BuildConfig.OPEN_WEATHER_MAP_API_KEY;
 
+    //base url of open weather map
+    private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
+
+    //api key from open weather map, stored in gradle.properties
+    private static final String API_KEY = "&appid=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
+
+    //creates an url with the location parameter
     private static URL createUrl(String location) {
         Log.d(LOG_TAG, "createUrl");
 
@@ -44,11 +49,14 @@ public class NetworkUtils {
         return url;
     }
 
+    //connects and read from open weather map servers
     private static String makeHTTPRequest(URL url) throws IOException {
         Log.d(LOG_TAG, "makeHTTPRequest");
 
+        //json response to return
         String jsonResponse = "";
 
+        //return early if url is empty
         if(url == null) {
             return jsonResponse;
         }
@@ -56,6 +64,7 @@ public class NetworkUtils {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
+            //establishes connection
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(15000);
@@ -71,6 +80,7 @@ public class NetworkUtils {
         } catch(Exception e) {
             Log.e(LOG_TAG, "Error making HTTP request: " + e);
         } finally {
+            //closes input stream and connection
             if(inputStream != null) inputStream.close();
             if(connection != null) connection.disconnect();
 
@@ -78,9 +88,11 @@ public class NetworkUtils {
         }
     }
 
+    //reads from input stream and returns an output of string
     private static String readFromStream(InputStream inputStream) throws IOException {
         Log.d(LOG_TAG, "readFromStream");
 
+        //output string
         StringBuilder output = new StringBuilder();
         if(inputStream != null) {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
@@ -94,6 +106,7 @@ public class NetworkUtils {
         return output.toString();
     }
 
+    //extract data from json response
     private static ContentValues extractWeatherFromJSON(String jsonResponse) {
         Log.d(LOG_TAG, "extractWeatherFromJSON");
 
@@ -102,15 +115,18 @@ public class NetworkUtils {
             return null;
         }
 
+        //content values to be returned
         ContentValues contentValues = new ContentValues();
         try {
             JSONObject baseJson = new JSONObject(jsonResponse);
 
+            //weather id and description
             JSONArray weatherArray = baseJson.getJSONArray("weather");
             JSONObject weather = weatherArray.getJSONObject(0);
             int weatherId = weather.getInt("id");
             String description = weather.getString("description");
 
+            //weather current temp, min temp, max temp, pressure, and humidity
             JSONObject main = baseJson.getJSONObject("main");
             double currentTemp = main.getDouble("temp");
             double minTemp = main.getDouble("temp_min");
@@ -118,9 +134,11 @@ public class NetworkUtils {
             int pressure = main.getInt("pressure");
             int humidity = main.getInt("humidity");
 
+            //weather wind speed
             JSONObject wind = baseJson.getJSONObject("wind");
             double windSpeed = wind.getDouble("speed");
 
+            //add to content values
             contentValues.put(WeatherEntry.COLUMN_WEATHER_ID, weatherId);
             contentValues.put(WeatherEntry.COLUMN_WEATHER_DESCRIPTION, description);
             contentValues.put(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP, currentTemp);
@@ -130,26 +148,34 @@ public class NetworkUtils {
             contentValues.put(WeatherEntry.COLUMN_WEATHER_HUMIDITY, humidity);
             contentValues.put(WeatherEntry.COLUMN_WEATHER_WIND_SPEED, windSpeed);
 
-            System.out.println(weatherId);
-            System.out.println(description);
-            System.out.println(currentTemp);
-            System.out.println(minTemp);
-            System.out.println(maxTemp);
-            System.out.println(pressure);
-            System.out.println(humidity);
-            System.out.println(windSpeed);
-
+            //for debugging
+            Log.d(LOG_TAG, String.valueOf(weatherId));
+            Log.d(LOG_TAG, String.valueOf(description));
+            Log.d(LOG_TAG, String.valueOf(currentTemp));
+            Log.d(LOG_TAG, String.valueOf(minTemp));
+            Log.d(LOG_TAG, String.valueOf(maxTemp));
+            Log.d(LOG_TAG, String.valueOf(pressure));
+            Log.d(LOG_TAG, String.valueOf(humidity));
+            Log.d(LOG_TAG, String.valueOf(windSpeed));
         } catch(JSONException e) {
             Log.e(LOG_TAG, "Problem extracting data from JSON: " + e);
         }
         return contentValues;
     }
 
+    //returns content value with location string
     public static ContentValues fetchWeather(String location) {
         Log.d(LOG_TAG, "fetchWeather");
 
+        //return early if location string is empty
+        if(location.equals("location_empty")) {
+            return null;
+        }
+
+        //create url
         URL url = createUrl(location);
 
+        //get json response
         String jsonResponse = "";
         try {
             jsonResponse = makeHTTPRequest(url);
@@ -157,6 +183,7 @@ public class NetworkUtils {
             Log.e(LOG_TAG, "Error with HTTP request: " + e);
         }
 
+        //get content values from json response
         ContentValues contentValues = extractWeatherFromJSON(jsonResponse);
         return contentValues;
     }

@@ -1,15 +1,15 @@
-package com.example.android.socialweather.utils;
+package com.example.android.socialweather.sync;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
 /**
- * Created by Yehyun Ryu on 7/24/2017.
+ * Created by Yehyun Ryu on 7/26/2017.
  */
 
+//a subclass handling asynchronous task for immediately syncing weather data
 public class WeatherSyncIntentService extends IntentService {
-    private static String LOG_TAG = WeatherSyncIntentService.class.getSimpleName();
 
     public WeatherSyncIntentService() {
         super("WeatherSyncIntentService");
@@ -17,6 +17,6 @@ public class WeatherSyncIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-
+        WeatherSyncTask.syncWeather(this);
     }
 }

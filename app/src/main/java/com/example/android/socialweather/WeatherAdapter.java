@@ -28,6 +28,7 @@ import static com.example.android.socialweather.data.WeatherContract.WeatherEntr
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
     private static String LOG_TAG = WeatherAdapter.class.getSimpleName();
 
+    //cursor from home fragment loader
     private Cursor mCursor;
 
     public WeatherAdapter() {}
@@ -39,6 +40,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean attachToParentImmediately = false;
 
+        //inflate view using layout inflater
         View view = inflater.inflate(layoutId, parent, attachToParentImmediately);
         WeatherViewHolder viewHolder = new WeatherViewHolder(view);
         return viewHolder;
@@ -46,6 +48,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
     @Override
     public void onBindViewHolder(WeatherAdapter.WeatherViewHolder holder, int position) {
+        //move cursor to current position and bind data with views
         mCursor.moveToPosition(position);
         holder.bind();
     }
@@ -59,9 +62,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         return mCursor.getCount();
     }
 
+    //method loader will use to update recycler view
     public void swapCursor(Cursor newCursor) {
+        //close existing cursor
+        if(mCursor != null) mCursor.close();
+
+        //swap with new cursor
         mCursor = newCursor;
         if(mCursor != null && mCursor.getCount() != 0) {
+            //notify data change to make adapter refresh
             notifyDataSetChanged();
         }
     }
@@ -77,6 +86,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         private String mName;
         private String mProfilePic;
         private String mLocation;
+        private double mTemperature;
 
         public WeatherViewHolder(View view) {
             super(view);
@@ -86,15 +96,18 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         }
 
         private void bind() {
+            //extract data from cursor
             int indexFriendId = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_ID);
             int indexFriendName = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_NAME);
             int indexFriendProfilePic = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_PROFILE);
             int indexFriendLocation = mCursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_LOCATION);
+            int indexTemperature = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP);
 
             mId = mCursor.getString(indexFriendId);
             mName = mCursor.getString(indexFriendName);
             mProfilePic = mCursor.getString(indexFriendProfilePic);
             mLocation = mCursor.getString(indexFriendLocation);
+            mTemperature = mCursor.getDouble(indexTemperature);
 
             //set name
             mNameTextView.setText(mName);
@@ -125,8 +138,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                 mLocationTextView.setText(mLocation);
             }
 
-            //temporary
-            mTemperatureTextView.setText("13°");
+            //set current temperature
+            mTemperatureTextView.setText(String.valueOf(mTemperature));
         }
 
         @OnClick(R.id.weather_item_card_view)
