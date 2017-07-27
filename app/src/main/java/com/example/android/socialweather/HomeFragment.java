@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,7 +90,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             if(!mFriendInitialized) {
                 mFriendInitialized = true;
                 //check if data is empty
-                checkEmpty();
+                checkData();
             }
         }
 
@@ -97,29 +98,40 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         return rootView;
     }
 
-    //method that calls async task that checks if weather data is empty
-    private void checkEmpty() {
-        new DataEmptyQuery().execute();
+    //method that calls async task that checks if weather data is empty or outdated
+    private void checkData() {
+        new DataCheckQuery().execute();
     }
 
-    private class DataEmptyQuery extends AsyncTask<Void, Void, Boolean> {
+    private class DataCheckQuery extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            //query weather data to check if it is empty
+            //query weather data to check if it is empty or outdated
             Cursor cursor = getContext().getContentResolver().query(
                     WeatherContract.WeatherEntry.CONTENT_URI,
-                    new String[] {WeatherContract.WeatherEntry._ID}, //just one column since this is just to check if data is empty
+                    new String[] {WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME}, //just one column since this is just to check if data is empty or outdated
                     null,
                     null,
                     null
             );
 
-            boolean isEmpty;
+            boolean isEmptyOrOutdated;
             if(cursor == null || cursor.getCount() == 0) {
-                isEmpty = true;
+                isEmptyOrOutdated = true;
             } else {
-                isEmpty = false;
+                //check if data is outdated
+                //data is outdated if they are older than four hours
+                cursor.moveToFirst();
+                int indexLastUpdateTime = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME);
+                long lastUpdateTime = cursor.getLong(indexLastUpdateTime);
+                long currentTime = System.currentTimeMillis();
+                long maxHour = 4;
+                if((currentTime - lastUpdateTime) >= TimeUnit.HOURS.toMillis(maxHour)) {
+                    isEmptyOrOutdated = true;
+                } else {
+                    isEmptyOrOutdated = false;
+                }
             }
 
             //close cursor to prevent memory leaks
@@ -127,14 +139,15 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                 cursor.close();
             }
 
-            return isEmpty;
+            return isEmptyOrOutdated;
         }
 
         @Override
-        protected void onPostExecute(Boolean isEmpty) {
-            super.onPostExecute(isEmpty);
+        protected void onPostExecute(Boolean isEmptyOrOutdated) {
+            super.onPostExecute(isEmptyOrOutdated);
 
-            if(isEmpty) {
+            if(isEmptyOrOutdated) {
+                //sync with friend and weather data if data is empty or outdated
                 syncFriends();
             }
         }
@@ -206,6 +219,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                         ContentValues[] contentValues = new ContentValues[friendIds.size()];
                         for(int i = 0; i < friendIds.size(); i++) {
                             ContentValues values = new ContentValues();
+                            values.put(WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME, System.currentTimeMillis());
                             values.put(WeatherContract.WeatherEntry.COLUMN_PERSON_ID, friendIds.get(i));
                             values.put(WeatherContract.WeatherEntry.COLUMN_PERSON_NAME, friendNames.get(i));
                             values.put(WeatherContract.WeatherEntry.COLUMN_PERSON_PROFILE, friendProfilePics.get(i));
@@ -222,12 +236,15 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                         );
 
                         //inserts fresh friend list data
-                        getContext().getContentResolver().bulkInsert(
+                        int rowsInserted = getContext().getContentResolver().bulkInsert(
                                 WeatherContract.WeatherEntry.CONTENT_URI,
                                 contentValues
                         );
 
-                        WeatherSyncUtils.initialize(getContext());
+                        //initialize weather data if there are friends, :( sad life
+                        if(rowsInserted != 0) {
+                            WeatherSyncUtils.initialize(getContext());
+                        }
                     }
                 }
         ).executeAsync();

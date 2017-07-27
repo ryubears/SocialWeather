@@ -28,6 +28,7 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_WEATHER_TABLE = "" +
                 "CREATE TABLE " + WeatherEntry.TABLE_NAME + " (" +
                 WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                WeatherEntry.COLUMN_LAST_UPDATE_TIME + " INTEGER NOT NULL, " +
                 WeatherEntry.COLUMN_PERSON_ID + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_PERSON_NAME + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_PERSON_PROFILE + " TEXT NOT NULL, " +

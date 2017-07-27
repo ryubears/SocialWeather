@@ -29,6 +29,9 @@ public class WeatherContract {
         //table name
         public static final String TABLE_NAME = "weather";
 
+        //last data update time
+        public static final String COLUMN_LAST_UPDATE_TIME = "last_update_time";
+
         //person id from facebook
         public static final String COLUMN_PERSON_ID = "person_id";
 

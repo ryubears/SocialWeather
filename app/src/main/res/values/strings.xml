@@ -37,7 +37,7 @@
     <string name="weather_item_position_tag" translatable="false">position</string>
     <string name="home_empty_view">It looks pretty lonely here.\nWhy not share this app with your friends?</string>
 
-    <!-- Settings Fragment -->
+    <!-- Settings Fragment/SharedPreference-->
     <string name="pref_weather_category_title">Weather</string>
     <string name="pref_units_label">Temperature Units</string>
     <string name="pref_units_lable_celsius">Celsius</string>
@@ -55,6 +55,12 @@
     <string name="pref_notification_extreme_key" translatable="false">notification_extreme</string>
     <string name="pref_notification_summary_on">Enabled</string>
     <string name="pref_notification_summary_off">Not Enabled</string>
+
+    <string name="pref_update_notification_time_key">update_notification_time</string>
+    <string name="pref_rain_notification_time_key">rain_notification_time</string>
+    <string name="pref_snow_notification_time_key">snow_notification_time</string>
+    <string name="pref_extreme_notification_time_key">extreme_notification_time</string>
+
     <!-- Details Activity -->
     <string name="activity_title_details">Weather Forecast</string>
 
