@@ -142,12 +142,22 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         mIconImageView.setImageResource(icon);
 
         //TODO: handle empty cases
-        mCurrentTempTextView.setText(String.valueOf(mCurrentTemp));
-        String minMaxString = String.valueOf(mMinTemp) + " / " + String.valueOf(mMaxTemp);
+        String formattedCurrentTemp = WeatherUtils.formatTemperature(this, mCurrentTemp);
+        mCurrentTempTextView.setText(formattedCurrentTemp);
+
+        String formattedMinTemp = WeatherUtils.formatTemperature(this, mMinTemp);
+        String formattedMaxTemp = WeatherUtils.formatTemperature(this, mMaxTemp);
+        String minMaxString = formattedMinTemp + " / " + formattedMaxTemp;
         mMinMaxTempTextView.setText(minMaxString);
-        mPressureTextView.setText(String.valueOf(mPressure));
-        mHumidityTextView.setText(String.valueOf(mHumidity));
-        mWindSpeedTextView.setText(String.valueOf(mWindSpeed));
+
+        String formattedPressure = WeatherUtils.formatPressure(this, mPressure);
+        mPressureTextView.setText(formattedPressure);
+
+        String formattedHumidity = WeatherUtils.formatHumidity(this, mHumidity);
+        mHumidityTextView.setText(formattedHumidity);
+
+        String formattedWindSpeed = WeatherUtils.formatWindSpeed(this, mWindSpeed);
+        mWindSpeedTextView.setText(formattedWindSpeed);
     }
 
     @Override

@@ -1,12 +1,49 @@
 package com.example.android.socialweather.utils;
 
+import android.content.Context;
+
 import com.example.android.socialweather.R;
+import com.example.android.socialweather.data.WeatherPreferences;
 
 /**
  * Created by Yehyun Ryu on 7/26/2017.
  */
 
 public class WeatherUtils {
+    //formats kelvin to either celsius or fahrenheit depending on settings
+    public static String formatTemperature(Context context, double temperature) {
+        if(WeatherPreferences.isCelsius(context)) {
+            temperature = temperature - 273.15;
+        } else {
+            temperature = temperature * 9.0 / 5.0 - 459.67;
+        }
+
+        return String.format(context.getString(R.string.format_temperature), temperature);
+    }
+
+    //formats pressure
+    public static String formatPressure(Context context, double pressure) {
+        return String.format(context.getString(R.string.format_pressure), pressure);
+    }
+
+    //formats humidity
+    public static String formatHumidity(Context context, int humidity) {
+        return humidity + " %";
+    }
+
+    //formats wind speed
+    public static String formatWindSpeed(Context context, double windSpeed) {
+        if(!WeatherPreferences.isCelsius(context)) {
+            windSpeed = windSpeed * 0.621371;
+            return String.format(context.getString(R.string.format_wind_mph), windSpeed);
+        } else {
+            return String.format(context.getString(R.string.format_wind_kmh), windSpeed);
+        }
+
+
+
+    }
+
     //get drawable resource for weather icon with color
     public static int getColorWeatherIcon(int weatherId) {
         if(weatherId >= 200 && weatherId <= 232) {

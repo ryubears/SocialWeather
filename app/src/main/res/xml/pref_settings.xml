@@ -3,11 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListPreference
-        android:defaultValue="@string/pref_units_celsius"
-        android:entries="@array/pref_units_options"
-        android:entryValues="@array/pref_units_values"
-        android:key="@string/pref_units_key"
-        android:title="@string/pref_units_label"/>
+    <PreferenceCategory
+        android:title="@string/pref_weather_category_title">
+
+        <ListPreference
+            android:defaultValue="@string/pref_units_celsius"
+            android:entries="@array/pref_units_options"
+            android:entryValues="@array/pref_units_values"
+            android:key="@string/pref_units_key"
+            android:title="@string/pref_units_label"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_notification_category_title">
+
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_notification_default"
+            android:key="@string/pref_notification_update_key"
+            android:title="@string/pref_notification_update_label"
+            android:summaryOn="@string/pref_notification_summary_on"
+            android:summaryOff="@string/pref_notification_summary_off" />
+
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_notification_default"
+            android:key="@string/pref_notification_rain_snow_key"
+            android:title="@string/pref_notification_rain_snow_label"
+            android:summaryOn="@string/pref_notification_summary_on"
+            android:summaryOff="@string/pref_notification_summary_off" />
+
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_notification_default"
+            android:key="@string/pref_notification_extreme_key"
+            android:title="@string/pref_notification_extreme_label"
+            android:summaryOn="@string/pref_notification_summary_on"
+            android:summaryOff="@string/pref_notification_summary_off" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

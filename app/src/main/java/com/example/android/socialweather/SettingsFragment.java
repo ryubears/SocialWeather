@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceScreen;
+
+import com.example.android.socialweather.data.WeatherContract;
 
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -15,17 +16,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
         //add preferences defined in pref_settings.xml
         addPreferencesFromResource(R.xml.pref_settings);
 
-        //sets summary for list preferences
+        //sets summary for list preference
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
-        PreferenceScreen prefScreen = getPreferenceScreen();
-        int count = prefScreen.getPreferenceCount();
-        for(int i = 0; i < count; i++) {
-            Preference p = prefScreen.getPreference(i);
-            if(p instanceof ListPreference) {
-                String value = sharedPreferences.getString(p.getKey(), "");
-                setPreferenceSummary(p, value);
-            }
-        }
+        Preference preference = findPreference(getString(R.string.pref_units_key));
+        setPreferenceSummary(preference, sharedPreferences.getString(getString(R.string.pref_units_key), ""));
     }
 
     //helper method that sets the summary of changed preferences
@@ -45,12 +39,13 @@ public class SettingsFragment extends PreferenceFragmentCompat
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals(getString(R.string.pref_units_key))) {
-            //change temperature unit to appropriate unit
+            //notify change in data to display correct temperature units
+            getActivity().getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
         }
 
         //set appropriate summary
         Preference preference = findPreference(key);
-        if(preference != null) {
+        if(preference instanceof ListPreference) {
             setPreferenceSummary(preference, sharedPreferences.getString(key, ""));
         }
     }

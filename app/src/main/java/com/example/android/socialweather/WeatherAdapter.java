@@ -144,7 +144,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             mBackgroundImageView.setImageResource(background);
 
             //set current temperature
-            mTemperatureTextView.setText(String.valueOf(mTemperature));
+            String formattedTemp = WeatherUtils.formatTemperature(itemView.getContext(), mTemperature);
+            mTemperatureTextView.setText(formattedTemp);
         }
 
         @OnClick(R.id.weather_item_card_view)

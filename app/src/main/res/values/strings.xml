@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">SocialWeather</string>
     <string name="content_authority">com.example.android.socialweather</string>
 
@@ -38,6 +38,7 @@
     <string name="home_empty_view">It looks pretty lonely here.\nWhy not share this app with your friends?</string>
 
     <!-- Settings Fragment -->
+    <string name="pref_weather_category_title">Weather</string>
     <string name="pref_units_label">Temperature Units</string>
     <string name="pref_units_lable_celsius">Celsius</string>
     <string name="pref_units_label_fahrenheit">Fahrenheit</string>
@@ -45,6 +46,15 @@
     <string name="pref_units_celsius" translatable="false">celsius</string>
     <string name="pref_units_fahrenheit" translatable="false">fahrenheit</string>
 
+    <string name="pref_notification_category_title">Notifications</string>
+    <string name="pref_notification_update_label">Weather Update</string>
+    <string name="pref_notification_update_key" translatable="false">notification_update</string>
+    <string name="pref_notification_rain_snow_label">Rain/Snow</string>
+    <string name="pref_notification_rain_snow_key" translatable="false">notification_rain_snow</string>
+    <string name="pref_notification_extreme_label">Extreme Weather</string>
+    <string name="pref_notification_extreme_key" translatable="false">notification_extreme</string>
+    <string name="pref_notification_summary_on">Enabled</string>
+    <string name="pref_notification_summary_off">Not Enabled</string>
     <!-- Details Activity -->
     <string name="activity_title_details">Weather Forecast</string>
 
@@ -57,4 +67,22 @@
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>
     <string name="location_permission_message">Your friends won\'t be able to see your weather info.</string>
 
+    <!-- temperature format -->
+    <string name="format_temperature">
+        <xliff:g id="temp">%.1f</xliff:g>\u00B0
+    </string>
+
+    <!-- pressure format -->
+    <string name="format_pressure">
+        <xliff:g id="pressure">%1.0f</xliff:g> hPa
+    </string>
+
+    <!-- wind format -->
+    <string name="format_wind_kmh">
+        <xliff:g id="speed">%.1f</xliff:g> km/h
+    </string>
+
+    <string name="format_wind_mph">
+        <xliff:g id="speed">%.1f</xliff:g> mph
+    </string>
 </resources>

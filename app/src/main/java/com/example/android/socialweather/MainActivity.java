@@ -54,6 +54,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//Icons made by "https://www.flaticon.com/authors/madebyoliver" "Madebyoliver"
+
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
     @BindView(R.id.main_drawer_layout) DrawerLayout mDrawerLayout;
