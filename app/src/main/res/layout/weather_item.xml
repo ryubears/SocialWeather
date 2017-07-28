@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/weather_item_card_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/weather_item_height"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginTop="4dp"
@@ -19,8 +19,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3">
+            android:layout_height="@dimen/weather_item_background_height"
+>
 
             <ImageView
                 android:id="@+id/weather_item_background"
@@ -33,13 +33,13 @@
                 android:id="@+id/weather_item_temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_gravity="end|top"
+                android:layout_marginTop="@dimen/weather_item_temperature_margin_top"
+                android:layout_marginEnd="@dimen/weather_item_temperature_margin_end"
+                android:layout_marginRight="@dimen/weather_item_temperature_margin_end"
                 tools:text="13°"
                 android:textColor="@android:color/white"
-                android:textSize="36sp"
+                android:textSize="@dimen/weather_item_temperature_text_size"
                 android:gravity="center"
                 android:fontFamily="sans-serif-light"/>
 
@@ -49,8 +49,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2">
+            android:layout_height="@dimen/weather_item_content_height">
 
             <ImageView
                 android:id="@+id/weather_item_profile"
@@ -67,14 +66,14 @@
 
             <LinearLayout
                 android:id="@+id/weather_item_linearlayout"
-                android:layout_width="200dp"
+                android:layout_width="240dp"
                 android:layout_height="0dp"
                 android:orientation="vertical"
-                app:layout_constraintTop_toTopOf="@+id/weather_item_profile"
-                app:layout_constraintBottom_toBottomOf="@+id/weather_item_profile"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/weather_item_profile"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/weather_item_text_margin_bottom"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp">
 
@@ -86,7 +85,7 @@
                     android:gravity="bottom"
                     tools:text="Yehyun Ryu"
                     android:textColor="@color/textPrimary"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/weather_item_name_text_size"
                     android:fontFamily="sans-serif-light"/>
 
                 <TextView
@@ -97,9 +96,7 @@
                     android:gravity="top"
                     tools:text="Minneapolis, Minnesota"
                     android:textColor="@color/textSecondary"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="1dp"
-                    android:layout_marginStart="1dp"
+                    android:textSize="@dimen/weather_item_location_text_size"
                     android:fontFamily="sans-serif-light"/>
 
             </LinearLayout>

@@ -28,7 +28,6 @@ public class NotificationUtils {
     private static final int SNOW_NOTIFICATION_ID = 39;
     private static final int EXTREME_NOTIFICATION_ID = 40;
 
-    //TODO: Group all notify methods into one
     //notifies weather updates
     public static void notifyUpdateWeather(Context context) {
         //title and text

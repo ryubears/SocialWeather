@@ -29,7 +29,6 @@ public class WeatherPreferences {
         return userPrefersCelsius;
     }
 
-    //TODO: Group the three methods below into one comprehensive method
     //return if update notification is enabled
     public static boolean isUpdateNotificationEnabled(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);

@@ -39,9 +39,6 @@ public class WeatherUtils {
         } else {
             return String.format(context.getString(R.string.format_wind_kmh), windSpeed);
         }
-
-
-
     }
 
     //get drawable resource for weather icon with color

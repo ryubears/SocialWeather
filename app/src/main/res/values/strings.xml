@@ -75,7 +75,7 @@
 
     <!-- temperature format -->
     <string name="format_temperature">
-        <xliff:g id="temp">%.1f</xliff:g>\u00B0
+        <xliff:g id="temp">%1.0f</xliff:g>\u00B0
     </string>
 
     <!-- pressure format -->

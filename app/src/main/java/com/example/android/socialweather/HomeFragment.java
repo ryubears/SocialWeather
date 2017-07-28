@@ -1,6 +1,7 @@
 package com.example.android.socialweather;
 
 import android.content.ContentValues;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -65,8 +67,14 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         mHomeRecyclerView.setAdapter(mAdapter);
 
         //sets layout manager to recycler view
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mHomeRecyclerView.setLayoutManager(layoutManager);
+        int orientation = getResources().getConfiguration().orientation;
+        if(orientation == Configuration.ORIENTATION_PORTRAIT) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            mHomeRecyclerView.setLayoutManager(layoutManager);
+        } else {
+            GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+            mHomeRecyclerView.setLayoutManager(layoutManager);
+        }
         mHomeRecyclerView.setHasFixedSize(true);
 
         //initialize loader
@@ -86,7 +94,8 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             //show progress bar
             mHomeProgressBar.setVisibility(View.VISIBLE);
 
-            //when friend data has not been initialized
+            //avoid checking data if friend data has already been initialized
+            //for cases like screen rotation
             if(!mFriendInitialized) {
                 mFriendInitialized = true;
                 //check if data is empty
