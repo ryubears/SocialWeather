@@ -6,8 +6,8 @@
     android:id="@+id/weather_item_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
     app:cardCornerRadius="4dp">
@@ -41,7 +41,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/weather_item_temperature_text_size"
                 android:gravity="center"
-                android:fontFamily="sans-serif-light"/>
+                android:fontFamily="sans-serif"/>
 
         </FrameLayout>
 
@@ -86,7 +86,7 @@
                     tools:text="Yehyun Ryu"
                     android:textColor="@color/textPrimary"
                     android:textSize="@dimen/weather_item_name_text_size"
-                    android:fontFamily="sans-serif-light"/>
+                    android:fontFamily="sans-serif"/>
 
                 <TextView
                     android:id="@+id/weather_item_location"
@@ -97,7 +97,7 @@
                     tools:text="Minneapolis, Minnesota"
                     android:textColor="@color/textSecondary"
                     android:textSize="@dimen/weather_item_location_text_size"
-                    android:fontFamily="sans-serif-light"/>
+                    android:fontFamily="sans-serif"/>
 
             </LinearLayout>
 

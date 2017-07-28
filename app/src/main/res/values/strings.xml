@@ -63,6 +63,9 @@
 
     <!-- Details Activity -->
     <string name="activity_title_details">Weather Forecast</string>
+    <string name="details_pressure_label">Pressure</string>
+    <string name="details_humidity_label">Humidity</string>
+    <string name="details_wind_label">Wind Speed</string>
 
     <!-- data -->
     <string name="picture_empty" translatable="false">picture_empty</string>
