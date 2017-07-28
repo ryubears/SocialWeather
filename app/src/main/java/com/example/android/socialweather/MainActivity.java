@@ -54,7 +54,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-//Icons made by "https://www.flaticon.com/authors/madebyoliver" "Madebyoliver"
+//App Launcher Icons made by "https://www.flaticon.com/authors/gregor-cresnar" "Gregor Cresnar"
+//Weather and Profile Icons made by "https://www.flaticon.com/authors/madebyoliver" "Madebyoliver"
 
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
