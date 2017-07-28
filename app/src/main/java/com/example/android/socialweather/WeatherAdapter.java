@@ -140,12 +140,19 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                 mLocationTextView.setText(mLocation);
             }
 
-            int background = WeatherUtils.getWeatherBackground(mWeatherId);
+            //set weather background
+            int background = WeatherUtils.getWeatherBackground(mWeatherId); //handles empty weather id(-1)
             mBackgroundImageView.setImageResource(background);
 
             //set current temperature
-            String formattedTemp = WeatherUtils.formatTemperature(itemView.getContext(), mTemperature);
-            mTemperatureTextView.setText(formattedTemp);
+            if(mTemperature == -1) {
+                //display null character if temperature is empty(-1)
+                mTemperatureTextView.setText("");
+            } else {
+                //format and display temperature
+                String formattedTemp = WeatherUtils.formatTemperature(itemView.getContext(), mTemperature);
+                mTemperatureTextView.setText(formattedTemp);
+            }
         }
 
         @OnClick(R.id.weather_item_card_view)

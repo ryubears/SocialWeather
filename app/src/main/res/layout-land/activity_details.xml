@@ -72,29 +72,51 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/details_weather_icon"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        tools:src="@drawable/fog_color"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
+    <LinearLayout
+        android:id="@+id/details_weather_icon_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/details_weather_temperature"
+        app:layout_constraintBottom_toBottomOf="@id/details_weather_temperature"
         app:layout_constraintLeft_toRightOf="@id/details_right_guideline"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/details_weather_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            tools:src="@drawable/fog_color"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/details_weather_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Foggy"
+            android:textColor="@color/textSecondary"
+            android:textSize="32sp"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginTop="2dp"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/details_weather_temperature"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        app:layout_constraintTop_toTopOf="@id/details_weather_icon"
-        app:layout_constraintBottom_toBottomOf="@id/details_weather_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/details_left_guideline"
         app:layout_constraintRight_toLeftOf="@+id/details_right_guideline"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginLeft="16dp">
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp">
 
         <TextView
             android:id="@+id/details_current_temperature"
@@ -102,9 +124,10 @@
             android:layout_height="wrap_content"
             android:text="13°"
             android:textColor="@color/textPrimary"
-            android:textSize="64sp"
+            android:textSize="80sp"
             android:fontFamily="sans-serif-light"
-            android:layout_marginLeft="4dp"/>
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"/>
 
         <TextView
             android:id="@+id/details_minmax_temperature"
@@ -112,7 +135,7 @@
             android:layout_height="wrap_content"
             android:text="12° / 18°"
             android:textColor="@color/textSecondary"
-            android:textSize="24sp"
+            android:textSize="32sp"
             android:fontFamily="sans-serif-light" />
 
     </LinearLayout>
@@ -128,6 +151,7 @@
         app:layout_constraintLeft_toRightOf="@id/details_left_guideline"
         app:layout_constraintRight_toLeftOf="@+id/details_right_guideline"
         android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp">
 
@@ -170,9 +194,8 @@
         android:gravity="center"
         app:layout_constraintTop_toTopOf="@id/details_weather_label"
         app:layout_constraintBottom_toBottomOf="@id/details_weather_label"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/details_right_guideline"
-        android:layout_marginRight="16dp">
+        app:layout_constraintRight_toRightOf="@id/details_weather_icon_description"
+        app:layout_constraintLeft_toLeftOf="@id/details_weather_icon_description">
 
         <TextView
             android:id="@+id/details_pressure_value"
@@ -204,20 +227,5 @@
             android:layout_marginTop="8dp"/>
 
     </LinearLayout>
-
-
-
-    <!--
-
-
-
-
-
-
-
-
-
-
-    -->
 
 </android.support.constraint.ConstraintLayout>

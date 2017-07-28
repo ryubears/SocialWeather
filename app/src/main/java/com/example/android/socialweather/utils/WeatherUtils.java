@@ -41,6 +41,17 @@ public class WeatherUtils {
         }
     }
 
+    //formats weather description
+    public static String formatDescription(String description) {
+        //capitalizes first character in each word in description
+        String[] descriptionArray = description.split(" ");
+        String returnDescription = "";
+        for(int i = 0; i < descriptionArray.length; i++) {
+            returnDescription += Character.toUpperCase(descriptionArray[i].charAt(0)) + descriptionArray[i].substring(1) + " ";
+        }
+        return returnDescription.substring(0, returnDescription.length() - 1);
+    }
+
     //get drawable resource for weather icon with color
     public static int getColorWeatherIcon(int weatherId) {
         if(weatherId >= 200 && weatherId <= 232) {
@@ -124,7 +135,7 @@ public class WeatherUtils {
         } else if(weatherId >= 960 && weatherId <= 962) {
             return R.drawable.storm_background;
         } else {
-            return R.drawable.no_weather_background;
+            return R.color.gray;
         }
     }
 }

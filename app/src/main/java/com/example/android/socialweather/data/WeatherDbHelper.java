@@ -33,14 +33,14 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 WeatherEntry.COLUMN_PERSON_NAME + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_PERSON_PROFILE + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_PERSON_LOCATION + " TEXT NOT NULL, " +
-                WeatherEntry.COLUMN_WEATHER_ID + " INTEGER, " +
-                WeatherEntry.COLUMN_WEATHER_DESCRIPTION + " TEXT, " +
-                WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP + " REAL, " +
-                WeatherEntry.COLUMN_WEATHER_MIN_TEMP + " REAL, " +
-                WeatherEntry.COLUMN_WEATHER_MAX_TEMP + " REAL, " +
-                WeatherEntry.COLUMN_WEATHER_PRESSURE + " REAL, " +
-                WeatherEntry.COLUMN_WEATHER_HUMIDITY + " INTEGER, " +
-                WeatherEntry.COLUMN_WEATHER_WIND_SPEED + " REAL, " +
+                WeatherEntry.COLUMN_WEATHER_ID + " INTEGER DEFAULT -1, " +
+                WeatherEntry.COLUMN_WEATHER_DESCRIPTION + " TEXT DEFAULT 'description_empty', " + //also linked to strings.xml description_empty
+                WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP + " REAL DEFAULT -1," +
+                WeatherEntry.COLUMN_WEATHER_MIN_TEMP + " REAL DEFAULT -1," +
+                WeatherEntry.COLUMN_WEATHER_MAX_TEMP + " REAL DEFAULT -1," +
+                WeatherEntry.COLUMN_WEATHER_PRESSURE + " REAL DEFAULT -1," +
+                WeatherEntry.COLUMN_WEATHER_HUMIDITY + " INTEGER DEFAULT -1," +
+                WeatherEntry.COLUMN_WEATHER_WIND_SPEED + " REAL DEFAULT -1," +
                 " UNIQUE (" + WeatherEntry.COLUMN_PERSON_ID + ") ON CONFLICT REPLACE);";
 
         //execute the SQL statement above

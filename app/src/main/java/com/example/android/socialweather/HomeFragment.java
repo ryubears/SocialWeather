@@ -112,10 +112,13 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         new DataCheckQuery().execute();
     }
 
-    private class DataCheckQuery extends AsyncTask<Void, Void, Boolean> {
+    private class DataCheckQuery extends AsyncTask<Void, Void, Integer> {
+        private static final int DATA_EMPTY = 0;
+        private static final int DATA_OUTDATED = 1;
+        private static final int DATA_PRESENT = 2;
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Integer doInBackground(Void... voids) {
             //query weather data to check if it is empty or outdated
             Cursor cursor = getContext().getContentResolver().query(
                     WeatherContract.WeatherEntry.CONTENT_URI,
@@ -125,9 +128,9 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                     null
             );
 
-            boolean isEmptyOrOutdated;
+            int dataState;
             if(cursor == null || cursor.getCount() == 0) {
-                isEmptyOrOutdated = true;
+                dataState = DATA_EMPTY;
             } else {
                 //check if data is outdated
                 //data is outdated if they are older than four hours
@@ -137,9 +140,9 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                 long currentTime = System.currentTimeMillis();
                 long maxHour = 4;
                 if((currentTime - lastUpdateTime) >= TimeUnit.HOURS.toMillis(maxHour)) {
-                    isEmptyOrOutdated = true;
+                    dataState = DATA_OUTDATED;
                 } else {
-                    isEmptyOrOutdated = false;
+                    dataState = DATA_PRESENT;
                 }
             }
 
@@ -148,16 +151,19 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                 cursor.close();
             }
 
-            return isEmptyOrOutdated;
+            return dataState;
         }
 
         @Override
-        protected void onPostExecute(Boolean isEmptyOrOutdated) {
-            super.onPostExecute(isEmptyOrOutdated);
+        protected void onPostExecute(Integer dataState) {
+            super.onPostExecute(dataState);
 
-            if(isEmptyOrOutdated) {
+            if(dataState == DATA_EMPTY) {
                 //sync with friend and weather data if data is empty or outdated
                 syncFriends();
+            } else if(dataState == DATA_OUTDATED) {
+                //update weather data if data is outdated
+                WeatherSyncUtils.initialize(getContext());
             }
         }
     }
@@ -209,7 +215,14 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                 if(jsonUser.isNull("location")) {
                                     //location = getString(R.string.location_empty);
                                     //temporary testing
-                                    location = "Minneapolis, Minnesota";
+                                    int randomInt = (int) (Math.random() * 3);
+                                    if(randomInt == 0) {
+                                        location = "Minneapolis, Minnesota";
+                                    } else if(randomInt == 1) {
+                                        location = "Seattle, Washington";
+                                    } else {
+                                        location = "Los Angeles, California";
+                                    }
                                 } else {
                                     location = jsonUser.getJSONObject("location").getString("name");
                                 }

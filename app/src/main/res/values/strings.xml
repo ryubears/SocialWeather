@@ -71,6 +71,8 @@
     <string name="picture_empty" translatable="false">picture_empty</string>
     <string name="location_empty" translatable="false">location_empty</string>
     <string name="location_default">Unknown</string>
+    <string name="description_empty" translatable="false">description_empty</string> <!-- also linked to default value in WeatherDbHelper -->
+    <string name="description_default">No Weather</string>
 
     <!-- Permission Canceled Toast Messages -->
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>

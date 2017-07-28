@@ -25,6 +25,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     @BindView(R.id.details_name) TextView mNameTextView;
     @BindView(R.id.details_location) TextView mLocationTextView;
     @BindView(R.id.details_weather_icon) ImageView mIconImageView;
+    @BindView(R.id.details_weather_description) TextView mDescriptionTextView;
     @BindView(R.id.details_current_temperature) TextView mCurrentTempTextView;
     @BindView(R.id.details_minmax_temperature) TextView mMinMaxTempTextView;
     @BindView(R.id.details_pressure_value) TextView mPressureTextView;
@@ -40,6 +41,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     private String mName;
     private String mLocation;
     private int mWeatherId;
+    private String mWeatherDescription;
     private double mCurrentTemp;
     private double mMinTemp;
     private double mMaxTemp;
@@ -95,6 +97,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         int indexName = data.getColumnIndex(WeatherEntry.COLUMN_PERSON_NAME);
         int indexLocation = data.getColumnIndex(WeatherEntry.COLUMN_PERSON_LOCATION);
         int indexWeatherId = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ID);
+        int indexWeatherDescription = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_DESCRIPTION);
         int indexCurrentTemp = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP);
         int indexMinTemp = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_MIN_TEMP);
         int indexMaxTemp = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_MAX_TEMP);
@@ -106,6 +109,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         mName = data.getString(indexName);
         mLocation = data.getString(indexLocation);
         mWeatherId = data.getInt(indexWeatherId);
+        mWeatherDescription = data.getString(indexWeatherDescription);
         mCurrentTemp = data.getDouble(indexCurrentTemp);
         mMinTemp = data.getDouble(indexMinTemp);
         mMaxTemp = data.getDouble(indexMaxTemp);
@@ -130,34 +134,79 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                     .into(mProfileImageView);
         }
 
-        mNameTextView.setText(mName);
+        //set name
+        mNameTextView.setText(mName); //no empty name
 
+        //set location
         if(mLocation.equals(getString(R.string.location_empty))) {
+            //check empty location
             mLocationTextView.setText(getString(R.string.location_default));
         } else {
             mLocationTextView.setText(mLocation);
         }
 
-        int icon = WeatherUtils.getColorWeatherIcon(mWeatherId);
+        //set weather icon
+        int icon = WeatherUtils.getColorWeatherIcon(mWeatherId); //handles empty cases
         mIconImageView.setImageResource(icon);
 
-        //TODO: handle empty cases
-        String formattedCurrentTemp = WeatherUtils.formatTemperature(this, mCurrentTemp);
-        mCurrentTempTextView.setText(formattedCurrentTemp);
+        //set weather description
+        if(mWeatherDescription.equals(getString(R.string.description_empty))) {
+            mDescriptionTextView.setText(getString(R.string.description_default));
+        } else {
+            //format and display description
+            String formattedDescription = WeatherUtils.formatDescription(mWeatherDescription);
+            mDescriptionTextView.setText(formattedDescription);
+        }
 
-        String formattedMinTemp = WeatherUtils.formatTemperature(this, mMinTemp);
-        String formattedMaxTemp = WeatherUtils.formatTemperature(this, mMaxTemp);
-        String minMaxString = formattedMinTemp + " / " + formattedMaxTemp;
-        mMinMaxTempTextView.setText(minMaxString);
+        //set current temperature
+        if(mCurrentTemp == -1) {
+            //check empty temperature
+            mCurrentTempTextView.setText("");
+        } else {
+            //format temperature and display
+            String formattedCurrentTemp = WeatherUtils.formatTemperature(this, mCurrentTemp);
+            mCurrentTempTextView.setText(formattedCurrentTemp);
+        }
 
-        String formattedPressure = WeatherUtils.formatPressure(this, mPressure);
-        mPressureTextView.setText(formattedPressure);
+        //set min and max temperature
+        if(mMinTemp == -1 || mMaxTemp == -1) {
+            //check empty temperature
+            mMinMaxTempTextView.setText("");
+        } else {
+            //format temperature and display
+            String formattedMinTemp = WeatherUtils.formatTemperature(this, mMinTemp);
+            String formattedMaxTemp = WeatherUtils.formatTemperature(this, mMaxTemp);
+            String minMaxString = formattedMinTemp + " / " + formattedMaxTemp;
+            mMinMaxTempTextView.setText(minMaxString);
+        }
 
-        String formattedHumidity = WeatherUtils.formatHumidity(this, mHumidity);
-        mHumidityTextView.setText(formattedHumidity);
+        //set pressure
+        if(mPressure == -1) {
+            //check empty pressure value
+            mPressureTextView.setText("");
+        } else {
+            //format pressure and display
+            String formattedPressure = WeatherUtils.formatPressure(this, mPressure);
+            mPressureTextView.setText(formattedPressure);
+        }
 
-        String formattedWindSpeed = WeatherUtils.formatWindSpeed(this, mWindSpeed);
-        mWindSpeedTextView.setText(formattedWindSpeed);
+        //set humidity
+        if(mHumidity == -1) {
+            mHumidityTextView.setText("");
+        } else {
+            //format humidity and display
+            String formattedHumidity = WeatherUtils.formatHumidity(this, mHumidity);
+            mHumidityTextView.setText(formattedHumidity);
+        }
+
+        //set wind speed
+        if (mWindSpeed == -1) {
+            mWindSpeedTextView.setText("");
+        } else {
+            //format wind speed and display
+            String formattedWindSpeed = WeatherUtils.formatWindSpeed(this, mWindSpeed);
+            mWindSpeedTextView.setText(formattedWindSpeed);
+        }
     }
 
     @Override

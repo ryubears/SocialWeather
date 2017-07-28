@@ -40,8 +40,9 @@ public class WeatherSyncTask {
                 int id = cursor.getInt(indexId);
                 String location = cursor.getString(indexLocation);
 
+                ContentValues contentValues = NetworkUtils.fetchWeather(location); //NetworkUtils handles empty location, wrong location
+
                 //update row
-                ContentValues contentValues = NetworkUtils.fetchWeather(location);
                 if(contentValues != null) {
                     context.getContentResolver().update(
                             ContentUris.withAppendedId(WeatherEntry.CONTENT_URI, id),
@@ -51,6 +52,8 @@ public class WeatherSyncTask {
                     );
                 }
             }
+
+            //close cursor used to update
             cursor.close();
 
             //show update notification
@@ -100,6 +103,9 @@ public class WeatherSyncTask {
                     extremeFriends.add(name);
                 }
             }
+
+            //close cursor used to track rain, snow, and extreme weather
+            cursor.close();
 
             if(WeatherPreferences.isRainSnowNotificationEnabled(context)) {
                 //show rain notification

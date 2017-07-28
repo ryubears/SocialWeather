@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/rain_background"
+        android:src="@drawable/cloudy_background"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,17 +23,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/login_title_margin_top"
+        android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/login_phone_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
         <ImageView
-            android:id="@+id/login_weather_icon"
+            android:id="@+id/login_app_icon"
             android:layout_width="@dimen/login_logo_image_width"
             android:layout_height="@dimen/login_logo_image_height"
             android:scaleType="centerCrop"
-            android:src="@drawable/rain_white"
+            android:src="@mipmap/ic_launcher"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_small" />
 
@@ -44,7 +45,6 @@
             android:text="@string/login_app_name"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:fontFamily="sans-serif-light"
             android:layout_gravity="center"
             android:textAllCaps="true" />
 

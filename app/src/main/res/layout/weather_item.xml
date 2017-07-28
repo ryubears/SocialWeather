@@ -41,7 +41,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/weather_item_temperature_text_size"
                 android:gravity="center"
-                android:fontFamily="sans-serif"/>
+                android:fontFamily="sans-serif-light"/>
 
         </FrameLayout>
 

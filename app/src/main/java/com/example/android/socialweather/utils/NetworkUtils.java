@@ -167,11 +167,6 @@ public class NetworkUtils {
     public static ContentValues fetchWeather(String location) {
         Log.d(LOG_TAG, "fetchWeather");
 
-        //return early if location string is empty
-        if(location.equals("location_empty")) {
-            return null;
-        }
-
         //create url
         URL url = createUrl(location);
 
