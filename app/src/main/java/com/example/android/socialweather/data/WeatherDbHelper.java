@@ -25,14 +25,15 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //SQL statement that will create a table
-        final String SQL_CREATE_WEATHER_TABLE = "" +
+        final String SQL_CREATE_FACEBOOK_TABLE = "" +
                 "CREATE TABLE " + WeatherEntry.TABLE_NAME + " (" +
                 WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 WeatherEntry.COLUMN_LAST_UPDATE_TIME + " INTEGER NOT NULL, " +
-                WeatherEntry.COLUMN_PERSON_ID + " TEXT NOT NULL, " +
-                WeatherEntry.COLUMN_PERSON_NAME + " TEXT NOT NULL, " +
-                WeatherEntry.COLUMN_PERSON_PROFILE + " TEXT NOT NULL, " +
-                WeatherEntry.COLUMN_PERSON_LOCATION + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_LOCATION_ID + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_LOCATION_NAME + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_FRIEND_IDS + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_FRIEND_NAMES + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_FRIEND_PICTURES + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_WEATHER_ID + " INTEGER DEFAULT -1, " +
                 WeatherEntry.COLUMN_WEATHER_DESCRIPTION + " TEXT DEFAULT 'description_empty', " + //also linked to strings.xml description_empty
                 WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP + " REAL DEFAULT -1," +
@@ -40,11 +41,11 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 WeatherEntry.COLUMN_WEATHER_MAX_TEMP + " REAL DEFAULT -1," +
                 WeatherEntry.COLUMN_WEATHER_PRESSURE + " REAL DEFAULT -1," +
                 WeatherEntry.COLUMN_WEATHER_HUMIDITY + " INTEGER DEFAULT -1," +
-                WeatherEntry.COLUMN_WEATHER_WIND_SPEED + " REAL DEFAULT -1," +
-                " UNIQUE (" + WeatherEntry.COLUMN_PERSON_ID + ") ON CONFLICT REPLACE);";
+                WeatherEntry.COLUMN_WEATHER_WIND_SPEED + " REAL DEFAULT -1, " +
+                " UNIQUE (" + WeatherEntry.COLUMN_LOCATION_ID + ") ON CONFLICT REPLACE);";
 
         //execute the SQL statement above
-        db.execSQL(SQL_CREATE_WEATHER_TABLE);
+        db.execSQL(SQL_CREATE_FACEBOOK_TABLE);
     }
 
     @Override

@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.socialweather.data.Friend;
 import com.example.android.socialweather.data.WeatherContract;
 import com.example.android.socialweather.sync.WeatherSyncUtils;
 import com.facebook.AccessToken;
@@ -198,10 +199,9 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                             return;
                         }
 
-                        ArrayList<String> friendIds = new ArrayList<String>();
-                        ArrayList<String> friendNames = new ArrayList<String>();
-                        ArrayList<String> friendProfilePics = new ArrayList<String>();
-                        ArrayList<String> friendLocations = new ArrayList<String>();
+                        int numLocations = 0;
+                        ArrayList<Friend> friends = new ArrayList<Friend>();
+                        ArrayList<String> friendLocationIds = new ArrayList<String>();
 
                         //extract data
                         JSONObject jsonResponse = response.getJSONObject();
@@ -221,40 +221,65 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                 }
 
                                 //check if location data is empty
-                                String location = "";
+                                String locationId = "";
+                                String locationName = "";
                                 if(jsonUser.isNull("location")) {
                                     //location = getString(R.string.location_empty);
                                     //temporary testing
                                     int randomInt = (int) (Math.random() * 3);
                                     if(randomInt == 0) {
-                                        location = "Minneapolis, Minnesota";
+                                        locationName = "Minneapolis, Minnesota";
+                                        locationId = "1";
                                     } else if(randomInt == 1) {
-                                        location = "Seattle, Washington";
+                                        locationName = "Seattle, Washington";
+                                        locationId = "2";
                                     } else {
-                                        location = "Los Angeles, California";
+                                        locationName = "Los Angeles, California";
+                                        locationId = "3";
                                     }
                                 } else {
-                                    location = jsonUser.getJSONObject("location").getString("name");
+                                    JSONObject locationJson = jsonUser.getJSONObject("location");
+                                    locationId = locationJson.getString("id");
+                                    locationName = locationJson.getString("name");
                                 }
 
-                                friendIds.add(id);
-                                friendNames.add(name);
-                                friendProfilePics.add(image);
-                                friendLocations.add(location);
+                                if(!friendLocationIds.contains(locationId)) {
+                                    friendLocationIds.add(locationId);
+                                }
+
+                                friends.add(new Friend(id, name, image, locationId, locationName));
                             }
                         } catch(JSONException e) {
                             e.printStackTrace();
                         }
 
                         //put data inside ContentValues[]
-                        ContentValues[] contentValues = new ContentValues[friendIds.size()];
-                        for(int i = 0; i < friendIds.size(); i++) {
+                        ContentValues[] contentValues = new ContentValues[friendLocationIds.size()];
+                        for(int i = 0; i < friendLocationIds.size(); i++) {
+                            String locationId = friendLocationIds.get(i);
+
+                            String locationName = "";
+                            String friendIds = "";
+                            String friendNames = "";
+                            String friendPictures = "";
+
+                            for(int x = 0; x < friends.size(); x++) {
+                                Friend friend = friends.get(x);
+                                if(friend.getLocationId().equals(locationId)) {
+                                    locationName = friend.getLocationName();
+                                    friendIds += friend.getId() + getString(R.string.delimiter);
+                                    friendNames += friend.getName() + getString(R.string.delimiter);
+                                    friendPictures += friend.getProfilePic() + getString(R.string.delimiter);
+                                }
+                            }
+
                             ContentValues values = new ContentValues();
                             values.put(WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME, System.currentTimeMillis());
-                            values.put(WeatherContract.WeatherEntry.COLUMN_PERSON_ID, friendIds.get(i));
-                            values.put(WeatherContract.WeatherEntry.COLUMN_PERSON_NAME, friendNames.get(i));
-                            values.put(WeatherContract.WeatherEntry.COLUMN_PERSON_PROFILE, friendProfilePics.get(i));
-                            values.put(WeatherContract.WeatherEntry.COLUMN_PERSON_LOCATION, friendLocations.get(i));
+                            values.put(WeatherContract.WeatherEntry.COLUMN_LOCATION_ID, locationId);
+                            values.put(WeatherContract.WeatherEntry.COLUMN_LOCATION_NAME, locationName);
+                            values.put(WeatherContract.WeatherEntry.COLUMN_FRIEND_IDS, friendIds.substring(0, friendIds.length() - 3));
+                            values.put(WeatherContract.WeatherEntry.COLUMN_FRIEND_NAMES, friendNames.substring(0, friendNames.length() - 3));
+                            values.put(WeatherContract.WeatherEntry.COLUMN_FRIEND_PICTURES, friendPictures.substring(0, friendPictures.length() - 3));
 
                             contentValues[i] = values;
                         }

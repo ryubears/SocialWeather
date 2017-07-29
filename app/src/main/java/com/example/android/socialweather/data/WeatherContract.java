@@ -32,6 +32,23 @@ public class WeatherContract {
         //last data update time
         public static final String COLUMN_LAST_UPDATE_TIME = "last_update_time";
 
+        //location id
+        public static final String COLUMN_LOCATION_ID = "location_id";
+
+        //location name
+        public static final String COLUMN_LOCATION_NAME = "location_name";
+
+        //list of friend ids living in this location
+        public static final String COLUMN_FRIEND_IDS = "friend_ids";
+
+        //list of friend names
+        public static final String COLUMN_FRIEND_NAMES = "friend_names";
+
+        //list of friend pictures
+        public static final String COLUMN_FRIEND_PICTURES = "friend_pictures";
+
+        /**
+
         //person id from facebook
         public static final String COLUMN_PERSON_ID = "person_id";
 
@@ -43,6 +60,7 @@ public class WeatherContract {
 
         //person current city location
         public static final String COLUMN_PERSON_LOCATION = "person_location";
+         **/
 
         //weather id
         public static final String COLUMN_WEATHER_ID = "weather_id";

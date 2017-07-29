@@ -35,12 +35,12 @@ public class WeatherSyncTask {
             for(int i = 0; i < cursor.getCount(); i ++) {
                 cursor.moveToPosition(i);
                 int indexId = cursor.getColumnIndex(WeatherEntry._ID);
-                int indexLocation = cursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_LOCATION);
+                int indexLocation = cursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
 
                 int id = cursor.getInt(indexId);
-                String location = cursor.getString(indexLocation);
+                String locationName = cursor.getString(indexLocation);
 
-                ContentValues contentValues = NetworkUtils.fetchWeather(location); //NetworkUtils handles empty location, wrong location
+                ContentValues contentValues = NetworkUtils.fetchWeather(locationName); //NetworkUtils handles empty location, wrong location
 
                 //update row
                 if(contentValues != null) {
@@ -67,7 +67,7 @@ public class WeatherSyncTask {
             }
 
             //query weather table to track rain,snow, and extreme weather
-            String[] projection = new String[] {WeatherEntry.COLUMN_PERSON_NAME, WeatherEntry.COLUMN_WEATHER_ID};
+            String[] projection = new String[] {WeatherEntry.COLUMN_FRIEND_NAMES, WeatherEntry.COLUMN_WEATHER_ID};
             cursor = context.getContentResolver().query(
                     WeatherEntry.CONTENT_URI,
                     projection,
@@ -82,25 +82,38 @@ public class WeatherSyncTask {
             for(int i = 0; i < cursor.getCount(); i++) {
                 cursor.moveToPosition(i);
 
-                int indexName = cursor.getColumnIndex(WeatherEntry.COLUMN_PERSON_NAME);
+                int indexNames = cursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
                 int indexWeatherId = cursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ID);
 
-                String name = cursor.getString(indexName);
+                String names = cursor.getString(indexNames);
+                String[] nameArray = names.split(context.getString(R.string.delimiter));
                 int weatherId = cursor.getInt(indexWeatherId);
 
                 //keep track of friend experiencing rain, snow, and extreme weather
                 if(weatherId >= 200 && weatherId <= 232) {
-                    extremeFriends.add(name);
+                    for(int x = 0; x < nameArray.length; x++) {
+                        extremeFriends.add(nameArray[x]);
+                    }
                 } else if(weatherId >= 300 && weatherId <= 531) {
-                    rainFriends.add(name);
+                    for(int x = 0; x < nameArray.length; x++) {
+                        rainFriends.add(nameArray[x]);
+                    }
                 } else if(weatherId >= 600 && weatherId <= 622) {
-                    snowFriends.add(name);
+                    for(int x = 0; x < nameArray.length; x++) {
+                        snowFriends.add(nameArray[x]);
+                    }
                 } else if(weatherId >= 762 && weatherId <= 781) {
-                    extremeFriends.add(name);
+                    for(int x = 0; x < nameArray.length; x++) {
+                        extremeFriends.add(nameArray[x]);
+                    }
                 } else if(weatherId >= 900 && weatherId <= 906) {
-                    extremeFriends.add(name);
+                    for(int x = 0; x < nameArray.length; x++) {
+                        extremeFriends.add(nameArray[x]);
+                    }
                 } else if(weatherId >= 958 && weatherId <= 962) {
-                    extremeFriends.add(name);
+                    for(int x = 0; x < nameArray.length; x++) {
+                        extremeFriends.add(nameArray[x]);
+                    }
                 }
             }
 

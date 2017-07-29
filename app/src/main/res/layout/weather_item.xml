@@ -51,55 +51,19 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/weather_item_content_height">
 
-            <ImageView
-                android:id="@+id/weather_item_profile"
-                android:layout_width="@dimen/weather_item_profile_width"
-                android:layout_height="@dimen/weather_item_profile_height"
-                android:src="@drawable/profile_color"
+            <TextView
+                android:id="@+id/weather_item_location_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                tools:text="Yehyun Ryu"
+                android:textColor="@color/textPrimary"
+                android:textSize="@dimen/weather_item_name_text_size"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"/>
-
-            <LinearLayout
-                android:id="@+id/weather_item_linearlayout"
-                android:layout_width="240dp"
-                android:layout_height="0dp"
-                android:orientation="vertical"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/weather_item_profile"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="@dimen/weather_item_text_margin_bottom"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp">
-
-                <TextView
-                    android:id="@+id/weather_item_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:gravity="bottom"
-                    tools:text="Yehyun Ryu"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="@dimen/weather_item_name_text_size"
-                    android:fontFamily="sans-serif"/>
-
-                <TextView
-                    android:id="@+id/weather_item_location"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="top"
-                    tools:text="Minneapolis, Minnesota"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="@dimen/weather_item_location_text_size"
-                    android:fontFamily="sans-serif"/>
-
-            </LinearLayout>
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"/>
 
         </android.support.constraint.ConstraintLayout>
 

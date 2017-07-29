@@ -13,17 +13,13 @@ import android.widget.TextView;
 
 import com.example.android.socialweather.data.WeatherContract.WeatherEntry;
 import com.example.android.socialweather.utils.WeatherUtils;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    @BindView(R.id.details_profile) ImageView mProfileImageView;
-    @BindView(R.id.details_name) TextView mNameTextView;
-    @BindView(R.id.details_location) TextView mLocationTextView;
+    @BindView(R.id.details_location_image) ImageView mLocationImageView;
+    @BindView(R.id.details_location_name) TextView mLocationTextView;
     @BindView(R.id.details_weather_icon) ImageView mIconImageView;
     @BindView(R.id.details_weather_description) TextView mDescriptionTextView;
     @BindView(R.id.details_current_temperature) TextView mCurrentTempTextView;
@@ -93,9 +89,9 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         data.moveToFirst();
 
         //extract data
-        int indexProfilePic = data.getColumnIndex(WeatherEntry.COLUMN_PERSON_PROFILE);
-        int indexName = data.getColumnIndex(WeatherEntry.COLUMN_PERSON_NAME);
-        int indexLocation = data.getColumnIndex(WeatherEntry.COLUMN_PERSON_LOCATION);
+        int indexProfilePic = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
+        int indexName = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
+        int indexLocation = data.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
         int indexWeatherId = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ID);
         int indexWeatherDescription = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_DESCRIPTION);
         int indexCurrentTemp = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP);
@@ -117,27 +113,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         mHumidity = data.getInt(indexHumidity);
         mWindSpeed = data.getDouble(indexWindSpeed);
 
-        //attach data to views
-        if(mProfilePic.equals(getString(R.string.picture_empty))) {
-            mProfileImageView.setImageResource(R.drawable.profile_color);
-        } else {
-            //transform profile picture in a circular frame
-            Transformation transformation = new RoundedTransformationBuilder()
-                    .cornerRadiusDp(100)
-                    .oval(false)
-                    .build();
 
-            //load profile image
-            Picasso.with(this)
-                    .load(mProfilePic)
-                    .transform(transformation)
-                    .into(mProfileImageView);
-        }
-
-        //set name
-        mNameTextView.setText(mName); //no empty name
-
-        //set location
+        //set location name
         if(mLocation.equals(getString(R.string.location_empty))) {
             //check empty location
             mLocationTextView.setText(getString(R.string.location_default));

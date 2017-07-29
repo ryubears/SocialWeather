@@ -15,7 +15,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <ImageView
-        android:id="@+id/details_profile"
+        android:id="@+id/details_location_image"
         android:layout_width="136dp"
         android:layout_height="136dp"
         android:src="@drawable/profile_color"
@@ -26,38 +26,19 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"/>
 
-    <LinearLayout
-        android:id="@+id/details_person_info"
+    <TextView
+        android:id="@+id/details_location_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
+        tools:text="Minneapolis, MN"
+        android:textColor="@color/textPrimary"
+        android:textSize="24sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/details_dark_background"
         app:layout_constraintLeft_toRightOf="@+id/details_guideline"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="24dp"
-        android:layout_marginEnd="24dp">
-
-        <TextView
-            android:id="@+id/details_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Yehyun Ryu"
-            android:textColor="@color/textPrimary"
-            android:textSize="24sp"
-            android:fontFamily="sans-serif" />
-
-        <TextView
-            android:id="@+id/details_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Minneapolis, Minnesota"
-            android:textColor="@color/textSecondary"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif" />
-
-    </LinearLayout>
+        android:layout_marginEnd="24dp"/>
 
     <View
         android:id="@+id/details_dark_background"

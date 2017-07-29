@@ -71,6 +71,7 @@
     <string name="details_wind_label">Wind Speed</string>
 
     <!-- data -->
+    <string name="delimiter" translatable="false">$$$</string>
     <string name="picture_empty" translatable="false">picture_empty</string>
     <string name="location_empty" translatable="false">location_empty</string>
     <string name="location_default">Unknown</string>
