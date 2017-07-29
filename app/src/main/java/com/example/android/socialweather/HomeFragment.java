@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,7 +37,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class HomeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+    @BindView(R.id.home_swipe_refresh_layout) SwipeRefreshLayout mHomeSwipeRefreshLayout;
     @BindView(R.id.home_recycler_view) RecyclerView mHomeRecyclerView;
     @BindView(R.id.home_empty_view) TextView mHomeEmptyView;
     @BindView(R.id.home_progress_bar) ProgressBar mHomeProgressBar;
@@ -77,6 +79,8 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         }
         mHomeRecyclerView.setHasFixedSize(true);
 
+        mHomeSwipeRefreshLayout.setOnRefreshListener(this);
+
         //initialize loader
         LoaderManager loaderManager = getLoaderManager();
         loaderManager.initLoader(WEATHER_LOADER_ID, null, this);
@@ -105,6 +109,12 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    //refresh data
+    @Override
+    public void onRefresh() {
+        syncFriends();
     }
 
     //method that calls async task that checks if weather data is empty or outdated
@@ -291,6 +301,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mHomeSwipeRefreshLayout.setRefreshing(false);
         //change data in weather adapter
         mAdapter.swapCursor(data);
         if(data == null || data.getCount() == 0) {

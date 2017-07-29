@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.socialweather.data.WeatherContract;
+import com.example.android.socialweather.data.WeatherPreferences;
 import com.example.android.socialweather.utils.NetworkUtils;
 import com.example.android.socialweather.utils.WeatherUtils;
 import com.facebook.AccessToken;
@@ -54,6 +55,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -441,7 +443,6 @@ public class MainActivity extends AppCompatActivity {
 
     //helper method that fetches user location and displays it
     private void fetchLocation() {
-        System.out.println("fetchLocation");
         Bundle parameters = new Bundle();
         parameters.putString("fields", "location");
         new GraphRequest(
@@ -466,11 +467,32 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject jsonLocation = jsonResponse.getJSONObject("location");
                                 String locationString = jsonLocation.getString("name");
                                 mHeaderLocation.setText(locationString);
-                                fetchWeather(locationString);
+
+                                long currentTime = System.currentTimeMillis();
+                                long lastFetchTime = WeatherPreferences.getProfileWeatherFetchTime(getApplicationContext());
+                                int maxHours = 3;
+                                if(currentTime - lastFetchTime >= TimeUnit.HOURS.toMillis(maxHours)) {
+                                    fetchWeather(locationString);
+                                } else {
+                                    int weatherId = WeatherPreferences.getUserWeatherId(getApplicationContext());
+                                    int background = WeatherUtils.getWeatherBackground(weatherId);
+                                    mHeaderBackground.setImageResource(background);
+                                }
                             } else {
                                 mHeaderLocation.setText(getString(R.string.location_default));
-                                //for testing
-                                fetchWeather("Seattle, Washington");
+                                //set background to random weather background if location is empty
+
+                                //temporary for testing
+                                long currentTime = System.currentTimeMillis();
+                                long lastFetchTime = WeatherPreferences.getProfileWeatherFetchTime(getApplicationContext());
+                                int maxHours = 3;
+                                if(currentTime - lastFetchTime >= TimeUnit.HOURS.toMillis(maxHours)) {
+                                    fetchWeather("Seattle, Washington");
+                                } else {
+                                    int weatherId = WeatherPreferences.getUserWeatherId(getApplicationContext());
+                                    int background = WeatherUtils.getWeatherBackground(weatherId);
+                                    mHeaderBackground.setImageResource(background);
+                                }
                             }
                         } catch(JSONException e) {
                             e.printStackTrace();
@@ -526,8 +548,11 @@ public class MainActivity extends AppCompatActivity {
     private class fetchWeatherTask extends AsyncTask<String, Void, Integer> {
         @Override
         protected Integer doInBackground(String... strings) {
+            WeatherPreferences.saveProfileWeatherFetchTime(getApplicationContext(), System.currentTimeMillis());
             ContentValues contentValues = NetworkUtils.fetchWeather(strings[0]);
-            return contentValues.getAsInteger(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID);
+            int weatherId = contentValues.getAsInteger(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID);
+            WeatherPreferences.saveUserWeatherId(getApplicationContext(), weatherId);
+            return weatherId;
         }
 
         @Override

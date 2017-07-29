@@ -87,5 +87,31 @@ public class WeatherPreferences {
         }
     }
 
+    //saves user weather id
+    public static void saveUserWeatherId(Context context, int weatherId) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(context.getString(R.string.pref_user_weather_id_key), weatherId);
+        editor.apply();
+    }
 
+    //returns user weather id
+    public static int getUserWeatherId(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt(context.getString(R.string.pref_user_weather_id_key), -1);
+    }
+
+    //saves the time user weather data had been fetched
+    public static void saveProfileWeatherFetchTime(Context context, long timeOfFetch) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putLong(context.getString(R.string.pref_user_weather_fetch_time_key), timeOfFetch);
+        editor.apply();
+    }
+
+    //returns the last time user weather data had been fetched
+    public static long getProfileWeatherFetchTime(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getLong(context.getString(R.string.pref_user_weather_fetch_time_key), -1);
+    }
 }

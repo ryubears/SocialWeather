@@ -61,6 +61,9 @@
     <string name="pref_snow_notification_time_key">snow_notification_time</string>
     <string name="pref_extreme_notification_time_key">extreme_notification_time</string>
 
+    <string name="pref_user_weather_id_key">user_weather_id</string>
+    <string name="pref_user_weather_fetch_time_key">user_weather_fetch_time</string>
+
     <!-- Details Activity -->
     <string name="activity_title_details">Weather Forecast</string>
     <string name="details_pressure_label">Pressure</string>
