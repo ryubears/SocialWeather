@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:text="Yehyun Ryu"
             android:textColor="@color/textPrimary"
-            android:textSize="32sp"
+            android:textSize="24sp"
             android:fontFamily="sans-serif" />
 
         <TextView
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:text="Minneapolis, Minnesota"
             android:textColor="@color/textSecondary"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:fontFamily="sans-serif" />
 
     </LinearLayout>
@@ -84,8 +84,8 @@
 
         <ImageView
             android:id="@+id/details_weather_icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
             tools:src="@drawable/fog_color"
             android:scaleType="centerCrop" />
 
@@ -95,9 +95,8 @@
             android:layout_height="wrap_content"
             tools:text="Foggy"
             android:textColor="@android:color/white"
-            android:textSize="32sp"
-            android:fontFamily="sans-serif-light"
-            android:layout_marginTop="6dp"/>
+            android:textSize="20sp"
+            android:fontFamily="sans-serif-light" />
 
     </LinearLayout>
 
@@ -120,7 +119,7 @@
             android:layout_height="wrap_content"
             android:text="13°"
             android:textColor="@android:color/white"
-            android:textSize="80sp"
+            android:textSize="72sp"
             android:fontFamily="sans-serif-light"
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"/>
@@ -131,7 +130,7 @@
             android:layout_height="wrap_content"
             android:text="12° / 18°"
             android:textColor="@android:color/white"
-            android:textSize="32sp"
+            android:textSize="20sp"
             android:fontFamily="sans-serif-light" />
 
     </LinearLayout>

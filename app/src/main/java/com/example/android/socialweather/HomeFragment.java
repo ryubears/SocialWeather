@@ -159,7 +159,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             super.onPostExecute(dataState);
 
             if(dataState == DATA_EMPTY) {
-                //sync with friend and weather data if data is empty or outdated
+                //sync with friend data if data is empty
                 syncFriends();
             } else if(dataState == DATA_OUTDATED) {
                 //update weather data if data is outdated
@@ -232,7 +232,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                 friendProfilePics.add(image);
                                 friendLocations.add(location);
                             }
-                            mAdapter.notifyDataSetChanged();
                         } catch(JSONException e) {
                             e.printStackTrace();
                         }

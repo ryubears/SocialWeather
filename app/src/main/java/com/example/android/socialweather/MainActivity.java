@@ -1,7 +1,9 @@
 package com.example.android.socialweather;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -14,7 +16,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.socialweather.data.WeatherContract;
+import com.example.android.socialweather.utils.NetworkUtils;
+import com.example.android.socialweather.utils.WeatherUtils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -420,7 +424,6 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-
     //handles login permissions results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -436,10 +439,9 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-
-
     //helper method that fetches user location and displays it
     private void fetchLocation() {
+        System.out.println("fetchLocation");
         Bundle parameters = new Bundle();
         parameters.putString("fields", "location");
         new GraphRequest(
@@ -463,11 +465,12 @@ public class MainActivity extends AppCompatActivity {
                             if(!jsonResponse.isNull("location")) {
                                 JSONObject jsonLocation = jsonResponse.getJSONObject("location");
                                 String locationString = jsonLocation.getString("name");
-
-                                //check if location string is empty
-                                if(!TextUtils.isEmpty(locationString)) {
-                                    mHeaderLocation.setText(locationString);
-                                }
+                                mHeaderLocation.setText(locationString);
+                                fetchWeather(locationString);
+                            } else {
+                                mHeaderLocation.setText(getString(R.string.location_default));
+                                //for testing
+                                fetchWeather("Seattle, Washington");
                             }
                         } catch(JSONException e) {
                             e.printStackTrace();
@@ -514,5 +517,25 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return phoneNumber;
+    }
+
+    private void fetchWeather(String location) {
+        new fetchWeatherTask().execute(location);
+    }
+
+    private class fetchWeatherTask extends AsyncTask<String, Void, Integer> {
+        @Override
+        protected Integer doInBackground(String... strings) {
+            ContentValues contentValues = NetworkUtils.fetchWeather(strings[0]);
+            return contentValues.getAsInteger(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID);
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+
+            int background = WeatherUtils.getWeatherBackground(integer);
+            mHeaderBackground.setImageResource(background);
+        }
     }
 }
