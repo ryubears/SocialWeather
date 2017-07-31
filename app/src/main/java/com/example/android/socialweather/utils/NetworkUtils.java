@@ -35,7 +35,7 @@ public class NetworkUtils {
     private static final String PLACES_SEARCH_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
 
     //base url of google places photos
-    private static final String PLACES_PHOTOS_BASE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxheight=800&photoreference=";
+    private static final String PLACES_PHOTOS_BASE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxheight=1200&photoreference=";
 
     //api key from open weather map, stored in gradle.properties
     private static final String WEATHER_API_KEY = "&appid=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;

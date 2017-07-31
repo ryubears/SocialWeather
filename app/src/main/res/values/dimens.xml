@@ -21,15 +21,12 @@
 
     <!-- Weather Recycler View -->
     <dimen name="weather_item_temperature_margin_top">8dp</dimen>
-    <dimen name="weather_item_temperature_margin_end">4dp</dimen>
+    <dimen name="weather_item_temperature_margin_end">8dp</dimen>
     <dimen name="weather_item_profile_width">64dp</dimen>
     <dimen name="weather_item_profile_height">64dp</dimen>
-    <dimen name="weather_item_background_height">200dp</dimen>
-    <dimen name="weather_item_content_height">80dp</dimen>
+    <dimen name="weather_item_background_height">184dp</dimen>
+    <dimen name="weather_item_content_height">64dp</dimen>
     <dimen name="weather_item_text_margin_bottom">16dp</dimen>
-    <dimen name="weather_item_temperature_text_size">36sp</dimen>
-    <dimen name="weather_item_name_text_size">24sp</dimen>
-    <dimen name="weather_item_location_text_size">14sp</dimen>
 
     <!--General -->
     <dimen name="margin_small">8dp</dimen>

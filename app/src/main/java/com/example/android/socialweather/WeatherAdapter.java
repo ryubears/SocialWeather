@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.socialweather.utils.WeatherUtils;
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,15 +77,16 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         @BindView(R.id.weather_item_card_view) CardView mCardView;
         @BindView(R.id.weather_item_background) ImageView mBackgroundImageView;
         @BindView(R.id.weather_item_location_name) TextView mLocationTextView;
-        @BindView(R.id.weather_item_temperature) TextView mTemperatureTextView;
+        @BindView(R.id.weather_item_description) TextView mDescriptionTextView;
+        @BindView(R.id.weather_item_friend1) ImageView mFriend1ImageView;
+        @BindView(R.id.weather_item_friend2) ImageView mFriend2ImageView;
+        @BindView(R.id.weather_item_lives) TextView mLivesTextView;
 
         private int mId;
         private String mLocationName;
         private String mLocationPhoto;
-        private String mNames;
         private String mProfilePics;
-        private int mWeatherId;
-        private double mTemperature;
+        private String mWeatherDescription;
 
         public WeatherViewHolder(View view) {
             super(view);
@@ -97,26 +100,19 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             int indexId = mCursor.getColumnIndex(WeatherEntry._ID);
             int indexLocationName = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
             int indexLocationPhoto = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_PHOTO);
-            int indexFriendNames = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
+
             int indexFriendPictures = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
-            int indexWeatherId = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ID);
-            int indexTemperature = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP);
+            int indexWeatherDescription = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_DESCRIPTION);
 
             mId = mCursor.getInt(indexId);
             mLocationName = mCursor.getString(indexLocationName);
             mLocationPhoto = mCursor.getString(indexLocationPhoto);
 
-            mNames = mCursor.getString(indexFriendNames);
             mProfilePics = mCursor.getString(indexFriendPictures);
-            mWeatherId = mCursor.getInt(indexWeatherId);
-            mTemperature = mCursor.getDouble(indexTemperature);
+            mWeatherDescription = mCursor.getString(indexWeatherDescription);
 
             //set location name
             mLocationTextView.setText(mLocationName);
-
-            //set weather background
-            //int background = WeatherUtils.getWeatherBackground(mWeatherId); //handles empty weather id(-1)
-            //mBackgroundImageView.setImageResource(background);
 
             //set location photo
             if(mLocationPhoto.equals(itemView.getContext().getString(R.string.location_photo_empty))) {
@@ -127,14 +123,44 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                         .into(mBackgroundImageView);
             }
 
-            //set current temperature
-            if(mTemperature == -1) {
-                //display null character if temperature is empty(-1)
-                mTemperatureTextView.setText("");
+            //set weather description
+            String weatherDescription = WeatherUtils.formatDescription(mWeatherDescription);
+            mDescriptionTextView.setText(weatherDescription);
+
+            //set friend pictures and number of friends living in the location
+            String[] friendPics = mProfilePics.split(itemView.getContext().getString(R.string.delimiter));
+            int numFriends = friendPics.length;
+            mLivesTextView.setText(String.valueOf(numFriends));
+
+            //transform profile picture in a circular frame
+            Transformation transformation = new RoundedTransformationBuilder()
+                    .cornerRadiusDp(50)
+                    .oval(false)
+                    .build();
+
+            //set first friend picture
+            if(friendPics[0].equals(itemView.getContext().getString(R.string.picture_empty))) {
+                mFriend1ImageView.setImageResource(R.drawable.profile_color);
             } else {
-                //format and display temperature
-                String formattedTemp = WeatherUtils.formatTemperature(itemView.getContext(), mTemperature);
-                mTemperatureTextView.setText(formattedTemp);
+                Picasso.with(itemView.getContext())
+                        .load(friendPics[0])
+                        .transform(transformation)
+                        .into(mFriend1ImageView);
+            }
+
+            //set second friend picture
+            if(friendPics.length >= 2) {
+                mFriend2ImageView.setVisibility(View.VISIBLE);
+                if(friendPics[1].equals(itemView.getContext().getString(R.string.picture_empty))) {
+                    mFriend2ImageView.setImageResource(R.drawable.profile_color);
+                } else {
+                    Picasso.with(itemView.getContext())
+                            .load(friendPics[1])
+                            .transform(transformation)
+                            .into(mFriend2ImageView);
+                }
+            } else {
+                mFriend2ImageView.setVisibility(View.GONE);
             }
         }
 
