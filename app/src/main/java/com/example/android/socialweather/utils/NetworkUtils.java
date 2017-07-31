@@ -29,22 +29,46 @@ public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
     //base url of open weather map
-    private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
+    private static final String WEATHER_BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
+
+    //base url of google places search
+    private static final String PLACES_SEARCH_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
+
+    //base url of google places photos
+    private static final String PLACES_PHOTOS_BASE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxheight=800&photoreference=";
 
     //api key from open weather map, stored in gradle.properties
-    private static final String API_KEY = "&appid=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
+    private static final String WEATHER_API_KEY = "&appid=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
 
-    //creates an url with the location parameter
-    private static URL createUrl(String location) {
-        Log.d(LOG_TAG, "createUrl");
+    //api key from google places api, stored in gradle.properties
+    private static final String PLACES_API_KEY = "&key=" + BuildConfig.GOOGLE_PLACES_API_KEY;
 
-        String stringUrl = BASE_URL + location + API_KEY;
+    //creates an url with the location parameter for open weather map
+    private static URL createWeatherUrl(String location) {
+        Log.d(LOG_TAG, "createWeatherUrl");
+
+        String stringUrl = WEATHER_BASE_URL + location + WEATHER_API_KEY;
 
         URL url = null;
         try {
             url = new URL(stringUrl);
         } catch(MalformedURLException e) {
-            Log.e(LOG_TAG, "Error creating URL: " + e);
+            Log.e(LOG_TAG, "Error creating weather URL: " + e);
+        }
+        return url;
+    }
+
+    //creates url for google places api
+    private static URL createPlacesUrl(String location) {
+        Log.d(LOG_TAG, "createPlacesUrl");
+
+        String stringUrl = PLACES_SEARCH_BASE_URL + location + PLACES_API_KEY;
+
+        URL url = null;
+        try {
+            url = new URL(stringUrl);
+        } catch(MalformedURLException e) {
+            Log.e(LOG_TAG, "Error creating places URL: " + e);
         }
         return url;
     }
@@ -163,12 +187,36 @@ public class NetworkUtils {
         return contentValues;
     }
 
-    //returns content value with location string
+    private static String extractPlacesFromJSON(String jsonResponse) {
+        Log.d(LOG_TAG, "extractPlacesFromJSON");
+
+        if(TextUtils.isEmpty(jsonResponse)) {
+            return "location_photo_empty"; //linked to strings.xml and default value in WeatherDbHelper
+        }
+
+        String photoUrl = "";
+        try {
+            JSONObject baseJson = new JSONObject(jsonResponse);
+            JSONArray results = baseJson.getJSONArray("results");
+            JSONObject result = results.getJSONObject(0);
+            JSONArray photos = result.getJSONArray("photos");
+            JSONObject photo = photos.getJSONObject(0);
+            String photoReference = photo.getString("photo_reference");
+            photoUrl = PLACES_PHOTOS_BASE_URL + photoReference + PLACES_API_KEY;
+
+            Log.d(LOG_TAG, photoUrl);
+        } catch(JSONException e) {
+            Log.e(LOG_TAG, "Error extracting places from JSON: " + e);
+        }
+        return photoUrl;
+    }
+
+    //returns content value of weather with location string
     public static ContentValues fetchWeather(String location) {
         Log.d(LOG_TAG, "fetchWeather");
 
         //create url
-        URL url = createUrl(location);
+        URL url = createWeatherUrl(location);
 
         //get json response
         String jsonResponse = "";
@@ -181,5 +229,25 @@ public class NetworkUtils {
         //get content values from json response
         ContentValues contentValues = extractWeatherFromJSON(jsonResponse);
         return contentValues;
+    }
+
+    //returns content value of place photo
+    public static String fetchPhoto(String location) {
+        Log.d(LOG_TAG, "fetchPhoto");
+
+        //create url
+        URL url = createPlacesUrl(location);
+
+        //get json response
+        String jsonResponse = "";
+        try {
+            jsonResponse = makeHTTPRequest(url);
+        } catch(IOException e) {
+            Log.e(LOG_TAG, "Error with HTTP request: " + e);
+        }
+
+        //get content values from json response
+        String photoUrl = extractPlacesFromJSON(jsonResponse);
+        return photoUrl;
     }
 }

@@ -38,6 +38,9 @@ public class WeatherContract {
         //location name
         public static final String COLUMN_LOCATION_NAME = "location_name";
 
+        //location photo
+        public static final String COLUMN_LOCATION_PHOTO = "location_photo";
+
         //list of friend ids living in this location
         public static final String COLUMN_FRIEND_IDS = "friend_ids";
 

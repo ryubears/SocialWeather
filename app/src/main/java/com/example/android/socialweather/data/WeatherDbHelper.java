@@ -31,6 +31,7 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 WeatherEntry.COLUMN_LAST_UPDATE_TIME + " INTEGER NOT NULL, " +
                 WeatherEntry.COLUMN_LOCATION_ID + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_LOCATION_NAME + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_LOCATION_PHOTO + " TEXT DEFAULT 'location_photo_empty', " +
                 WeatherEntry.COLUMN_FRIEND_IDS + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_FRIEND_NAMES + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_FRIEND_PICTURES + " TEXT NOT NULL, " +

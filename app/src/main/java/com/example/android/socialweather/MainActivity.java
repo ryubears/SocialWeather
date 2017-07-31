@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -43,6 +44,8 @@ import com.facebook.accountkit.AccountKitError;
 import com.facebook.accountkit.PhoneNumber;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -63,7 +66,7 @@ import butterknife.ButterKnife;
 //App Launcher Icons made by "https://www.flaticon.com/authors/gregor-cresnar" "Gregor Cresnar"
 //Weather and Profile Icons made by "https://www.flaticon.com/authors/madebyoliver" "Madebyoliver"
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
     @BindView(R.id.main_drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.main_nav_view) NavigationView mNavigationView;
@@ -93,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
     //facebook access token and a callback manager to handle permission dialogs
     private AccessToken mAccessToken;
     private CallbackManager mCallbackManager;
+
+    //instance of Google API Client
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -539,6 +545,13 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return phoneNumber;
+    }
+
+    //handles connection failures for GoogleApiClient
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        String toastMessage = connectionResult.getErrorMessage();
+        Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
     }
 
     private void fetchWeather(String location) {

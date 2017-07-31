@@ -42,6 +42,9 @@ public class WeatherSyncTask {
 
                 ContentValues contentValues = NetworkUtils.fetchWeather(locationName); //NetworkUtils handles empty location, wrong location
 
+                String photoUrl = NetworkUtils.fetchPhoto(locationName);
+                contentValues.put(WeatherEntry.COLUMN_LOCATION_PHOTO, photoUrl);
+
                 //update row
                 if(contentValues != null) {
                     context.getContentResolver().update(

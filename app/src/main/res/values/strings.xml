@@ -72,6 +72,7 @@
 
     <!-- data -->
     <string name="delimiter" translatable="false">$$$</string>
+    <string name="location_photo_empty" translatable="false">location_photo_empty</string> <!-- also linked to default value in WeatherDbHelper -->
     <string name="picture_empty" translatable="false">picture_empty</string>
     <string name="location_empty" translatable="false">location_empty</string>
     <string name="location_default">Unknown</string>
