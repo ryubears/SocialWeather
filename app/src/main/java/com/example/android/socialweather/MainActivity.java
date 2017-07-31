@@ -563,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         protected Integer doInBackground(String... strings) {
             WeatherPreferences.saveProfileWeatherFetchTime(getApplicationContext(), System.currentTimeMillis());
             ContentValues contentValues = NetworkUtils.fetchWeather(strings[0]);
-            int weatherId = contentValues.getAsInteger(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID);
+            int weatherId = contentValues.getAsInteger(WeatherContract.WeatherEntry.COLUMN_CURRENT_WEATHER_ID);
             WeatherPreferences.saveUserWeatherId(getApplicationContext(), weatherId);
             return weatherId;
         }

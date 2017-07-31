@@ -50,43 +50,47 @@ public class WeatherContract {
         //list of friend pictures
         public static final String COLUMN_FRIEND_PICTURES = "friend_pictures";
 
-        /**
+        //current weather id
+        public static final String COLUMN_CURRENT_WEATHER_ID = "current_weather_id";
 
-        //person id from facebook
-        public static final String COLUMN_PERSON_ID = "person_id";
+        //current weather description
+        public static final String COLUMN_CURRENT_WEATHER_DESCRIPTION = "current_weather_description";
 
-        //person name
-        public static final String COLUMN_PERSON_NAME = "person_name";
+        //current weather current temperature
+        public static final String COLUMN_CURRENT_WEATHER_TEMP = "current_weather_temp";
 
-        //person profile picture url
-        public static final String COLUMN_PERSON_PROFILE = "person_profile";
+        //current weather pressure
+        public static final String COLUMN_CURRENT_WEATHER_PRESSURE = "current_weather_pressure";
 
-        //person current city location
-        public static final String COLUMN_PERSON_LOCATION = "person_location";
-         **/
+        //current weather humidity
+        public static final String COLUMN_CURRENT_WEATHER_HUMIDITY = "current_weather_humidity";
 
-        //weather id
-        public static final String COLUMN_WEATHER_ID = "weather_id";
+        //current weather wind speed
+        public static final String COLUMN_CURRENT_WEATHER_WIND_SPEED = "current_weather_wind_speed";
 
-        //weather description
-        public static final String COLUMN_WEATHER_DESCRIPTION = "weather_description";
+        //forecast weather time
+        public static final String COLUMN_FORECAST_WEATHER_TIMES = "forecast_weather_time";
 
-        //weather current temperature
-        public static final String COLUMN_WEATHER_CURRENT_TEMP = "weather_current_temp";
+        //forecast weather id
+        public static final String COLUMN_FORECAST_WEATHER_IDS = "forecast_weather_ids";
 
-        //weather min temperature
-        public static final String COLUMN_WEATHER_MIN_TEMP = "weather_min_temp";
+        //forecast weather description
+        public static final String COLUMN_FORECAST_WEATHER_DESCRIPTIONS = "forecast_weather_descriptions";
 
-        //weather max temperature
-        public static final String COLUMN_WEATHER_MAX_TEMP = "weather_max_temp";
+        //forecast weather min temperature
+        public static final String COLUMN_FORECAST_WEATHER_MIN_TEMPS = "forecast_weather_min_temps";
 
-        //weather pressure
-        public static final String COLUMN_WEATHER_PRESSURE = "weather_pressure";
+        //forecast weather max temperature
+        public static final String COLUMN_FORECAST_WEATHER_MAX_TEMPS = "forecast_weather_max_temps";
 
-        //weather humidity
-        public static final String COLUMN_WEATHER_HUMIDITY = "weather_humidity";
+        //forecast weather pressure
+        public static final String COLUMN_FORECAST_WEATHER_PRESSURES = "forecast_weather_pressures";
 
-        //weather wind speed
-        public static final String COLUMN_WEATHER_WIND_SPEED = "weather_wind_speed";
+        //forecast weather humidity
+        public static final String COLUMN_FORECAST_WEATHER_HUMIDITIES = "forecast_weather_humidities";
+
+        //forecast weather wind speed
+        public static final String COLUMN_FORECAST_WEATHER_WIND_SPEEDS = "forecast_weather_wind_speeds";
+
     }
 }

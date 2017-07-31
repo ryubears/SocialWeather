@@ -114,15 +114,6 @@
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"/>
 
-        <TextView
-            android:id="@+id/details_minmax_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="12° / 18°"
-            android:textColor="@color/textSecondary"
-            android:textSize="20sp"
-            android:fontFamily="sans-serif-light" />
-
     </LinearLayout>
 
     <LinearLayout

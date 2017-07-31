@@ -28,8 +28,11 @@ import static com.example.android.socialweather.data.WeatherContract.WeatherEntr
 public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    //base url of open weather map
-    private static final String WEATHER_BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
+    private static final int CURRENT_WEATHER = 11;
+    private static final int FORECAST_WEATHER = 12;
+
+    //base url for weather
+    private static final String WEATHER_BASE_URL = "http://api.openweathermap.org/data/2.5/";
 
     //base url of google places search
     private static final String PLACES_SEARCH_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
@@ -43,11 +46,16 @@ public class NetworkUtils {
     //api key from google places api, stored in gradle.properties
     private static final String PLACES_API_KEY = "&key=" + BuildConfig.GOOGLE_PLACES_API_KEY;
 
-    //creates an url with the location parameter for open weather map
-    private static URL createWeatherUrl(String location) {
+    //creates an url for weather from open weather map
+    private static URL createWeatherUrl(int queryType, String location) {
         Log.d(LOG_TAG, "createWeatherUrl");
 
-        String stringUrl = WEATHER_BASE_URL + location + WEATHER_API_KEY;
+        String stringUrl = "";
+        if(queryType == CURRENT_WEATHER) {
+            stringUrl = WEATHER_BASE_URL + "weather?q=" + location + WEATHER_API_KEY;
+        } else {
+            stringUrl = WEATHER_BASE_URL + "forecast?q=" + location + WEATHER_API_KEY;
+        }
 
         URL url = null;
         try {
@@ -57,6 +65,8 @@ public class NetworkUtils {
         }
         return url;
     }
+
+    //creates an url for open weather map forecast
 
     //creates url for google places api
     private static URL createPlacesUrl(String location) {
@@ -131,7 +141,7 @@ public class NetworkUtils {
     }
 
     //extract data from json response
-    private static ContentValues extractWeatherFromJSON(String jsonResponse) {
+    private static ContentValues extractCurrentWeatherFromJSON(String jsonResponse) {
         Log.d(LOG_TAG, "extractWeatherFromJSON");
 
         if(TextUtils.isEmpty(jsonResponse)) {
@@ -163,14 +173,12 @@ public class NetworkUtils {
             double windSpeed = wind.getDouble("speed");
 
             //add to content values
-            contentValues.put(WeatherEntry.COLUMN_WEATHER_ID, weatherId);
-            contentValues.put(WeatherEntry.COLUMN_WEATHER_DESCRIPTION, description);
-            contentValues.put(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP, currentTemp);
-            contentValues.put(WeatherEntry.COLUMN_WEATHER_MIN_TEMP, minTemp);
-            contentValues.put(WeatherEntry.COLUMN_WEATHER_MAX_TEMP, maxTemp);
-            contentValues.put(WeatherEntry.COLUMN_WEATHER_PRESSURE, pressure);
-            contentValues.put(WeatherEntry.COLUMN_WEATHER_HUMIDITY, humidity);
-            contentValues.put(WeatherEntry.COLUMN_WEATHER_WIND_SPEED, windSpeed);
+            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_ID, weatherId);
+            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_DESCRIPTION, description);
+            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_TEMP, currentTemp);
+            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_PRESSURE, pressure);
+            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_HUMIDITY, humidity);
+            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_WIND_SPEED, windSpeed);
 
             //for debugging
             Log.d(LOG_TAG, String.valueOf(weatherId));
@@ -187,13 +195,102 @@ public class NetworkUtils {
         return contentValues;
     }
 
+    //extract forecast weather data
+    private static ContentValues extractForecastWeatherFromJSON(String jsonResponse) {
+        Log.d(LOG_TAG, "extractForecastWeatherFromJSON");
+
+        //return null content value if json response is empty
+        if(TextUtils.isEmpty(jsonResponse)) {
+            return null;
+        }
+
+        //Content Values to return
+        ContentValues contentValues = new ContentValues();
+        try {
+            JSONObject baseJson = new JSONObject(jsonResponse);
+            JSONArray list = baseJson.getJSONArray("list");
+
+            //to store data
+            String timeStamps = "";
+            String weatherIds = "";
+            String weatherDescriptions = "";
+            String minTemps = "";
+            String maxTemps = "";
+            String pressures = "";
+            String humidities = "";
+            String windSpeeds = "";
+
+            for(int i = 0; i < list.length(); i++) {
+                JSONObject listItem = list.getJSONObject(i);
+
+                //get timestamp
+                long time = listItem.getLong("dt");
+                timeStamps += String.valueOf(time) + "%%%";
+
+                //get weather id and description
+                JSONArray weatherArray = listItem.getJSONArray("weather");
+                JSONObject weather = weatherArray.getJSONObject(0);
+                int weatherId = weather.getInt("id");
+                String description = weather.getString("description");
+
+                weatherIds += String.valueOf(weatherId) + "%%%";
+                weatherDescriptions += description + "%%%";
+
+                //get min max temp, pressure, and humidity
+                JSONObject main = listItem.getJSONObject("main");
+                double minTemp = main.getDouble("temp_min");
+                double maxTemp = main.getDouble("temp_max");
+                double pressure = main.getDouble("pressure");
+                int humidity = main.getInt("humidity");
+
+                minTemps += String.valueOf(minTemp) + "%%%";
+                maxTemps += String.valueOf(maxTemp) + "%%%";
+                pressures += String.valueOf(pressure) + "%%%";
+                humidities += String.valueOf(humidity) + "%%%";
+
+                //get wind speed
+                JSONObject wind = listItem.getJSONObject("wind");
+                double windSpeed = wind.getDouble("speed");
+
+                windSpeeds += String.valueOf(windSpeed) + "%%%";
+            }
+
+            //put data into content values
+            contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES, timeStamps.substring(0, timeStamps.length() - 3));
+            contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS, weatherIds.substring(0, weatherIds.length() - 3));
+            contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS, weatherDescriptions.substring(0, weatherDescriptions.length() - 3));
+            contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS, minTemps.substring(0, minTemps.length() - 3));
+            contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS, maxTemps.substring(0, maxTemps.length() - 3));
+            contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES, pressures.substring(0, pressures.length() - 3));
+            contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES, humidities.substring(0, humidities.length() - 3));
+            contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS, windSpeeds.substring(0, windSpeeds.length() - 3));
+
+            //for debugging
+            Log.d(LOG_TAG, timeStamps.substring(0, timeStamps.length() - 3));
+            Log.d(LOG_TAG, weatherIds.substring(0, weatherIds.length() - 3));
+            Log.d(LOG_TAG, weatherDescriptions.substring(0, weatherDescriptions.length() - 3));
+            Log.d(LOG_TAG, minTemps.substring(0, minTemps.length() - 3));
+            Log.d(LOG_TAG, maxTemps.substring(0, maxTemps.length() - 3));
+            Log.d(LOG_TAG, pressures.substring(0, pressures.length() - 3));
+            Log.d(LOG_TAG, humidities.substring(0, humidities.length() - 3));
+            Log.d(LOG_TAG, windSpeeds.substring(0, windSpeeds.length() - 3));
+
+        } catch(JSONException e) {
+            Log.e(LOG_TAG, "Error extracting forecast from JSON: " + e);
+        }
+
+        return contentValues;
+    }
+
     private static String extractPlacesFromJSON(String jsonResponse) {
         Log.d(LOG_TAG, "extractPlacesFromJSON");
 
+        //return empty string if json response is empty
         if(TextUtils.isEmpty(jsonResponse)) {
             return "location_photo_empty"; //linked to strings.xml and default value in WeatherDbHelper
         }
 
+        //photo url to return
         String photoUrl = "";
         try {
             JSONObject baseJson = new JSONObject(jsonResponse);
@@ -201,9 +298,12 @@ public class NetworkUtils {
             JSONObject result = results.getJSONObject(0);
             JSONArray photos = result.getJSONArray("photos");
             JSONObject photo = photos.getJSONObject(0);
+
+            //extract photo reference to build photo url
             String photoReference = photo.getString("photo_reference");
             photoUrl = PLACES_PHOTOS_BASE_URL + photoReference + PLACES_API_KEY;
 
+            //for debugging
             Log.d(LOG_TAG, photoUrl);
         } catch(JSONException e) {
             Log.e(LOG_TAG, "Error extracting places from JSON: " + e);
@@ -216,18 +316,42 @@ public class NetworkUtils {
         Log.d(LOG_TAG, "fetchWeather");
 
         //create url
-        URL url = createWeatherUrl(location);
+        URL currentUrl = createWeatherUrl(CURRENT_WEATHER, location);
+        URL forecastUrl = createWeatherUrl(FORECAST_WEATHER, location);
 
         //get json response
-        String jsonResponse = "";
+        String currentJsonResponse = "";
+        String forecastJsonResponse = "";
         try {
-            jsonResponse = makeHTTPRequest(url);
+            currentJsonResponse = makeHTTPRequest(currentUrl);
+            forecastJsonResponse = makeHTTPRequest(forecastUrl);
         } catch(IOException e) {
             Log.e(LOG_TAG, "Error with HTTP request: " + e);
         }
 
         //get content values from json response
-        ContentValues contentValues = extractWeatherFromJSON(jsonResponse);
+        ContentValues contentValues = extractCurrentWeatherFromJSON(currentJsonResponse);
+
+        //add forecast values to returning content values
+        ContentValues forecastValues = extractForecastWeatherFromJSON(forecastJsonResponse);
+        String forecastTimes = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES);
+        String forecastWeatherIds = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
+        String forecastWeatherDescriptions = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
+        String forecastMinTemps = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
+        String forecastMaxTemps = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
+        String forecastPressures = forecastValues.getAsString(WeatherEntry.COLUMN_CURRENT_WEATHER_PRESSURE);
+        String forecastHumidities = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES);
+        String forecastWindSpeeds = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS);
+
+        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES, forecastTimes);
+        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS, forecastWeatherIds);
+        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS, forecastWeatherDescriptions);
+        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS, forecastMinTemps);
+        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS, forecastMaxTemps);
+        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES, forecastPressures);
+        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES, forecastHumidities);
+        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS, forecastWindSpeeds);
+
         return contentValues;
     }
 

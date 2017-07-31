@@ -70,7 +70,7 @@ public class WeatherSyncTask {
             }
 
             //query weather table to track rain,snow, and extreme weather
-            String[] projection = new String[] {WeatherEntry.COLUMN_FRIEND_NAMES, WeatherEntry.COLUMN_WEATHER_ID};
+            String[] projection = new String[] {WeatherEntry.COLUMN_FRIEND_NAMES, WeatherEntry.COLUMN_CURRENT_WEATHER_ID};
             cursor = context.getContentResolver().query(
                     WeatherEntry.CONTENT_URI,
                     projection,
@@ -86,7 +86,7 @@ public class WeatherSyncTask {
                 cursor.moveToPosition(i);
 
                 int indexNames = cursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
-                int indexWeatherId = cursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ID);
+                int indexWeatherId = cursor.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_ID);
 
                 String names = cursor.getString(indexNames);
                 String[] nameArray = names.split(context.getString(R.string.delimiter));

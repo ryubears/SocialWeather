@@ -78,6 +78,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         @BindView(R.id.weather_item_background) ImageView mBackgroundImageView;
         @BindView(R.id.weather_item_location_name) TextView mLocationTextView;
         @BindView(R.id.weather_item_description) TextView mDescriptionTextView;
+        @BindView(R.id.weather_item_icon) ImageView mIconImageView;
         @BindView(R.id.weather_item_friend1) ImageView mFriend1ImageView;
         @BindView(R.id.weather_item_friend2) ImageView mFriend2ImageView;
         @BindView(R.id.weather_item_lives) TextView mLivesTextView;
@@ -86,6 +87,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         private String mLocationName;
         private String mLocationPhoto;
         private String mProfilePics;
+        private int mWeatherId;
         private String mWeatherDescription;
 
         public WeatherViewHolder(View view) {
@@ -100,15 +102,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             int indexId = mCursor.getColumnIndex(WeatherEntry._ID);
             int indexLocationName = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
             int indexLocationPhoto = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_PHOTO);
-
             int indexFriendPictures = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
-            int indexWeatherDescription = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_DESCRIPTION);
+            int indexWeatherId = mCursor.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_ID);
+            int indexWeatherDescription = mCursor.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_DESCRIPTION);
 
             mId = mCursor.getInt(indexId);
             mLocationName = mCursor.getString(indexLocationName);
             mLocationPhoto = mCursor.getString(indexLocationPhoto);
-
             mProfilePics = mCursor.getString(indexFriendPictures);
+            mWeatherId = mCursor.getInt(indexWeatherId);
             mWeatherDescription = mCursor.getString(indexWeatherDescription);
 
             //set location name
@@ -122,6 +124,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                         .load(mLocationPhoto)
                         .into(mBackgroundImageView);
             }
+
+            //set weather icon
+            int icon = WeatherUtils.getColorWeatherIcon(mWeatherId);
+            mIconImageView.setImageResource(icon);
 
             //set weather description
             String weatherDescription = WeatherUtils.formatDescription(mWeatherDescription);

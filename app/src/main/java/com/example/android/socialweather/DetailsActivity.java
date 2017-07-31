@@ -23,7 +23,6 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     @BindView(R.id.details_weather_icon) ImageView mIconImageView;
     @BindView(R.id.details_weather_description) TextView mDescriptionTextView;
     @BindView(R.id.details_current_temperature) TextView mCurrentTempTextView;
-    @BindView(R.id.details_minmax_temperature) TextView mMinMaxTempTextView;
     @BindView(R.id.details_pressure_value) TextView mPressureTextView;
     @BindView(R.id.details_humidity_value) TextView mHumidityTextView;
     @BindView(R.id.details_wind_value) TextView mWindSpeedTextView;
@@ -92,14 +91,12 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         int indexProfilePic = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
         int indexName = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
         int indexLocation = data.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
-        int indexWeatherId = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ID);
-        int indexWeatherDescription = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_DESCRIPTION);
-        int indexCurrentTemp = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_CURRENT_TEMP);
-        int indexMinTemp = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_MIN_TEMP);
-        int indexMaxTemp = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_MAX_TEMP);
-        int indexPressure = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_PRESSURE);
-        int indexHumidity = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_HUMIDITY);
-        int indexWindSpeed = data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_WIND_SPEED);
+        int indexWeatherId = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_ID);
+        int indexWeatherDescription = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_DESCRIPTION);
+        int indexCurrentTemp = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_TEMP);
+        int indexPressure = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_PRESSURE);
+        int indexHumidity = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_HUMIDITY);
+        int indexWindSpeed = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_WIND_SPEED);
 
         mProfilePic = data.getString(indexProfilePic);
         mName = data.getString(indexName);
@@ -107,8 +104,6 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         mWeatherId = data.getInt(indexWeatherId);
         mWeatherDescription = data.getString(indexWeatherDescription);
         mCurrentTemp = data.getDouble(indexCurrentTemp);
-        mMinTemp = data.getDouble(indexMinTemp);
-        mMaxTemp = data.getDouble(indexMaxTemp);
         mPressure = data.getDouble(indexPressure);
         mHumidity = data.getInt(indexHumidity);
         mWindSpeed = data.getDouble(indexWindSpeed);
@@ -143,18 +138,6 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             //format temperature and display
             String formattedCurrentTemp = WeatherUtils.formatTemperature(this, mCurrentTemp);
             mCurrentTempTextView.setText(formattedCurrentTemp);
-        }
-
-        //set min and max temperature
-        if(mMinTemp == -1 || mMaxTemp == -1) {
-            //check empty temperature
-            mMinMaxTempTextView.setText("");
-        } else {
-            //format temperature and display
-            String formattedMinTemp = WeatherUtils.formatTemperature(this, mMinTemp);
-            String formattedMaxTemp = WeatherUtils.formatTemperature(this, mMaxTemp);
-            String minMaxString = formattedMinTemp + " / " + formattedMaxTemp;
-            mMinMaxTempTextView.setText(minMaxString);
         }
 
         //set pressure
