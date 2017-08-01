@@ -83,6 +83,7 @@
     <string name="location_default">Unknown</string>
     <string name="description_empty" translatable="false">description_empty</string> <!-- also linked to default value in WeatherDbHelper -->
     <string name="description_default">No Weather</string>
+    <string name="forecast_position_key">forecast_position</string>
 
     <!-- Permission Canceled Toast Messages -->
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>

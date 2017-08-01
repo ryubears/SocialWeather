@@ -1,5 +1,7 @@
 package com.example.android.socialweather;
 
+import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,10 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.socialweather.data.WeatherContract;
 import com.example.android.socialweather.utils.WeatherUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Yehyun Ryu on 7/31/2017.
@@ -19,24 +23,20 @@ import butterknife.ButterKnife;
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder> {
 
     //attributes of forecast
+    private int mId;
     private String[] mWeatherTimes;
     private String[] mWeatherIds;
     private String[] mWeatherDescriptions;
     private String[] mWeatherMinTemps;
     private String[] mWeatherMaxTemps;
-    private String[] mWeatherPressures;
-    private String[] mWeatherHumidities;
-    private String[] mWeatherWindSpeeds;
 
-    public ForecastAdapter(String[] weatherTimes, String[] weatherIds, String[] weatherDescriptions, String[] minTemps, String[] maxTemps, String[] pressures, String[] humidities, String[] windspeeds) {
+    public ForecastAdapter(int id, String[] weatherTimes, String[] weatherIds, String[] weatherDescriptions, String[] minTemps, String[] maxTemps) {
+        mId = id;
         mWeatherTimes = weatherTimes;
         mWeatherIds = weatherIds;
         mWeatherDescriptions = weatherDescriptions;
         mWeatherMinTemps = minTemps;
         mWeatherMaxTemps = maxTemps;
-        mWeatherPressures = pressures;
-        mWeatherHumidities = humidities;
-        mWeatherWindSpeeds = windspeeds;
     }
 
     @Override
@@ -66,15 +66,13 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         return mWeatherTimes.length;
     }
 
-    public void swapCursor(String[] weatherTimes, String[] weatherIds, String[] weatherDescriptions, String[] minTemps, String[] maxTemps, String[] pressures, String[] humidities, String[] windspeeds) {
+    public void swapCursor(int id, String[] weatherTimes, String[] weatherIds, String[] weatherDescriptions, String[] minTemps, String[] maxTemps) {
+        mId = id;
         mWeatherTimes = weatherTimes;
         mWeatherIds = weatherIds;
         mWeatherDescriptions = weatherDescriptions;
         mWeatherMinTemps = minTemps;
         mWeatherMaxTemps = maxTemps;
-        mWeatherPressures = pressures;
-        mWeatherHumidities = humidities;
-        mWeatherWindSpeeds = windspeeds;
 
         if(mWeatherTimes != null && mWeatherTimes.length != 0) {
             notifyDataSetChanged();
@@ -82,11 +80,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     }
 
     public class ForecastViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.forecast_item) ConstraintLayout mForecastItem;
         @BindView(R.id.forecast_item_icon) ImageView mIconImageView;
         @BindView(R.id.forecast_item_date) TextView mDateTextView;
         @BindView(R.id.forecast_item_description) TextView mDescriptionTextView;
         @BindView(R.id.forecast_item_min_temp) TextView mMinTempTextView;
         @BindView(R.id.forecast_item_max_temp) TextView mMaxTempTextView;
+
+        private int mPosition;
 
         public ForecastViewHolder(View itemView) {
             super(itemView);
@@ -95,6 +96,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         }
 
         public void bind(int position) {
+            mPosition = position;
+
             //set weather icon
             int weatherId = Integer.valueOf(mWeatherIds[position]);
             int icon = WeatherUtils.getColorWeatherIcon(weatherId);
@@ -119,6 +122,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
             double maxTemp = Double.valueOf(mWeatherMaxTemps[position]);
             String maxTempString = WeatherUtils.formatTemperature(itemView.getContext(), maxTemp);
             mMaxTempTextView.setText(maxTempString);
+        }
+
+        @OnClick(R.id.forecast_item)
+        public void onClick() {
+            Intent intent = new Intent(itemView.getContext(), DetailsActivity.class);
+            intent.putExtra(WeatherContract.WeatherEntry._ID, mId);
+            intent.putExtra(itemView.getContext().getString(R.string.forecast_position_key), mPosition);
+            itemView.getContext().startActivity(intent);
         }
     }
 }

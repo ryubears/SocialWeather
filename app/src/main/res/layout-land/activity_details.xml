@@ -8,194 +8,177 @@
     tools:context="com.example.android.socialweather.DetailsActivity">
 
     <android.support.constraint.Guideline
-        android:id="@+id/details_left_guideline"
+        android:id="@+id/details_vertical_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="207dp" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/details_right_guideline"
+        android:id="@+id/details_left_vertical_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.675"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="400dp" />
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/details_right_vertical_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
 
     <View
-        android:id="@+id/details_dark_background"
+        android:id="@+id/details_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimaryLight"
+        android:scaleType="centerCrop"
+        android:alpha="0.8"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/details_left_guideline" />
-
-    <ImageView
-        android:id="@+id/details_location_image"
-        android:layout_width="136dp"
-        android:layout_height="136dp"
-        android:src="@drawable/profile_color"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/details_left_guideline"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="36dp"/>
+        app:layout_constraintRight_toLeftOf="@+id/details_vertical_guideline" />
 
     <TextView
-        android:id="@+id/details_location_name"
+        android:id="@+id/details_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Minneapolis, MN"
+        tools:text="Scattered Clouds"
         android:textColor="@android:color/white"
         android:textSize="24sp"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/details_location_image"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/details_left_guideline"
-        android:layout_marginTop="24dp"/>
-
-    <LinearLayout
-        android:id="@+id/details_weather_icon_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/details_weather_temperature"
-        app:layout_constraintBottom_toBottomOf="@+id/details_weather_temperature"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="4dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        app:layout_constraintLeft_toLeftOf="@+id/details_right_guideline">
-
-        <ImageView
-            android:id="@+id/details_weather_icon"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            tools:src="@drawable/fog_color"
-            android:scaleType="centerCrop" />
-
-        <TextView
-            android:id="@+id/details_weather_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Foggy"
-            android:textColor="@color/textSecondary"
-            android:textSize="20sp"
-            android:fontFamily="sans-serif-light" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/details_weather_temperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginTop="28dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/details_right_guideline"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginTop="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        app:layout_constraintLeft_toLeftOf="@+id/details_left_guideline">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/details_vertical_guideline" />
 
-        <TextView
-            android:id="@+id/details_current_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="13°"
-            android:textColor="@color/textPrimary"
-            android:textSize="64sp"
-            android:fontFamily="sans-serif-light"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/details_weather_label"
+    <TextView
+        android:id="@+id/details_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        tools:text="Seoul, South Korea"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-condensed"
+        app:layout_constraintTop_toBottomOf="@+id/details_description"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/details_vertical_guideline" />
+
+    <ImageView
+        android:id="@+id/details_icon"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        tools:src="@drawable/cloudy_white"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/details_location"
+        app:layout_constraintBottom_toTopOf="@+id/details_date"
+        app:layout_constraintRight_toLeftOf="@+id/details_left_vertical_guideline"
+        app:layout_constraintVertical_bias="0.45"/>
+
+    <TextView
+        android:id="@+id/details_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="27\u00B0"
+        android:textColor="@android:color/white"
+        android:textSize="72sp"
+        android:fontFamily="sans-serif-light"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/details_weather_temperature"
-        app:layout_constraintRight_toLeftOf="@+id/details_right_guideline"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintLeft_toLeftOf="@+id/details_left_guideline">
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="@+id/details_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/details_icon"
+        app:layout_constraintLeft_toLeftOf="@+id/details_left_vertical_guideline" />
+
+    <TextView
+        android:id="@+id/details_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Tomorrow, 12:00 PM"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_marginBottom="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/details_vertical_guideline" />
+
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/details_right_vertical_guideline">
 
         <TextView
             android:id="@+id/details_pressure_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/details_pressure_label"
-            android:textColor="@color/textPrimary"
-            android:textSize="24sp" />
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/details_humidity_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/details_humidity_label"
-            android:textColor="@color/textPrimary"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp"
-            android:layout_marginTop="8dp"/>
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"/>
 
         <TextView
             android:id="@+id/details_wind_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/details_wind_label"
-            android:textColor="@color/textPrimary"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp"
-            android:layout_marginTop="8dp"/>
+            android:gravity="center" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/details_weather_info"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="@+id/details_weather_label"
-        app:layout_constraintBottom_toBottomOf="@+id/details_weather_label"
-        app:layout_constraintRight_toRightOf="@+id/details_weather_icon_description"
-        app:layout_constraintLeft_toLeftOf="@+id/details_weather_icon_description">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/details_right_vertical_guideline">
 
         <TextView
             android:id="@+id/details_pressure_value"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1019 hPa"
+            tools:text="1019 hPa"
             android:textColor="@color/textSecondary"
             android:textSize="24sp"
-            android:fontFamily="sans-serif-light" />
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/details_humidity_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="89 %"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            tools:text="28 %"
             android:textColor="@color/textSecondary"
             android:textSize="24sp"
-            android:fontFamily="sans-serif-light"
-            android:layout_marginTop="8dp"/>
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"/>
 
         <TextView
             android:id="@+id/details_wind_value"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="5.1 km/h"
+            tools:text="12.3 km/h"
             android:textColor="@color/textSecondary"
             android:textSize="24sp"
-            android:fontFamily="sans-serif-light"
-            android:layout_marginTop="8dp"/>
+            android:gravity="center" />
 
     </LinearLayout>
 

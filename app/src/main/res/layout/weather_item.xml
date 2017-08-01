@@ -21,7 +21,7 @@
             android:id="@+id/weather_item_background"
             android:layout_width="match_parent"
             android:layout_height="@dimen/weather_item_background_height"
-            tools:src="@drawable/cloudy_background"
+            tools:src="@drawable/place_holder"
             android:scaleType="centerCrop" />
 
         <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

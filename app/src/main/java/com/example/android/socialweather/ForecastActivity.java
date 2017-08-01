@@ -51,7 +51,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         mForecastRecyclerView.setLayoutManager(layoutManager);
 
         //set adapter to recycler view
-        mAdapter = new ForecastAdapter(null, null, null, null, null, null, null, null);
+        mAdapter = new ForecastAdapter(-1, null, null, null, null, null);
         mForecastRecyclerView.setAdapter(mAdapter);
 
         //set recycler view to fixed size for better performance
@@ -94,20 +94,14 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         int indexWeatherDescriptions = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
         int indexWeatherMinTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
         int indexWeatherMaxTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
-        int indexWeatherPressures = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES);
-        int indexWeatherHumidities = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES);
-        int indexWeatherWindSpeeds = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS);
 
         mWeatherTimes = data.getString(indexWeatherTimes).split(getString(R.string.delimiter));
         mWeatherIds = data.getString(indexWeatherIds).split(getString(R.string.delimiter));
         mWeatherDescriptions = data.getString(indexWeatherDescriptions).split(getString(R.string.delimiter));
         mWeatherMinTemps = data.getString(indexWeatherMinTemps).split(getString(R.string.delimiter));
         mWeatherMaxTemps = data.getString(indexWeatherMaxTemps).split(getString(R.string.delimiter));
-        mWeatherPressures = data.getString(indexWeatherPressures).split(getString(R.string.delimiter));
-        mWeatherHumidities = data.getString(indexWeatherHumidities).split(getString(R.string.delimiter));
-        mWeatherWindSpeeds = data.getString(indexWeatherWindSpeeds).split(getString(R.string.delimiter));
 
-        mAdapter.swapCursor(mWeatherTimes, mWeatherIds, mWeatherDescriptions, mWeatherMinTemps, mWeatherMaxTemps, mWeatherPressures, mWeatherHumidities, mWeatherWindSpeeds);
+        mAdapter.swapCursor(mId, mWeatherTimes, mWeatherIds, mWeatherDescriptions, mWeatherMinTemps, mWeatherMaxTemps);
     }
 
     @Override

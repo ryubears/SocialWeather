@@ -18,31 +18,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    @BindView(R.id.details_location_image) ImageView mLocationImageView;
-    @BindView(R.id.details_location_name) TextView mLocationTextView;
-    @BindView(R.id.details_weather_icon) ImageView mIconImageView;
-    @BindView(R.id.details_weather_description) TextView mDescriptionTextView;
-    @BindView(R.id.details_current_temperature) TextView mCurrentTempTextView;
+    @BindView(R.id.details_description) TextView mDescriptionTextView;
+    @BindView(R.id.details_location) TextView mLocationTextView;
+    @BindView(R.id.details_icon) ImageView mIconImageView;
+    @BindView(R.id.details_temperature) TextView mTemperatureTextView;
+    @BindView(R.id.details_date) TextView mDateTextView;
     @BindView(R.id.details_pressure_value) TextView mPressureTextView;
     @BindView(R.id.details_humidity_value) TextView mHumidityTextView;
-    @BindView(R.id.details_wind_value) TextView mWindSpeedTextView;
+    @BindView(R.id.details_wind_value) TextView mWindTextView;
 
-    //loader id to identify loader
     private static final int DETAILS_LOADER_ID = 55;
 
-    //weather and person data
     private int mId;
-    private String mProfilePic;
-    private String mName;
-    private String mLocation;
-    private int mWeatherId;
-    private String mWeatherDescription;
-    private double mCurrentTemp;
-    private double mMinTemp;
-    private double mMaxTemp;
-    private double mPressure;
-    private int mHumidity;
-    private double mWindSpeed;
+    private int mPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +46,10 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
         Intent intent = getIntent();
         if(intent != null) {
-            //get id to query data
+            //get row id and position
             mId = intent.getIntExtra(WeatherEntry._ID, -1);
+            mPosition = intent.getIntExtra(getString(R.string.forecast_position_key), -1);
 
-            //initialize loader
             getSupportLoaderManager().initLoader(DETAILS_LOADER_ID, null, this);
         }
     }
@@ -72,7 +60,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             case DETAILS_LOADER_ID:
                 return new CursorLoader(
                         this,
-                        ContentUris.withAppendedId(WeatherEntry.CONTENT_URI, mId), //query with id
+                        ContentUris.withAppendedId(WeatherEntry.CONTENT_URI, mId),
                         null,
                         null,
                         null,
@@ -85,92 +73,69 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        //get data from cursor
         data.moveToFirst();
 
-        //extract data
-        int indexProfilePic = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
-        int indexName = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
-        int indexLocation = data.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
-        int indexWeatherId = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_ID);
-        int indexWeatherDescription = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_DESCRIPTION);
-        int indexCurrentTemp = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_TEMP);
-        int indexPressure = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_PRESSURE);
-        int indexHumidity = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_HUMIDITY);
-        int indexWindSpeed = data.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_WIND_SPEED);
+        int indexWeatherDescriptions = data.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
+        int indexLocationName = data.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
+        int indexWeatherId = data.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
+        int indexMinTemps = data.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
+        int indexMaxTemps = data.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
+        int indexWeatherTimes = data.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES);
+        int indexPressures = data.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES);
+        int indexHumidities = data.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES);
+        int indexWindSpeeds = data.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS);
 
-        mProfilePic = data.getString(indexProfilePic);
-        mName = data.getString(indexName);
-        mLocation = data.getString(indexLocation);
-        mWeatherId = data.getInt(indexWeatherId);
-        mWeatherDescription = data.getString(indexWeatherDescription);
-        mCurrentTemp = data.getDouble(indexCurrentTemp);
-        mPressure = data.getDouble(indexPressure);
-        mHumidity = data.getInt(indexHumidity);
-        mWindSpeed = data.getDouble(indexWindSpeed);
+        String[] descriptions = data.getString(indexWeatherDescriptions).split(getString(R.string.delimiter));
+        String locationName = data.getString(indexLocationName);
+        String[] weatherIds = data.getString(indexWeatherId).split(getString(R.string.delimiter));
+        String[] minTemps = data.getString(indexMinTemps).split(getString(R.string.delimiter));
+        String[] maxTemps = data.getString(indexMaxTemps).split(getString(R.string.delimiter));
+        String[] weatherTimes = data.getString(indexWeatherTimes).split(getString(R.string.delimiter));
+        String[] pressures = data.getString(indexPressures).split(getString(R.string.delimiter));
+        String[] humidities = data.getString(indexHumidities).split(getString(R.string.delimiter));
+        String[] windSpeeds = data.getString(indexWindSpeeds).split(getString(R.string.delimiter));
 
+        //set description
+        String description = WeatherUtils.formatDescription(descriptions[mPosition]);
+        mDescriptionTextView.setText(description);
 
-        //set location name
-        if(mLocation.equals(getString(R.string.location_empty))) {
-            //check empty location
-            mLocationTextView.setText(getString(R.string.location_default));
-        } else {
-            mLocationTextView.setText(mLocation);
-        }
+        //set location
+        mLocationTextView.setText(locationName);
 
-        //set weather icon
-        int icon = WeatherUtils.getColorWeatherIcon(mWeatherId); //handles empty cases
+        //set icon
+        int weatherId = Integer.valueOf(weatherIds[mPosition]);
+        int icon = WeatherUtils.getWhiteWeatherIcon(weatherId);
         mIconImageView.setImageResource(icon);
 
-        //set weather description
-        if(mWeatherDescription.equals(getString(R.string.description_empty))) {
-            mDescriptionTextView.setText(getString(R.string.description_default));
-        } else {
-            //format and display description
-            String formattedDescription = WeatherUtils.formatDescription(mWeatherDescription);
-            mDescriptionTextView.setText(formattedDescription);
-        }
+        //set temperature
+        double averageTemp = (Double.valueOf(minTemps[mPosition]) + Double.valueOf(maxTemps[mPosition])) / 2.0;
+        String tempString = WeatherUtils.formatTemperature(this, averageTemp);
+        mTemperatureTextView.setText(tempString);
 
-        //set current temperature
-        if(mCurrentTemp == -1) {
-            //check empty temperature
-            mCurrentTempTextView.setText("");
-        } else {
-            //format temperature and display
-            String formattedCurrentTemp = WeatherUtils.formatTemperature(this, mCurrentTemp);
-            mCurrentTempTextView.setText(formattedCurrentTemp);
-        }
+        //set time
+        long time = Long.valueOf(weatherTimes[mPosition]);
+        String dateString = WeatherUtils.formatDate(time);
+        mDateTextView.setText(dateString);
 
         //set pressure
-        if(mPressure == -1) {
-            //check empty pressure value
-            mPressureTextView.setText("");
-        } else {
-            //format pressure and display
-            String formattedPressure = WeatherUtils.formatPressure(this, mPressure);
-            mPressureTextView.setText(formattedPressure);
-        }
+        double pressure = Double.valueOf(pressures[mPosition]);
+        String pressureString = WeatherUtils.formatPressure(this, pressure);
+        mPressureTextView.setText(pressureString);
 
         //set humidity
-        if(mHumidity == -1) {
-            mHumidityTextView.setText("");
-        } else {
-            //format humidity and display
-            String formattedHumidity = WeatherUtils.formatHumidity(this, mHumidity);
-            mHumidityTextView.setText(formattedHumidity);
-        }
+        int humidity = Integer.valueOf(humidities[mPosition]);
+        String humidityString = WeatherUtils.formatHumidity(this, humidity);
+        mHumidityTextView.setText(humidityString);
 
         //set wind speed
-        if (mWindSpeed == -1) {
-            mWindSpeedTextView.setText("");
-        } else {
-            //format wind speed and display
-            String formattedWindSpeed = WeatherUtils.formatWindSpeed(this, mWindSpeed);
-            mWindSpeedTextView.setText(formattedWindSpeed);
-        }
+        double windSpeed = Double.valueOf(windSpeeds[mPosition]);
+        String windSpeedString = WeatherUtils.formatWindSpeed(this, windSpeed);
+        mWindTextView.setText(windSpeedString);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        //nothing, since there are no external references to a cursor
+        //nothing since cursor is not used anywhere else
     }
 }

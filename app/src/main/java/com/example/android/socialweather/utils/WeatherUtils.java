@@ -33,7 +33,7 @@ public class WeatherUtils {
 
     //formats humidity
     public static String formatHumidity(Context context, int humidity) {
-        return humidity + " %";
+        return " " + humidity + " %";
     }
 
     //formats wind speed

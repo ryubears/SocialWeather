@@ -68,6 +68,7 @@
         <activity
             android:name=".AboutUsActivity"
             android:label="@string/activity_title_about_us"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -76,6 +77,7 @@
         <activity
             android:name=".PrivacyPolicyActivity"
             android:label="@string/activity_title_privacy_policy"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -83,6 +85,7 @@
         </activity>
         <activity android:name=".ForecastActivity"
             android:label="@string/activity_title_forecast"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -91,10 +94,11 @@
         <activity
             android:name=".DetailsActivity"
             android:label="@string/activity_title_details"
-            android:parentActivityName=".MainActivity">
+            android:launchMode="singleTop"
+            android:parentActivityName=".ForecastActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".ForecastActivity" />
         </activity>
 
         <!-- Content Provider -->
