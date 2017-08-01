@@ -234,7 +234,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                         locationName = "Seattle, Washington";
                                         locationId = "2";
                                     } else {
-                                        locationName = "Los Angeles, California";
+                                        locationName = "Seoul, South Korea";
                                         locationId = "3";
                                     }
                                 } else {

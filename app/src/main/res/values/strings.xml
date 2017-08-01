@@ -66,8 +66,11 @@
     <string name="pref_user_weather_id_key">user_weather_id</string>
     <string name="pref_user_weather_fetch_time_key">user_weather_fetch_time</string>
 
+    <!-- Forecast Activity -->
+    <string name="activity_title_forecast">Weather Forecast</string>
+
     <!-- Details Activity -->
-    <string name="activity_title_details">Weather Forecast</string>
+    <string name="activity_title_details">Details</string>
     <string name="details_pressure_label">Pressure</string>
     <string name="details_humidity_label">Humidity</string>
     <string name="details_wind_label">Wind Speed</string>

@@ -339,7 +339,7 @@ public class NetworkUtils {
         String forecastWeatherDescriptions = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
         String forecastMinTemps = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
         String forecastMaxTemps = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
-        String forecastPressures = forecastValues.getAsString(WeatherEntry.COLUMN_CURRENT_WEATHER_PRESSURE);
+        String forecastPressures = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES);
         String forecastHumidities = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES);
         String forecastWindSpeeds = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS);
 

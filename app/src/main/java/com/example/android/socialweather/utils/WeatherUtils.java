@@ -5,6 +5,11 @@ import android.content.Context;
 import com.example.android.socialweather.R;
 import com.example.android.socialweather.data.WeatherPreferences;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by Yehyun Ryu on 7/26/2017.
  */
@@ -50,6 +55,34 @@ public class WeatherUtils {
             returnDescription += Character.toUpperCase(descriptionArray[i].charAt(0)) + descriptionArray[i].substring(1) + " ";
         }
         return returnDescription.substring(0, returnDescription.length() - 1);
+    }
+
+    //formats weather date
+    public static String formatDate(long timeStamp) {
+        Date resultDate = new Date(timeStamp * 1000);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        //milliseconds till midnight
+        long timeApartFromMidnight = (timeStamp * 1000) - calendar.getTimeInMillis();
+
+        String dateString = "";
+        if(timeApartFromMidnight < 0) {
+            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+            dateString = "Today, " + sdf.format(resultDate);
+        } else if(timeApartFromMidnight < TimeUnit.DAYS.toMillis(1)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+            dateString = "Tomorrow, " + sdf.format(resultDate);
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, h:mm a");
+            dateString = sdf.format(resultDate);
+        }
+        return dateString;
     }
 
     //get drawable resource for weather icon with color
