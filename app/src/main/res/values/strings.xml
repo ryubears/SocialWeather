@@ -35,6 +35,7 @@
 
     <!-- Home Fragment -->
     <string name="home_empty_view">It looks pretty lonely here.\nWhy not share this app with your friends?</string>
+    <string name="loading_message">Loading...</string>
 
     <!-- Weather Item -->
     <string name="weather_item_lives">lives currently</string>
@@ -68,6 +69,12 @@
 
     <!-- Forecast Activity -->
     <string name="activity_title_forecast">Weather Forecast</string>
+
+    <!-- Forecast Drawer -->
+    <string name="friend_drawer_title">Friends</string>
+    <string name="friend_menu_title">Friends</string>
+    <string name="friend_drawer_open">Open friend drawer</string>
+    <string name="friend_drawer_close">Close friend drawer</string>
 
     <!-- Details Activity -->
     <string name="activity_title_details">Details</string>

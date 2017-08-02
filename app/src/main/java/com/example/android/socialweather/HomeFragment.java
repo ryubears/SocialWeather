@@ -181,6 +181,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     //method that makes the API call to fetch friends list
     public void syncFriends() {
+        mAdapter.setClickable(false);
         Bundle parameters = new Bundle();
         parameters.putString("fields", "name,picture.height(200).width(200),location"); //fields to extract data from
         parameters.putInt("limit", 100); //limit number of friends in list to 100
@@ -326,6 +327,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.setClickable(true);
         mHomeSwipeRefreshLayout.setRefreshing(false);
         //change data in weather adapter
         mAdapter.swapCursor(data);

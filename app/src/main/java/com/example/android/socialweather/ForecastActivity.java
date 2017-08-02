@@ -7,9 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.example.android.socialweather.data.WeatherContract;
 import com.example.android.socialweather.data.WeatherContract.WeatherEntry;
@@ -18,21 +24,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ForecastActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    @BindView(R.id.forecast_drawer_layout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.friend_recycler_view) RecyclerView mFriendRecyclerView;
     @BindView(R.id.forecast_recycler_view) RecyclerView mForecastRecyclerView;
 
     private static final int FORECAST_LOADER_ID = 45;
 
-    private ForecastAdapter mAdapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    private FriendAdapter mFriendAdapter;
+    private ForecastAdapter mForecastAdapter;
 
     private int mId;
+    private String[] mFriendNames;
+    private String[] mFriendProfiles;
     private String[] mWeatherTimes;
     private String[] mWeatherIds;
     private String[] mWeatherDescriptions;
     private String[] mWeatherMinTemps;
     private String[] mWeatherMaxTemps;
-    private String[] mWeatherPressures;
-    private String[] mWeatherHumidities;
-    private String[] mWeatherWindSpeeds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +56,26 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        //set layout manager for recycler view
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mForecastRecyclerView.setLayoutManager(layoutManager);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.string.friend_drawer_open, R.string.friend_drawer_close);
 
-        //set adapter to recycler view
-        mAdapter = new ForecastAdapter(-1, null, null, null, null, null);
-        mForecastRecyclerView.setAdapter(mAdapter);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+        //set layout manager for friend recycler view
+        LinearLayoutManager friendLayoutManager = new LinearLayoutManager(this);
+        mFriendRecyclerView.setLayoutManager(friendLayoutManager);
+
+        //set adapter to friend recycler view
+        mFriendAdapter = new FriendAdapter(null, null);
+        mFriendRecyclerView.setAdapter(mFriendAdapter);
+
+        //set layout manager for forecast recycler view
+        LinearLayoutManager forecastLayoutManager = new LinearLayoutManager(this);
+        mForecastRecyclerView.setLayoutManager(forecastLayoutManager);
+
+        //set adapter to forecast recycler view
+        mForecastAdapter = new ForecastAdapter(-1, null, null, null, null, null);
+        mForecastRecyclerView.setAdapter(mForecastAdapter);
 
         //set recycler view to fixed size for better performance
         mForecastRecyclerView.setHasFixedSize(true);
@@ -89,19 +112,24 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         //get data from cursor and attach it to adapter
         data.moveToFirst();
 
+        int indexFriendNames = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
+        int indexFriendProfiles = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
         int indexWeatherTimes = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES);
         int indexWeatherIds = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
         int indexWeatherDescriptions = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
         int indexWeatherMinTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
         int indexWeatherMaxTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
 
+        mFriendNames = data.getString(indexFriendNames).split(getString(R.string.delimiter));
+        mFriendProfiles = data.getString(indexFriendProfiles).split(getString(R.string.delimiter));
         mWeatherTimes = data.getString(indexWeatherTimes).split(getString(R.string.delimiter));
         mWeatherIds = data.getString(indexWeatherIds).split(getString(R.string.delimiter));
         mWeatherDescriptions = data.getString(indexWeatherDescriptions).split(getString(R.string.delimiter));
         mWeatherMinTemps = data.getString(indexWeatherMinTemps).split(getString(R.string.delimiter));
         mWeatherMaxTemps = data.getString(indexWeatherMaxTemps).split(getString(R.string.delimiter));
 
-        mAdapter.swapCursor(mId, mWeatherTimes, mWeatherIds, mWeatherDescriptions, mWeatherMinTemps, mWeatherMaxTemps);
+        mFriendAdapter.swapData(mFriendNames, mFriendProfiles);
+        mForecastAdapter.swapData(mId, mWeatherTimes, mWeatherIds, mWeatherDescriptions, mWeatherMinTemps, mWeatherMaxTemps);
     }
 
     @Override
@@ -109,4 +137,25 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         //nothing here since cursor is not passes onto any external class
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.forecast_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.forecast_friends_menu:
+                if(!mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    mDrawerLayout.openDrawer(GravityCompat.END);
+                } else {
+                    mDrawerLayout.closeDrawer(GravityCompat.END);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

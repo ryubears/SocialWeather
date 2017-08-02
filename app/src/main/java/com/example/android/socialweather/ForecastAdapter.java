@@ -66,7 +66,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         return mWeatherTimes.length;
     }
 
-    public void swapCursor(int id, String[] weatherTimes, String[] weatherIds, String[] weatherDescriptions, String[] minTemps, String[] maxTemps) {
+    public void swapData(int id, String[] weatherTimes, String[] weatherIds, String[] weatherDescriptions, String[] minTemps, String[] maxTemps) {
         mId = id;
         mWeatherTimes = weatherTimes;
         mWeatherIds = weatherIds;

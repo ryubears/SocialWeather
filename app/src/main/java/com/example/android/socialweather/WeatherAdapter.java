@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.socialweather.utils.WeatherUtils;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
@@ -31,6 +32,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
     //cursor from home fragment loader
     private Cursor mCursor;
+
+    private boolean mClickable = false;
 
     public WeatherAdapter() {}
 
@@ -73,6 +76,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         }
     }
 
+    public void setClickable(boolean clickable) {
+        mClickable = clickable;
+    }
+
     public class WeatherViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.weather_item_card_view) CardView mCardView;
         @BindView(R.id.weather_item_background) ImageView mBackgroundImageView;
@@ -83,7 +90,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         @BindView(R.id.weather_item_friend2) ImageView mFriend2ImageView;
         @BindView(R.id.weather_item_lives) TextView mLivesTextView;
 
-        private int mId;
+        private int mId = -1;
         private String mLocationName;
         private String mLocationPhoto;
         private String mProfilePics;
@@ -172,9 +179,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
         @OnClick(R.id.weather_item_card_view)
         public void onClick() {
-            Intent intent = new Intent(itemView.getContext(), ForecastActivity.class);
-            intent.putExtra(WeatherEntry._ID, mId);
-            itemView.getContext().startActivity(intent);
+            if(mClickable) {
+                Intent intent = new Intent(itemView.getContext(), ForecastActivity.class);
+                intent.putExtra(WeatherEntry._ID, mId);
+                itemView.getContext().startActivity(intent);
+            } else {
+                String toastMessage = itemView.getContext().getString(R.string.loading_message);
+                Toast.makeText(itemView.getContext(), toastMessage, Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 }
