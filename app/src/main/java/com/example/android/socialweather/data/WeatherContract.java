@@ -15,19 +15,30 @@ public class WeatherContract {
     //base uri for any uris that contact this content provider
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    //weather path
-    public static final String PATH_WEATHER = "weather";
+    //facebook path
+    public static final String PATH_FACEBOOK = "facebook";
+
+    //account kit path
+    public static final String PATH_ACCOUNT_KIT = "account_kit";
 
     //contents of weather table
     public static final class WeatherEntry implements BaseColumns {
 
-        //base uri to contact this weather table
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
-                .appendPath(PATH_WEATHER)
+        //base content uri to contact facebook weather table
+        public static final Uri FACEBOOK_CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_FACEBOOK)
                 .build();
 
-        //table name
-        public static final String TABLE_NAME = "weather";
+        //base content uri to contact account kit weather table
+        public static final Uri ACCOUNT_KIT_CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_ACCOUNT_KIT)
+                .build();
+
+        //facebook table name
+        public static final String FACEBOOK_TABLE_NAME = "facebook";
+
+        //account kit table name
+        public static final String ACCOUNT_KIT_TABLE_NAME = "account_kit";
 
         //last data update time
         public static final String COLUMN_LAST_UPDATE_TIME = "last_update_time";

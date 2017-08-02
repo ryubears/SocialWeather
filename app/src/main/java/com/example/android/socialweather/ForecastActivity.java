@@ -35,7 +35,9 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
     private FriendAdapter mFriendAdapter;
     private ForecastAdapter mForecastAdapter;
 
-    private int mId;
+    private boolean mIsFacebook;
+
+    private int mId = -1;
     private String[] mFriendNames;
     private String[] mFriendProfiles;
     private String[] mWeatherTimes;
@@ -56,10 +58,20 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        //set drawer layout toggle
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.friend_drawer_open, R.string.friend_drawer_close);
-
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+        //get data from previous activity
+        Intent intent = getIntent();
+        if(intent != null) {
+            //get row id passed in from main activity
+            mId = intent.getIntExtra(WeatherEntry._ID, -1);
+
+            //get how user logged in
+            mIsFacebook = intent.getBooleanExtra(getString(R.string.is_facebook_key), false);
+        }
 
         //set layout manager for friend recycler view
         LinearLayoutManager friendLayoutManager = new LinearLayoutManager(this);
@@ -74,17 +86,13 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         mForecastRecyclerView.setLayoutManager(forecastLayoutManager);
 
         //set adapter to forecast recycler view
-        mForecastAdapter = new ForecastAdapter(-1, null, null, null, null, null);
+        mForecastAdapter = new ForecastAdapter(mIsFacebook, -1, null, null, null, null, null);
         mForecastRecyclerView.setAdapter(mForecastAdapter);
 
         //set recycler view to fixed size for better performance
         mForecastRecyclerView.setHasFixedSize(true);
 
-        Intent intent = getIntent();
         if(intent != null) {
-            //get row id passed in from main activity
-            mId = intent.getIntExtra(WeatherEntry._ID, -1);
-
             //initialize loader
             getSupportLoaderManager().initLoader(FORECAST_LOADER_ID, null, this);
         }
@@ -94,14 +102,25 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch(id) {
             case FORECAST_LOADER_ID:
-                return new CursorLoader(
-                        this,
-                        ContentUris.withAppendedId(WeatherEntry.CONTENT_URI, mId),
-                        null,
-                        null,
-                        null,
-                        null
-                );
+                if(mIsFacebook) {
+                    return new CursorLoader(
+                            this,
+                            ContentUris.withAppendedId(WeatherEntry.FACEBOOK_CONTENT_URI, mId),
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+                } else {
+                    return new CursorLoader(
+                            this,
+                            ContentUris.withAppendedId(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, mId),
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+                }
             default:
                 throw new RuntimeException("This loader is not yet implemented: " + id);
         }
@@ -113,7 +132,10 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         data.moveToFirst();
 
         int indexFriendNames = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
-        int indexFriendProfiles = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
+        int indexFriendProfiles = -1;
+        if(mIsFacebook) {
+            indexFriendProfiles = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
+        }
         int indexWeatherTimes = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES);
         int indexWeatherIds = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
         int indexWeatherDescriptions = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
@@ -121,7 +143,9 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         int indexWeatherMaxTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
 
         mFriendNames = data.getString(indexFriendNames).split(getString(R.string.delimiter));
-        mFriendProfiles = data.getString(indexFriendProfiles).split(getString(R.string.delimiter));
+        if(indexFriendProfiles != -1) {
+            mFriendProfiles = data.getString(indexFriendProfiles).split(getString(R.string.delimiter));
+        }
         mWeatherTimes = data.getString(indexWeatherTimes).split(getString(R.string.delimiter));
         mWeatherIds = data.getString(indexWeatherIds).split(getString(R.string.delimiter));
         mWeatherDescriptions = data.getString(indexWeatherDescriptions).split(getString(R.string.delimiter));

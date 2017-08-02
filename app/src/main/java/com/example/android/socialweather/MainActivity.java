@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.main_nav_view) NavigationView mNavigationView;
 
-
     //views in navigation header
     private View mHeader;
     private ImageView mHeaderProfile;
@@ -86,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     //facebook access token and a callback manager to handle permission dialogs
     private AccessToken mAccessToken;
     private CallbackManager mCallbackManager;
+    private boolean mIsFacebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,10 +207,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                //store that user logged in with facebook
+                mIsFacebook = true;
+
                 //login with the permission whether granted or not
                 loginManager.logInWithReadPermissions(this, Arrays.asList("user_location"));
             }
         } else {
+            //store that user did not login with facebook
+            mIsFacebook = false;
+
             //if user logged in through account kit
             AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
                 @Override
@@ -507,5 +513,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return phoneNumber;
+    }
+
+    //return whether user logged in with facebook or not
+    public boolean isFacebook() {
+        return mIsFacebook;
     }
 }

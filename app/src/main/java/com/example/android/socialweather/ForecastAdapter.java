@@ -1,5 +1,6 @@
 package com.example.android.socialweather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,8 @@ import butterknife.OnClick;
  */
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder> {
+    //whether user logged in with facebook
+    private boolean mIsFacebook;
 
     //attributes of forecast
     private int mId;
@@ -30,7 +33,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     private String[] mWeatherMinTemps;
     private String[] mWeatherMaxTemps;
 
-    public ForecastAdapter(int id, String[] weatherTimes, String[] weatherIds, String[] weatherDescriptions, String[] minTemps, String[] maxTemps) {
+    public ForecastAdapter(boolean isFacebook, int id, String[] weatherTimes, String[] weatherIds, String[] weatherDescriptions, String[] minTemps, String[] maxTemps) {
+        mIsFacebook = isFacebook;
         mId = id;
         mWeatherTimes = weatherTimes;
         mWeatherIds = weatherIds;
@@ -87,12 +91,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         @BindView(R.id.forecast_item_min_temp) TextView mMinTempTextView;
         @BindView(R.id.forecast_item_max_temp) TextView mMaxTempTextView;
 
+        private Context mContext;
         private int mPosition;
 
         public ForecastViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
+            mContext = itemView.getContext();
         }
 
         public void bind(int position) {
@@ -126,9 +132,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         @OnClick(R.id.forecast_item)
         public void onClick() {
-            Intent intent = new Intent(itemView.getContext(), DetailsActivity.class);
+            Intent intent = new Intent(mContext, DetailsActivity.class);
             intent.putExtra(WeatherContract.WeatherEntry._ID, mId);
-            intent.putExtra(itemView.getContext().getString(R.string.forecast_position_key), mPosition);
+            intent.putExtra(mContext.getString(R.string.forecast_position_key), mPosition);
+            intent.putExtra(mContext.getString(R.string.is_facebook_key), mIsFacebook);
             itemView.getContext().startActivity(intent);
         }
     }

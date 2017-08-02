@@ -24,9 +24,9 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //SQL statement that will create a table
-        final String SQL_CREATE_FACEBOOK_TABLE = "" +
-                "CREATE TABLE " + WeatherEntry.TABLE_NAME + " (" +
+        //SQL statement that will create facebook table
+        final String SQL_CREATE_FACEBOOK_TABLE =
+                "CREATE TABLE " + WeatherEntry.FACEBOOK_TABLE_NAME + " (" +
 
                 WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 WeatherEntry.COLUMN_LAST_UPDATE_TIME + " INTEGER NOT NULL, " +
@@ -50,8 +50,31 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
 
                 " UNIQUE (" + WeatherEntry.COLUMN_LOCATION_ID + ") ON CONFLICT REPLACE);";
 
+        //SQL statement that will create account kit table
+        final String SQL_CREATE_ACCOUNT_KIT_TABLE =
+                "CREATE TABLE " + WeatherEntry.ACCOUNT_KIT_TABLE_NAME + " (" +
+                WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                WeatherEntry.COLUMN_LAST_UPDATE_TIME + " INTEGER NOT NULL, " +
+
+                WeatherEntry.COLUMN_LOCATION_NAME + " TEXT NOT NULL, " +
+                WeatherEntry.COLUMN_LOCATION_PHOTO + " TEXT DEFAULT 'location_photo_empty', " +
+
+                WeatherEntry.COLUMN_FRIEND_NAMES + " TEXT NOT NULL, " +
+
+                WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES + " STRING DEFAULT 'forecast_times_empty', " +
+                WeatherEntry.COLUMN_FORECAST_WEATHER_IDS + " STRING DEFAULT 'forecast_ids_empty', " +
+                WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS + " STRING DEFAULT 'forecast_descriptions_empty', " +
+                WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS + " STRING DEFAULT 'forecast_min_temps_empty', " +
+                WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS + " STRING DEFAULT 'forecast_max_temps_empty', " +
+                WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES + " STRING DEFAULT 'forecast_pressures_empty', " +
+                WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES + " STRING DEFAULT 'forecast_humidities_empty', " +
+                WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS + " STRING DEFAULT 'forecast_wind_speeds_empty', " +
+
+                " UNIQUE (" + WeatherEntry.COLUMN_LOCATION_NAME + ") ON CONFLICT REPLACE);";
+
         //execute the SQL statement above
         db.execSQL(SQL_CREATE_FACEBOOK_TABLE);
+        db.execSQL(SQL_CREATE_ACCOUNT_KIT_TABLE);
     }
 
     @Override

@@ -81,11 +81,13 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
                     .oval(false)
                     .build();
 
-            //load friend profile picture
-            Picasso.with(itemView.getContext())
-                    .load(mFriendProfiles[position])
-                    .transform(transformation)
-                    .into(mProfileImageView);
+            if(mFriendProfiles != null) {
+                //load friend profile picture
+                Picasso.with(itemView.getContext())
+                        .load(mFriendProfiles[position])
+                        .transform(transformation)
+                        .into(mProfileImageView);
+            }
 
             //set friend name
             mNameTextView.setText(mFriendNames[position]);

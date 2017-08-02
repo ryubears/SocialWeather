@@ -29,6 +29,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
     private static final int DETAILS_LOADER_ID = 55;
 
+    private boolean mIsFacebook;
+
     private int mId;
     private int mPosition;
 
@@ -49,6 +51,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             //get row id and position
             mId = intent.getIntExtra(WeatherEntry._ID, -1);
             mPosition = intent.getIntExtra(getString(R.string.forecast_position_key), -1);
+            mIsFacebook = intent.getBooleanExtra(getString(R.string.is_facebook_key), false);
 
             getSupportLoaderManager().initLoader(DETAILS_LOADER_ID, null, this);
         }
@@ -58,14 +61,25 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch(id) {
             case DETAILS_LOADER_ID:
-                return new CursorLoader(
-                        this,
-                        ContentUris.withAppendedId(WeatherEntry.CONTENT_URI, mId),
-                        null,
-                        null,
-                        null,
-                        null
-                );
+                if(mIsFacebook) {
+                    return new CursorLoader(
+                            this,
+                            ContentUris.withAppendedId(WeatherEntry.FACEBOOK_CONTENT_URI, mId),
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+                } else {
+                    return new CursorLoader(
+                            this,
+                            ContentUris.withAppendedId(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, mId),
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+                }
             default:
                 throw new RuntimeException("This loader is not yet implemented: " + id);
         }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.example.android.socialweather.R;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -27,10 +28,11 @@ public class WeatherSyncUtils {
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_HOURS / 3;
 
     //job tag
-    private static final String WEATHER_SYNC_TAG = "weather_sync";
+    private static final String FACEBOOK_WEATHER_SYNC_TAG = "facebook_weather_sync";
+    private static final String ACCOUNT_KIT_WEATHER_SYNC_TAG = "account_kit_weather_sync";
 
-    //schedules job
-    private static void scheduleFirebaseJobDispatcherSync(final Context context) {
+    //schedules facebook weather job
+    private static void scheduleFacebookFirebaseJobDispatcherSync(final Context context) {
 
         Driver driver = new GooglePlayDriver(context);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
@@ -38,9 +40,9 @@ public class WeatherSyncUtils {
         //job
         Job syncWeatherJob = dispatcher.newJobBuilder()
                 //service used to sync weather data
-                .setService(WeatherFirebaseJobService.class)
+                .setService(FacebookWeatherFirebaseJobService.class)
                 //unique tag to identify job
-                .setTag(WEATHER_SYNC_TAG)
+                .setTag(FACEBOOK_WEATHER_SYNC_TAG)
                 //network constrains on which this job should run
                 .setConstraints(Constraint.ON_ANY_NETWORK)
                 //how long job should persist
@@ -60,16 +62,54 @@ public class WeatherSyncUtils {
         Log.d(LOG_TAG, "Job Scheduled");
     }
 
-    synchronized public static void initialize(final Context context) {
+    //schedules facebook weather job
+    private static void scheduleAccountKitFirebaseJobDispatcherSync(final Context context) {
+
+        Driver driver = new GooglePlayDriver(context);
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
+
+        //job
+        Job syncWeatherJob = dispatcher.newJobBuilder()
+                //service used to sync weather data
+                .setService(AccountKitWeatherFirebaseJobService.class)
+                //unique tag to identify job
+                .setTag(ACCOUNT_KIT_WEATHER_SYNC_TAG)
+                //network constrains on which this job should run
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                //how long job should persist
+                .setLifetime(Lifetime.FOREVER)
+                //needs to be repeated to stay up to date
+                .setRecurring(true)
+                //synced every 3 to 4 hours
+                .setTrigger(Trigger.executionWindow(
+                        SYNC_INTERVAL_SECONDS,
+                        SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
+                //replace existing job
+                .setReplaceCurrent(true)
+                .build();
+
+        //schedule
+        dispatcher.schedule(syncWeatherJob);
+        Log.d(LOG_TAG, "Job Scheduled");
+    }
+
+    synchronized public static void initialize(final Context context, boolean isFacebook) {
         Log.d(LOG_TAG, "Initialize Weather Data");
+
         //schedule and immediately sync weather data
-        scheduleFirebaseJobDispatcherSync(context);
-        startImmediateSync(context);
+        if(isFacebook) {
+            scheduleFacebookFirebaseJobDispatcherSync(context);
+        } else {
+            scheduleAccountKitFirebaseJobDispatcherSync(context);
+        }
+
+        startImmediateSync(context, isFacebook);
     }
 
     //immediately calls intent service that makes weather network requests
-    private static void startImmediateSync(final Context context) {
+    private static void startImmediateSync(final Context context, boolean isFacebook) {
         Intent intentSyncImmediately = new Intent(context, WeatherSyncIntentService.class);
+        intentSyncImmediately.putExtra(context.getString(R.string.is_facebook_key), isFacebook);
         context.startService(intentSyncImmediately);
     }
 }

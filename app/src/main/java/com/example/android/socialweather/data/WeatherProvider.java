@@ -18,8 +18,10 @@ import android.support.annotation.Nullable;
 public class WeatherProvider extends ContentProvider {
 
     //constants to match what type of Uri user is trying to use
-    public static final int CODE_ALL_WEATHER = 100;
-    public static final int CODE_SINGLE_WEATHER = 101;
+    public static final int FACEBOOK_ALL_WEATHER = 100;
+    public static final int FACEBOOK_SINGLE_WEATHER = 101;
+    public static final int ACCOUNT_KIT_ALL_WEATHER = 200;
+    public static final int ACCOUNT_KIT_SINGLE_WEATHER = 201;
 
     //UriMatcher match uris
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -31,8 +33,10 @@ public class WeatherProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = WeatherContract.CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, WeatherContract.PATH_WEATHER, CODE_ALL_WEATHER);
-        matcher.addURI(authority, WeatherContract.PATH_WEATHER + "/#", CODE_SINGLE_WEATHER);
+        matcher.addURI(authority, WeatherContract.PATH_FACEBOOK, FACEBOOK_ALL_WEATHER);
+        matcher.addURI(authority, WeatherContract.PATH_FACEBOOK + "/#", FACEBOOK_SINGLE_WEATHER);
+        matcher.addURI(authority, WeatherContract.PATH_ACCOUNT_KIT, ACCOUNT_KIT_ALL_WEATHER);
+        matcher.addURI(authority, WeatherContract.PATH_ACCOUNT_KIT + "/#", ACCOUNT_KIT_SINGLE_WEATHER);
 
         return matcher;
     }
@@ -49,14 +53,14 @@ public class WeatherProvider extends ContentProvider {
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         switch(sUriMatcher.match(uri)) {
-            case CODE_ALL_WEATHER:
+            case FACEBOOK_ALL_WEATHER:
                 final SQLiteDatabase database = mDbHelper.getWritableDatabase();
                 database.beginTransaction();
                 int numRowsInserted = 0;
                 try {
                     for (ContentValues value: values) {
                         long id = database.insert(
-                                WeatherContract.WeatherEntry.TABLE_NAME,
+                                WeatherContract.WeatherEntry.FACEBOOK_TABLE_NAME,
                                 null,
                                 value);
                         if(id != -1) {
@@ -79,19 +83,19 @@ public class WeatherProvider extends ContentProvider {
     }
 
     //inserts one person
-    //for accountkit
+    //for account kit table
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         Uri returnUri;
         switch(sUriMatcher.match(uri)) {
-            case CODE_ALL_WEATHER:
+            case ACCOUNT_KIT_ALL_WEATHER:
                 long id = mDbHelper.getWritableDatabase().insert(
-                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        WeatherContract.WeatherEntry.ACCOUNT_KIT_TABLE_NAME,
                         null,
                         values);
                 if(id > 0) {
-                    returnUri = ContentUris.withAppendedId(WeatherContract.WeatherEntry.CONTENT_URI, id);
+                    returnUri = ContentUris.withAppendedId(WeatherContract.WeatherEntry.ACCOUNT_KIT_CONTENT_URI, id);
                 } else {
                     throw new SQLException("Failed to insert row. Return id: " + id);
                 }
@@ -99,23 +103,22 @@ public class WeatherProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Invalid uri: " + uri);
         }
-
         getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
     //queries data for specific person
-    //for details activity
+    //for both facebook and account kit
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         Cursor cursor;
         switch(sUriMatcher.match(uri)) {
-            case CODE_SINGLE_WEATHER: {
+            case FACEBOOK_SINGLE_WEATHER: {
                 String id = uri.getLastPathSegment();
                 selectionArgs = new String[] {id};
                 cursor = mDbHelper.getReadableDatabase().query(
-                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        WeatherContract.WeatherEntry.FACEBOOK_TABLE_NAME,
                         projection,
                         WeatherContract.WeatherEntry._ID + "=?",
                         selectionArgs,
@@ -124,9 +127,9 @@ public class WeatherProvider extends ContentProvider {
                         sortOrder);
                 break;
             }
-            case CODE_ALL_WEATHER:
+            case FACEBOOK_ALL_WEATHER:
                 cursor = mDbHelper.getReadableDatabase().query(
-                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        WeatherContract.WeatherEntry.FACEBOOK_TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -134,6 +137,29 @@ public class WeatherProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            case ACCOUNT_KIT_SINGLE_WEATHER:
+                String id = uri.getLastPathSegment();
+                selectionArgs = new String[] {id};
+                cursor = mDbHelper.getReadableDatabase().query(
+                        WeatherContract.WeatherEntry.ACCOUNT_KIT_TABLE_NAME,
+                        projection,
+                        WeatherContract.WeatherEntry._ID + "=?",
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case ACCOUNT_KIT_ALL_WEATHER:
+                cursor = mDbHelper.getReadableDatabase().query(
+                        WeatherContract.WeatherEntry.ACCOUNT_KIT_TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Invalid uri: " + uri);
         }
@@ -145,8 +171,8 @@ public class WeatherProvider extends ContentProvider {
     }
 
     //deletes entire weather table or specific person data
-    //either for updating facebook friend list
-    //or for deleting individual person data in accountkit
+    //for deleting facebook table before a sync
+    //or for deleting individual person data in account kit
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         int numRowsDeleted;
@@ -156,18 +182,18 @@ public class WeatherProvider extends ContentProvider {
         }
 
         switch(sUriMatcher.match(uri)) {
-            case CODE_SINGLE_WEATHER:
+            case FACEBOOK_ALL_WEATHER:
+                numRowsDeleted = mDbHelper.getWritableDatabase().delete(
+                        WeatherContract.WeatherEntry.FACEBOOK_TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+            case ACCOUNT_KIT_SINGLE_WEATHER:
                 String id = uri.getLastPathSegment();
                 selectionArgs = new String[] {id};
                 numRowsDeleted = mDbHelper.getWritableDatabase().delete(
-                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        WeatherContract.WeatherEntry.ACCOUNT_KIT_TABLE_NAME,
                         WeatherContract.WeatherEntry._ID + "=?",
-                        selectionArgs);
-                break;
-            case CODE_ALL_WEATHER:
-                numRowsDeleted = mDbHelper.getWritableDatabase().delete(
-                        WeatherContract.WeatherEntry.TABLE_NAME,
-                        selection,
                         selectionArgs);
                 break;
             default:
@@ -181,19 +207,29 @@ public class WeatherProvider extends ContentProvider {
         return numRowsDeleted;
     }
 
-    //updates individual person data
-    //for account kit
+    //for mass updates in either table
+    //or for individual update in account kit
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         int numRowsUpdated;
 
         switch(sUriMatcher.match(uri)) {
-            case CODE_SINGLE_WEATHER:
+            case FACEBOOK_SINGLE_WEATHER:
                 String id = uri.getLastPathSegment();
                 selectionArgs = new String[] {id};
 
                 numRowsUpdated = mDbHelper.getWritableDatabase().update(
-                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        WeatherContract.WeatherEntry.FACEBOOK_TABLE_NAME,
+                        values,
+                        WeatherContract.WeatherEntry._ID + "=?",
+                        selectionArgs);
+                break;
+            case ACCOUNT_KIT_SINGLE_WEATHER:
+                String rowId = uri.getLastPathSegment();
+                selectionArgs = new String[] {rowId};
+
+                numRowsUpdated = mDbHelper.getWritableDatabase().update(
+                        WeatherContract.WeatherEntry.ACCOUNT_KIT_TABLE_NAME,
                         values,
                         WeatherContract.WeatherEntry._ID + "=?",
                         selectionArgs);

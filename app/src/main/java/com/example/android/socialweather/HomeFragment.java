@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +41,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.home_swipe_refresh_layout) SwipeRefreshLayout mHomeSwipeRefreshLayout;
     @BindView(R.id.home_recycler_view) RecyclerView mHomeRecyclerView;
     @BindView(R.id.home_empty_view) TextView mHomeEmptyView;
-    @BindView(R.id.home_progress_bar) ProgressBar mHomeProgressBar;
 
     private static final String LOG_TAG = HomeFragment.class.getSimpleName(); //log tag for debugging
     private static final String INITIALIZE_KEY = "initialize"; //string key for storing whether friend data has been initialized
@@ -52,6 +50,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private WeatherAdapter mAdapter;  //adapter for recycler view in this fragment
     private AccessToken mAccessToken; //facebook access token
+    private boolean mIsFacebook; //stores how user logged in
 
     public HomeFragment() {
         // Required empty public constructor
@@ -64,10 +63,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
-        //sets adapter to recycler view
-        mAdapter = new WeatherAdapter();
-        mHomeRecyclerView.setAdapter(mAdapter);
-
         //sets layout manager to recycler view
         int orientation = getResources().getConfiguration().orientation;
         if(orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -79,11 +74,8 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         }
         mHomeRecyclerView.setHasFixedSize(true);
 
+        //set swipe refresh listener
         mHomeSwipeRefreshLayout.setOnRefreshListener(this);
-
-        //initialize loader
-        LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(WEATHER_LOADER_ID, null, this);
 
         //get state of friend initialization
         if(savedInstanceState != null) {
@@ -95,16 +87,24 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                 && mAccessToken.getPermissions().contains("user_location")) {
             //when user logged in with facebook with all permissions
 
-            //show progress bar
-            mHomeProgressBar.setVisibility(View.VISIBLE);
+            //get whether user logged in with facebook
+            mIsFacebook = true;
+        }
 
-            //avoid checking data if friend data has already been initialized
-            //for cases like screen rotation
-            if(!mFriendInitialized) {
-                mFriendInitialized = true;
-                //check if data is empty
-                checkData();
-            }
+        //sets adapter to recycler view
+        mAdapter = new WeatherAdapter(mIsFacebook);
+        mHomeRecyclerView.setAdapter(mAdapter);
+
+        //initialize loader
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(WEATHER_LOADER_ID, null, this);
+
+        //avoid checking data if friend data has already been initialized
+        //for cases like screen rotation
+        if(!mFriendInitialized) {
+            mFriendInitialized = true;
+            //check if data is empty
+            checkData();
         }
 
         // Inflate the layout for this fragment
@@ -114,7 +114,11 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     //refresh data
     @Override
     public void onRefresh() {
-        syncFriends();
+        if(mIsFacebook) {
+            syncFriends();
+        } else {
+            WeatherSyncUtils.initialize(getContext(), mIsFacebook);
+        }
     }
 
     //method that calls async task that checks if weather data is empty or outdated
@@ -130,13 +134,24 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         @Override
         protected Integer doInBackground(Void... voids) {
             //query weather data to check if it is empty or outdated
-            Cursor cursor = getContext().getContentResolver().query(
-                    WeatherContract.WeatherEntry.CONTENT_URI,
-                    new String[] {WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME}, //just one column since this is just to check if data is empty or outdated
-                    null,
-                    null,
-                    null
-            );
+            Cursor cursor;
+            if(mIsFacebook) {
+                cursor = getContext().getContentResolver().query(
+                        WeatherContract.WeatherEntry.FACEBOOK_CONTENT_URI,
+                        new String[] {WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME}, //just one column since this is just to check if data is empty or outdated
+                        null,
+                        null,
+                        null
+                );
+            } else {
+                cursor = getContext().getContentResolver().query(
+                        WeatherContract.WeatherEntry.ACCOUNT_KIT_CONTENT_URI,
+                        new String[] {WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME}, //just one column since this is just to check if data is empty or outdated
+                        null,
+                        null,
+                        null
+                );
+            }
 
             int dataState;
             if(cursor == null || cursor.getCount() == 0) {
@@ -148,7 +163,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                 int indexLastUpdateTime = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME);
                 long lastUpdateTime = cursor.getLong(indexLastUpdateTime);
                 long currentTime = System.currentTimeMillis();
-                long maxHour = 4;
+                long maxHour = 3;
                 if((currentTime - lastUpdateTime) >= TimeUnit.HOURS.toMillis(maxHour)) {
                     dataState = DATA_OUTDATED;
                 } else {
@@ -169,11 +184,13 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             super.onPostExecute(dataState);
 
             if(dataState == DATA_EMPTY) {
-                //sync with friend data if data is empty
-                syncFriends();
+                if(mIsFacebook) {
+                    //sync with friend data if data is empty
+                    syncFriends();
+                }
             } else if(dataState == DATA_OUTDATED) {
-                //update weather data if data is outdated
-                WeatherSyncUtils.initialize(getContext());
+                //update facebook weather data if data is outdated
+                WeatherSyncUtils.initialize(getContext(), mIsFacebook);
             }
         }
     }
@@ -286,20 +303,20 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
                         //deletes existing weather data
                         getContext().getContentResolver().delete(
-                                WeatherContract.WeatherEntry.CONTENT_URI,
+                                WeatherContract.WeatherEntry.FACEBOOK_CONTENT_URI,
                                 null,
                                 null
                         );
 
                         //inserts fresh friend list data
                         int rowsInserted = getContext().getContentResolver().bulkInsert(
-                                WeatherContract.WeatherEntry.CONTENT_URI,
+                                WeatherContract.WeatherEntry.FACEBOOK_CONTENT_URI,
                                 contentValues
                         );
 
                         //initialize weather data if there are friends, :( sad life
                         if(rowsInserted != 0) {
-                            WeatherSyncUtils.initialize(getContext());
+                            WeatherSyncUtils.initialize(getContext(), mIsFacebook);
                         }
                     }
                 }
@@ -311,14 +328,25 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         switch(id) {
             case WEATHER_LOADER_ID:
                 //query entire weather data
-                return new CursorLoader(
-                        getContext(),
-                        WeatherContract.WeatherEntry.CONTENT_URI,
-                        null,
-                        null,
-                        null,
-                        null
-                );
+                if(mIsFacebook) {
+                    return new CursorLoader(
+                            getContext(),
+                            WeatherContract.WeatherEntry.FACEBOOK_CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+                } else {
+                    return new CursorLoader(
+                            getContext(),
+                            WeatherContract.WeatherEntry.ACCOUNT_KIT_CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            null
+                    );
+                }
             default:
                 throw new RuntimeException("This loader is not implemented: " + id);
         }
@@ -344,13 +372,11 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void showFriends() {
-        mHomeProgressBar.setVisibility(View.GONE);
         mHomeRecyclerView.setVisibility(View.VISIBLE);
         mHomeEmptyView.setVisibility(View.GONE);
     }
 
     private void showEmptyView() {
-        mHomeProgressBar.setVisibility(View.GONE);
         mHomeRecyclerView.setVisibility(View.GONE);
         mHomeEmptyView.setVisibility(View.VISIBLE);
     }

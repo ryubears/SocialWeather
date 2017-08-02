@@ -40,7 +40,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals(getString(R.string.pref_units_key))) {
             //notify change in data to display correct temperature units
-            getActivity().getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
+            getActivity().getContentResolver().notifyChange(WeatherContract.WeatherEntry.FACEBOOK_CONTENT_URI, null);
+            getActivity().getContentResolver().notifyChange(WeatherContract.WeatherEntry.ACCOUNT_KIT_CONTENT_URI, null);
         }
 
         //set appropriate summary

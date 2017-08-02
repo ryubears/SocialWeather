@@ -33,10 +33,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
     //cursor from home fragment loader
     private Cursor mCursor;
 
+    private boolean mIsFacebook;
+
     private boolean mClickable = false;
     private Toast mToast;
 
-    public WeatherAdapter() {}
+    public WeatherAdapter(boolean isFacebook) {
+        mIsFacebook = isFacebook;
+    }
 
     @Override
     public WeatherAdapter.WeatherViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -101,6 +105,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         private int mId = -1;
         private String mLocationName;
         private String mLocationPhoto;
+        private String mNames;
         private String mProfilePics;
         private String[] mWeatherIds;
         private String[] mWeatherDescriptions;
@@ -118,14 +123,21 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             int indexId = mCursor.getColumnIndex(WeatherEntry._ID);
             int indexLocationName = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
             int indexLocationPhoto = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_PHOTO);
-            int indexFriendPictures = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
+            int indexFriendNames = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
+            int indexFriendPictures = -1;
+            if(mIsFacebook) {
+                indexFriendPictures = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
+            }
             int indexWeatherId = mCursor.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
             int indexWeatherDescription = mCursor.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
 
             mId = mCursor.getInt(indexId);
             mLocationName = mCursor.getString(indexLocationName);
             mLocationPhoto = mCursor.getString(indexLocationPhoto);
-            mProfilePics = mCursor.getString(indexFriendPictures);
+            mNames = mCursor.getString(indexFriendNames);
+            if(indexFriendPictures != -1) {
+                mProfilePics = mCursor.getString(indexFriendPictures);
+            }
             mWeatherIds = mCursor.getString(indexWeatherId).split(itemView.getContext().getString(R.string.delimiter));
             mWeatherDescriptions = mCursor.getString(indexWeatherDescription).split(itemView.getContext().getString(R.string.delimiter));
 
@@ -156,8 +168,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             }
 
             //set friend pictures and number of friends living in the location
-            String[] friendPics = mProfilePics.split(mContext.getString(R.string.delimiter));
-            int numFriends = friendPics.length;
+            String[] friendNames = mNames.split(mContext.getString(R.string.delimiter));
+            int numFriends = friendNames.length;
             mLivesTextView.setText(String.valueOf(numFriends));
 
             //transform profile picture in a circular frame
@@ -166,8 +178,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                     .oval(false)
                     .build();
 
+            //get friend profile pictures
+            String[] friendPics = null;
+            if(mProfilePics != null) {
+                friendPics = mProfilePics.split(mContext.getString(R.string.delimiter));
+            }
+
             //set first friend picture
-            if(friendPics[0].equals(mContext.getString(R.string.picture_empty))) {
+            if(friendPics == null || friendPics[0].equals(mContext.getString(R.string.picture_empty))) {
                 mFriend1ImageView.setImageResource(R.drawable.profile_color);
             } else {
                 Picasso.with(mContext)
@@ -177,7 +195,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             }
 
             //set second friend picture
-            if(friendPics.length >= 2) {
+            if(friendPics != null && numFriends >= 2) {
                 mFriend2ImageView.setVisibility(View.VISIBLE);
                 if(friendPics[1].equals(mContext.getString(R.string.picture_empty))) {
                     mFriend2ImageView.setImageResource(R.drawable.profile_color);
@@ -197,6 +215,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             if(mClickable) {
                 Intent intent = new Intent(itemView.getContext(), ForecastActivity.class);
                 intent.putExtra(WeatherEntry._ID, mId);
+                intent.putExtra(mContext.getString(R.string.is_facebook_key), mIsFacebook);
                 itemView.getContext().startActivity(intent);
             } else {
                 if(mToast != null) {

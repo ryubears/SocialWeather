@@ -7,11 +7,11 @@ import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
 /**
- * Created by Yehyun Ryu on 7/26/2017.
+ * Created by Yehyun Ryu on 8/2/2017.
  */
 
-//firebase job service that schedules weather update on existing weather table
-public class WeatherFirebaseJobService extends JobService {
+//firebase job service that schedules weather update on account kit weather table
+public class AccountKitWeatherFirebaseJobService extends JobService {
 
     private AsyncTask<Void, Void, Void> mFetchWeatherTask;
 
@@ -23,7 +23,7 @@ public class WeatherFirebaseJobService extends JobService {
             @Override
             protected Void doInBackground(Void... voids) {
                 Context context = getApplicationContext();
-                WeatherSyncTask.syncWeather(context);
+                WeatherSyncTask.syncWeather(context, false);
                 jobFinished(job, false);
                 return null;
             }

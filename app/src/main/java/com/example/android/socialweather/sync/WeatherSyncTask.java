@@ -21,16 +21,27 @@ import java.util.concurrent.TimeUnit;
 public class WeatherSyncTask {
 
     //performs network call on each row in the database and update it with new weather data
-    synchronized static void syncWeather(Context context) {
+    synchronized static void syncWeather(Context context, boolean isFacebook) {
         try {
-            //query for all rows
-            Cursor cursor = context.getContentResolver().query(
-                    WeatherEntry.CONTENT_URI,
-                    null,
-                    null,
-                    null,
-                    null
-            );
+            Cursor cursor;
+            if(isFacebook) {
+                cursor = context.getContentResolver().query(
+                        WeatherEntry.FACEBOOK_CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+            } else {
+                //query for all rows
+                cursor = context.getContentResolver().query(
+                        WeatherEntry.ACCOUNT_KIT_CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+            }
 
             for(int i = 0; i < cursor.getCount(); i ++) {
                 cursor.moveToPosition(i);
@@ -46,12 +57,21 @@ public class WeatherSyncTask {
                 contentValues.put(WeatherEntry.COLUMN_LOCATION_PHOTO, photoUrl);
 
                 //update row
-                context.getContentResolver().update(
-                        ContentUris.withAppendedId(WeatherEntry.CONTENT_URI, id),
-                        contentValues,
-                        null,
-                        null
-                );
+                if(isFacebook) {
+                    context.getContentResolver().update(
+                            ContentUris.withAppendedId(WeatherEntry.FACEBOOK_CONTENT_URI, id),
+                            contentValues,
+                            null,
+                            null
+                    );
+                } else {
+                    context.getContentResolver().update(
+                            ContentUris.withAppendedId(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, id),
+                            contentValues,
+                            null,
+                            null
+                    );
+                }
             }
 
             //close cursor used to update
@@ -69,13 +89,23 @@ public class WeatherSyncTask {
 
             //query weather table to track rain,snow, and extreme weather
             String[] projection = new String[] {WeatherEntry.COLUMN_FRIEND_NAMES, WeatherEntry.COLUMN_FORECAST_WEATHER_IDS};
-            cursor = context.getContentResolver().query(
-                    WeatherEntry.CONTENT_URI,
-                    projection,
-                    null,
-                    null,
-                    null
-            );
+            if(isFacebook) {
+                cursor = context.getContentResolver().query(
+                        WeatherEntry.FACEBOOK_CONTENT_URI,
+                        projection,
+                        null,
+                        null,
+                        null
+                );
+            } else {
+                cursor = context.getContentResolver().query(
+                        WeatherEntry.ACCOUNT_KIT_CONTENT_URI,
+                        projection,
+                        null,
+                        null,
+                        null
+                );
+            }
 
             ArrayList<String> rainFriends = new ArrayList<>();
             ArrayList<String> snowFriends = new ArrayList<>();
