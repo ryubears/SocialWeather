@@ -4,6 +4,7 @@
     package="com.example.android.socialweather">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -83,13 +84,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".ForecastActivity"
+        <activity
+            android:name=".ForecastActivity"
             android:label="@string/activity_title_forecast"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".DetailsActivity"
@@ -100,6 +102,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ForecastActivity" />
         </activity>
+        <activity
+            android:name=".AccountActivity"
+            android:label="@string/activity_title_account"
+            android:launchMode="singleTop" />
 
         <!-- Content Provider -->
         <provider

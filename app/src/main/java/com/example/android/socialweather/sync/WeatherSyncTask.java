@@ -4,7 +4,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.format.DateUtils;
 
 import com.example.android.socialweather.R;
 import com.example.android.socialweather.data.WeatherContract.WeatherEntry;
@@ -13,6 +12,7 @@ import com.example.android.socialweather.utils.NetworkUtils;
 import com.example.android.socialweather.utils.NotificationUtils;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Yehyun Ryu on 7/26/2017.
@@ -46,14 +46,12 @@ public class WeatherSyncTask {
                 contentValues.put(WeatherEntry.COLUMN_LOCATION_PHOTO, photoUrl);
 
                 //update row
-                if(contentValues != null) {
-                    context.getContentResolver().update(
-                            ContentUris.withAppendedId(WeatherEntry.CONTENT_URI, id),
-                            contentValues,
-                            null,
-                            null
-                    );
-                }
+                context.getContentResolver().update(
+                        ContentUris.withAppendedId(WeatherEntry.CONTENT_URI, id),
+                        contentValues,
+                        null,
+                        null
+                );
             }
 
             //close cursor used to update
@@ -64,13 +62,13 @@ public class WeatherSyncTask {
                 String updateNotificationTimeKey = context.getString(R.string.pref_update_notification_time_key);
                 long currentTime = System.currentTimeMillis();
                 long lastNotificationTime = WeatherPreferences.getLastNotificationTime(context, updateNotificationTimeKey);
-                if(currentTime - lastNotificationTime >= DateUtils.DAY_IN_MILLIS) { //check if there were any update notification in the past 24 hours
+                if(currentTime - lastNotificationTime >= TimeUnit.HOURS.toMillis(12)) { //check if there were any update notification in the past 24 hours
                     NotificationUtils.notifyUpdateWeather(context);
                 }
             }
 
             //query weather table to track rain,snow, and extreme weather
-            String[] projection = new String[] {WeatherEntry.COLUMN_FRIEND_NAMES, WeatherEntry.COLUMN_CURRENT_WEATHER_ID};
+            String[] projection = new String[] {WeatherEntry.COLUMN_FRIEND_NAMES, WeatherEntry.COLUMN_FORECAST_WEATHER_IDS};
             cursor = context.getContentResolver().query(
                     WeatherEntry.CONTENT_URI,
                     projection,
@@ -86,34 +84,35 @@ public class WeatherSyncTask {
                 cursor.moveToPosition(i);
 
                 int indexNames = cursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
-                int indexWeatherId = cursor.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_ID);
+                int indexWeatherIds = cursor.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
 
                 String names = cursor.getString(indexNames);
                 String[] nameArray = names.split(context.getString(R.string.delimiter));
-                int weatherId = cursor.getInt(indexWeatherId);
+                String[] weatherIds = cursor.getString(indexWeatherIds).split(context.getString(R.string.delimiter));
+                int currentWeatherId = Integer.valueOf(weatherIds[0]);
 
                 //keep track of friend experiencing rain, snow, and extreme weather
-                if(weatherId >= 200 && weatherId <= 232) {
+                if(currentWeatherId >= 200 && currentWeatherId <= 232) {
                     for(int x = 0; x < nameArray.length; x++) {
                         extremeFriends.add(nameArray[x]);
                     }
-                } else if(weatherId >= 300 && weatherId <= 531) {
+                } else if(currentWeatherId >= 300 && currentWeatherId <= 531) {
                     for(int x = 0; x < nameArray.length; x++) {
                         rainFriends.add(nameArray[x]);
                     }
-                } else if(weatherId >= 600 && weatherId <= 622) {
+                } else if(currentWeatherId >= 600 && currentWeatherId <= 622) {
                     for(int x = 0; x < nameArray.length; x++) {
                         snowFriends.add(nameArray[x]);
                     }
-                } else if(weatherId >= 762 && weatherId <= 781) {
+                } else if(currentWeatherId >= 762 && currentWeatherId <= 781) {
                     for(int x = 0; x < nameArray.length; x++) {
                         extremeFriends.add(nameArray[x]);
                     }
-                } else if(weatherId >= 900 && weatherId <= 906) {
+                } else if(currentWeatherId >= 900 && currentWeatherId <= 906) {
                     for(int x = 0; x < nameArray.length; x++) {
                         extremeFriends.add(nameArray[x]);
                     }
-                } else if(weatherId >= 958 && weatherId <= 962) {
+                } else if(currentWeatherId >= 958 && currentWeatherId <= 962) {
                     for(int x = 0; x < nameArray.length; x++) {
                         extremeFriends.add(nameArray[x]);
                     }
@@ -129,7 +128,7 @@ public class WeatherSyncTask {
                     String rainNotificationTimeKey = context.getString(R.string.pref_rain_notification_time_key);
                     long currentTime = System.currentTimeMillis();
                     long lastNotificationTime = WeatherPreferences.getLastNotificationTime(context, rainNotificationTimeKey);
-                    if(currentTime - lastNotificationTime >= DateUtils.DAY_IN_MILLIS) { //check if there were any rain notification in the past 24 hours
+                    if(currentTime - lastNotificationTime >= TimeUnit.HOURS.toMillis(12)) { //check if there were any rain notification in the past 24 hours
                         NotificationUtils.notifyRainWeather(context, rainFriends);
                     }
                 }
@@ -139,7 +138,7 @@ public class WeatherSyncTask {
                     String snowNotificationTimeKey = context.getString(R.string.pref_snow_notification_time_key);
                     long currentTime = System.currentTimeMillis();
                     long lastNotificationTime = WeatherPreferences.getLastNotificationTime(context, snowNotificationTimeKey);
-                    if(currentTime - lastNotificationTime >= DateUtils.DAY_IN_MILLIS) { //check if there were any snow notification in the past 24 hours
+                    if(currentTime - lastNotificationTime >= TimeUnit.HOURS.toMillis(12)) { //check if there were any snow notification in the past 24 hours
                         NotificationUtils.notifySnowWeather(context, snowFriends);
                     }
                 }
@@ -151,7 +150,7 @@ public class WeatherSyncTask {
                 String extremeNotificationTimeKey = context.getString(R.string.pref_extreme_notification_time_key);
                 long currentTime = System.currentTimeMillis();
                 long lastNotificationTime = WeatherPreferences.getLastNotificationTime(context, extremeNotificationTimeKey);
-                if(currentTime - lastNotificationTime >= DateUtils.DAY_IN_MILLIS) { //check if there were any extreme notification in the past 24 hours
+                if(currentTime - lastNotificationTime >= TimeUnit.HOURS.toMillis(12)) { //check if there were any extreme notification in the past 24 hours
                     NotificationUtils.notifyExtremeWeather(context, extremeFriends);
                 }
             }

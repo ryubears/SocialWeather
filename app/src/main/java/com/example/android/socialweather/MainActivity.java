@@ -1,9 +1,7 @@
 package com.example.android.socialweather;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -23,10 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.socialweather.data.WeatherContract;
-import com.example.android.socialweather.data.WeatherPreferences;
-import com.example.android.socialweather.utils.NetworkUtils;
-import com.example.android.socialweather.utils.WeatherUtils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -55,7 +49,6 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.main_nav_view) NavigationView mNavigationView;
 
+
     //views in navigation header
     private View mHeader;
-    private ImageView mHeaderBackground;
     private ImageView mHeaderProfile;
     private TextView mHeaderInfo;
     private TextView mHeaderLocation;
@@ -112,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         mHeader = mNavigationView.getHeaderView(0);
         mHeaderInfo = (TextView) mHeader.findViewById(R.id.nav_header_info);
         mHeaderLocation = (TextView) mHeader.findViewById(R.id.nav_header_location);
-        mHeaderBackground = (ImageView) mHeader.findViewById(R.id.nav_header_background);
         mHeaderProfile = (ImageView) mHeader.findViewById(R.id.nav_header_profile);
 
         //get activity titles
@@ -467,32 +459,8 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject jsonLocation = jsonResponse.getJSONObject("location");
                                 String locationString = jsonLocation.getString("name");
                                 mHeaderLocation.setText(locationString);
-
-                                long currentTime = System.currentTimeMillis();
-                                long lastFetchTime = WeatherPreferences.getProfileWeatherFetchTime(getApplicationContext());
-                                int maxHours = 3;
-                                if(currentTime - lastFetchTime >= TimeUnit.HOURS.toMillis(maxHours)) {
-                                    fetchWeather(locationString);
-                                } else {
-                                    int weatherId = WeatherPreferences.getUserWeatherId(getApplicationContext());
-                                    int background = WeatherUtils.getWeatherBackground(weatherId);
-                                    mHeaderBackground.setImageResource(background);
-                                }
                             } else {
                                 mHeaderLocation.setText(getString(R.string.location_default));
-                                //set background to random weather background if location is empty
-
-                                //temporary for testing
-                                long currentTime = System.currentTimeMillis();
-                                long lastFetchTime = WeatherPreferences.getProfileWeatherFetchTime(getApplicationContext());
-                                int maxHours = 3;
-                                if(currentTime - lastFetchTime >= TimeUnit.HOURS.toMillis(maxHours)) {
-                                    fetchWeather("Seattle, Washington");
-                                } else {
-                                    int weatherId = WeatherPreferences.getUserWeatherId(getApplicationContext());
-                                    int background = WeatherUtils.getWeatherBackground(weatherId);
-                                    mHeaderBackground.setImageResource(background);
-                                }
                             }
                         } catch(JSONException e) {
                             e.printStackTrace();
@@ -539,28 +507,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return phoneNumber;
-    }
-
-    private void fetchWeather(String location) {
-        new fetchWeatherTask().execute(location);
-    }
-
-    private class fetchWeatherTask extends AsyncTask<String, Void, Integer> {
-        @Override
-        protected Integer doInBackground(String... strings) {
-            WeatherPreferences.saveProfileWeatherFetchTime(getApplicationContext(), System.currentTimeMillis());
-            ContentValues contentValues = NetworkUtils.fetchWeather(strings[0]);
-            int weatherId = contentValues.getAsInteger(WeatherContract.WeatherEntry.COLUMN_CURRENT_WEATHER_ID);
-            WeatherPreferences.saveUserWeatherId(getApplicationContext(), weatherId);
-            return weatherId;
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-
-            int background = WeatherUtils.getWeatherBackground(integer);
-            mHeaderBackground.setImageResource(background);
-        }
     }
 }

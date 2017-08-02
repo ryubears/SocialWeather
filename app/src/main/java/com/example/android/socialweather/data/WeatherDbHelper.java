@@ -39,13 +39,6 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 WeatherEntry.COLUMN_FRIEND_NAMES + " TEXT NOT NULL, " +
                 WeatherEntry.COLUMN_FRIEND_PICTURES + " TEXT NOT NULL, " +
 
-                WeatherEntry.COLUMN_CURRENT_WEATHER_ID + " INTEGER DEFAULT -1, " +
-                WeatherEntry.COLUMN_CURRENT_WEATHER_DESCRIPTION + " TEXT DEFAULT 'description_empty', " + //also linked to strings.xml description_empty
-                WeatherEntry.COLUMN_CURRENT_WEATHER_TEMP + " REAL DEFAULT -1," +
-                WeatherEntry.COLUMN_CURRENT_WEATHER_PRESSURE + " REAL DEFAULT -1," +
-                WeatherEntry.COLUMN_CURRENT_WEATHER_HUMIDITY + " INTEGER DEFAULT -1," +
-                WeatherEntry.COLUMN_CURRENT_WEATHER_WIND_SPEED + " REAL DEFAULT -1, " +
-
                 WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES + " STRING DEFAULT 'forecast_times_empty', " +
                 WeatherEntry.COLUMN_FORECAST_WEATHER_IDS + " STRING DEFAULT 'forecast_ids_empty', " +
                 WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS + " STRING DEFAULT 'forecast_descriptions_empty', " +

@@ -34,6 +34,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
     private Cursor mCursor;
 
     private boolean mClickable = false;
+    private Toast mToast;
 
     public WeatherAdapter() {}
 
@@ -80,6 +81,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         mClickable = clickable;
     }
 
+    public void cancelLoadingToast() {
+        if(mToast != null) {
+            mToast.cancel();
+        }
+    }
+
     public class WeatherViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.weather_item_card_view) CardView mCardView;
         @BindView(R.id.weather_item_background) ImageView mBackgroundImageView;
@@ -90,18 +97,20 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         @BindView(R.id.weather_item_friend2) ImageView mFriend2ImageView;
         @BindView(R.id.weather_item_lives) TextView mLivesTextView;
 
+        private Context mContext;
         private int mId = -1;
         private String mLocationName;
         private String mLocationPhoto;
         private String mProfilePics;
-        private int mWeatherId;
-        private String mWeatherDescription;
+        private String[] mWeatherIds;
+        private String[] mWeatherDescriptions;
 
         public WeatherViewHolder(View view) {
             super(view);
 
             //binds views using butterknife
             ButterKnife.bind(this, view);
+            mContext = view.getContext();
         }
 
         private void bind() {
@@ -110,38 +119,44 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             int indexLocationName = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
             int indexLocationPhoto = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_PHOTO);
             int indexFriendPictures = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
-            int indexWeatherId = mCursor.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_ID);
-            int indexWeatherDescription = mCursor.getColumnIndex(WeatherEntry.COLUMN_CURRENT_WEATHER_DESCRIPTION);
+            int indexWeatherId = mCursor.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
+            int indexWeatherDescription = mCursor.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
 
             mId = mCursor.getInt(indexId);
             mLocationName = mCursor.getString(indexLocationName);
             mLocationPhoto = mCursor.getString(indexLocationPhoto);
             mProfilePics = mCursor.getString(indexFriendPictures);
-            mWeatherId = mCursor.getInt(indexWeatherId);
-            mWeatherDescription = mCursor.getString(indexWeatherDescription);
+            mWeatherIds = mCursor.getString(indexWeatherId).split(itemView.getContext().getString(R.string.delimiter));
+            mWeatherDescriptions = mCursor.getString(indexWeatherDescription).split(itemView.getContext().getString(R.string.delimiter));
 
             //set location name
             mLocationTextView.setText(mLocationName);
 
             //set location photo
-            if(mLocationPhoto.equals(itemView.getContext().getString(R.string.location_photo_empty))) {
+            if(mLocationPhoto.equals(mContext.getString(R.string.location_photo_empty))) {
                 mBackgroundImageView.setImageResource(R.color.gray);
             } else {
-                Picasso.with(itemView.getContext())
+                Picasso.with(mContext)
                         .load(mLocationPhoto)
                         .into(mBackgroundImageView);
             }
 
             //set weather icon
-            int icon = WeatherUtils.getColorWeatherIcon(mWeatherId);
-            mIconImageView.setImageResource(icon);
+            if(!mWeatherIds[0].equals(mContext.getString(R.string.forecast_ids_empty))) {
+                int currentWeatherId = Integer.valueOf(mWeatherIds[0]);
+                int icon = WeatherUtils.getColorWeatherIcon(currentWeatherId);
+                mIconImageView.setImageResource(icon);
+            }
 
             //set weather description
-            String weatherDescription = WeatherUtils.formatDescription(mWeatherDescription);
-            mDescriptionTextView.setText(weatherDescription);
+            if(!mWeatherDescriptions[0].equals(mContext.getString(R.string.forecast_descriptions_empty))) {
+                String currentWeatherDescription = mWeatherDescriptions[0];
+                String weatherDescription = WeatherUtils.formatDescription(currentWeatherDescription);
+                mDescriptionTextView.setText(weatherDescription);
+            }
 
             //set friend pictures and number of friends living in the location
-            String[] friendPics = mProfilePics.split(itemView.getContext().getString(R.string.delimiter));
+            String[] friendPics = mProfilePics.split(mContext.getString(R.string.delimiter));
             int numFriends = friendPics.length;
             mLivesTextView.setText(String.valueOf(numFriends));
 
@@ -152,10 +167,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                     .build();
 
             //set first friend picture
-            if(friendPics[0].equals(itemView.getContext().getString(R.string.picture_empty))) {
+            if(friendPics[0].equals(mContext.getString(R.string.picture_empty))) {
                 mFriend1ImageView.setImageResource(R.drawable.profile_color);
             } else {
-                Picasso.with(itemView.getContext())
+                Picasso.with(mContext)
                         .load(friendPics[0])
                         .transform(transformation)
                         .into(mFriend1ImageView);
@@ -164,10 +179,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             //set second friend picture
             if(friendPics.length >= 2) {
                 mFriend2ImageView.setVisibility(View.VISIBLE);
-                if(friendPics[1].equals(itemView.getContext().getString(R.string.picture_empty))) {
+                if(friendPics[1].equals(mContext.getString(R.string.picture_empty))) {
                     mFriend2ImageView.setImageResource(R.drawable.profile_color);
                 } else {
-                    Picasso.with(itemView.getContext())
+                    Picasso.with(mContext)
                             .load(friendPics[1])
                             .transform(transformation)
                             .into(mFriend2ImageView);
@@ -184,8 +199,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                 intent.putExtra(WeatherEntry._ID, mId);
                 itemView.getContext().startActivity(intent);
             } else {
-                String toastMessage = itemView.getContext().getString(R.string.loading_message);
-                Toast.makeText(itemView.getContext(), toastMessage, Toast.LENGTH_SHORT).show();
+                if(mToast != null) {
+                    mToast.cancel();
+                }
+
+                String toastMessage = mContext.getString(R.string.loading_message);
+                mToast = Toast.makeText(mContext, toastMessage, Toast.LENGTH_SHORT);
+                mToast.show();
             }
 
         }

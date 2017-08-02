@@ -47,15 +47,10 @@ public class NetworkUtils {
     private static final String PLACES_API_KEY = "&key=" + BuildConfig.GOOGLE_PLACES_API_KEY;
 
     //creates an url for weather from open weather map
-    private static URL createWeatherUrl(int queryType, String location) {
+    private static URL createWeatherUrl(String location) {
         Log.d(LOG_TAG, "createWeatherUrl");
 
-        String stringUrl = "";
-        if(queryType == CURRENT_WEATHER) {
-            stringUrl = WEATHER_BASE_URL + "weather?q=" + location + WEATHER_API_KEY;
-        } else {
-            stringUrl = WEATHER_BASE_URL + "forecast?q=" + location + WEATHER_API_KEY;
-        }
+        String stringUrl = WEATHER_BASE_URL + "forecast?q=" + location + WEATHER_API_KEY;
 
         URL url = null;
         try {
@@ -138,61 +133,6 @@ public class NetworkUtils {
             }
         }
         return output.toString();
-    }
-
-    //extract data from json response
-    private static ContentValues extractCurrentWeatherFromJSON(String jsonResponse) {
-        Log.d(LOG_TAG, "extractWeatherFromJSON");
-
-        if(TextUtils.isEmpty(jsonResponse)) {
-            Log.d(LOG_TAG, "Empty jsonResponse");
-            return null;
-        }
-
-        //content values to be returned
-        ContentValues contentValues = new ContentValues();
-        try {
-            JSONObject baseJson = new JSONObject(jsonResponse);
-
-            //weather id and description
-            JSONArray weatherArray = baseJson.getJSONArray("weather");
-            JSONObject weather = weatherArray.getJSONObject(0);
-            int weatherId = weather.getInt("id");
-            String description = weather.getString("description");
-
-            //weather current temp, min temp, max temp, pressure, and humidity
-            JSONObject main = baseJson.getJSONObject("main");
-            double currentTemp = main.getDouble("temp");
-            double minTemp = main.getDouble("temp_min");
-            double maxTemp = main.getDouble("temp_max");
-            double pressure = main.getDouble("pressure");
-            int humidity = main.getInt("humidity");
-
-            //weather wind speed
-            JSONObject wind = baseJson.getJSONObject("wind");
-            double windSpeed = wind.getDouble("speed");
-
-            //add to content values
-            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_ID, weatherId);
-            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_DESCRIPTION, description);
-            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_TEMP, currentTemp);
-            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_PRESSURE, pressure);
-            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_HUMIDITY, humidity);
-            contentValues.put(WeatherEntry.COLUMN_CURRENT_WEATHER_WIND_SPEED, windSpeed);
-
-            //for debugging
-            Log.d(LOG_TAG, String.valueOf(weatherId));
-            Log.d(LOG_TAG, String.valueOf(description));
-            Log.d(LOG_TAG, String.valueOf(currentTemp));
-            Log.d(LOG_TAG, String.valueOf(minTemp));
-            Log.d(LOG_TAG, String.valueOf(maxTemp));
-            Log.d(LOG_TAG, String.valueOf(pressure));
-            Log.d(LOG_TAG, String.valueOf(humidity));
-            Log.d(LOG_TAG, String.valueOf(windSpeed));
-        } catch(JSONException e) {
-            Log.e(LOG_TAG, "Problem extracting data from JSON: " + e);
-        }
-        return contentValues;
     }
 
     //extract forecast weather data
@@ -291,10 +231,13 @@ public class NetworkUtils {
         }
 
         //photo url to return
-        String photoUrl = "";
+        String photoUrl = "location_photo_empty";
         try {
             JSONObject baseJson = new JSONObject(jsonResponse);
             JSONArray results = baseJson.getJSONArray("results");
+            if(results.length() == 0) {
+                return photoUrl;
+            }
             JSONObject result = results.getJSONObject(0);
             JSONArray photos = result.getJSONArray("photos");
             JSONObject photo = photos.getJSONObject(0);
@@ -316,41 +259,18 @@ public class NetworkUtils {
         Log.d(LOG_TAG, "fetchWeather");
 
         //create url
-        URL currentUrl = createWeatherUrl(CURRENT_WEATHER, location);
-        URL forecastUrl = createWeatherUrl(FORECAST_WEATHER, location);
+        URL forecastUrl = createWeatherUrl(location);
 
         //get json response
-        String currentJsonResponse = "";
         String forecastJsonResponse = "";
         try {
-            currentJsonResponse = makeHTTPRequest(currentUrl);
             forecastJsonResponse = makeHTTPRequest(forecastUrl);
         } catch(IOException e) {
             Log.e(LOG_TAG, "Error with HTTP request: " + e);
         }
 
         //get content values from json response
-        ContentValues contentValues = extractCurrentWeatherFromJSON(currentJsonResponse);
-
-        //add forecast values to returning content values
-        ContentValues forecastValues = extractForecastWeatherFromJSON(forecastJsonResponse);
-        String forecastTimes = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES);
-        String forecastWeatherIds = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
-        String forecastWeatherDescriptions = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
-        String forecastMinTemps = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
-        String forecastMaxTemps = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
-        String forecastPressures = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES);
-        String forecastHumidities = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES);
-        String forecastWindSpeeds = forecastValues.getAsString(WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS);
-
-        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES, forecastTimes);
-        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS, forecastWeatherIds);
-        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS, forecastWeatherDescriptions);
-        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS, forecastMinTemps);
-        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS, forecastMaxTemps);
-        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES, forecastPressures);
-        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES, forecastHumidities);
-        contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS, forecastWindSpeeds);
+        ContentValues contentValues = extractForecastWeatherFromJSON(forecastJsonResponse);
 
         return contentValues;
     }
@@ -371,7 +291,6 @@ public class NetworkUtils {
         }
 
         //get content values from json response
-        String photoUrl = extractPlacesFromJSON(jsonResponse);
-        return photoUrl;
+        return extractPlacesFromJSON(jsonResponse);
     }
 }

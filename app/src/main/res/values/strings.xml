@@ -64,14 +64,10 @@
     <string name="pref_snow_notification_time_key">snow_notification_time</string>
     <string name="pref_extreme_notification_time_key">extreme_notification_time</string>
 
-    <string name="pref_user_weather_id_key">user_weather_id</string>
-    <string name="pref_user_weather_fetch_time_key">user_weather_fetch_time</string>
-
     <!-- Forecast Activity -->
     <string name="activity_title_forecast">Weather Forecast</string>
 
     <!-- Forecast Drawer -->
-    <string name="friend_drawer_title">Friends</string>
     <string name="friend_menu_title">Friends</string>
     <string name="friend_drawer_open">Open friend drawer</string>
     <string name="friend_drawer_close">Close friend drawer</string>
@@ -82,14 +78,32 @@
     <string name="details_humidity_label">Humidity</string>
     <string name="details_wind_label">Wind Speed</string>
 
+    <!-- Account Activity -->
+    <string name="activity_title_account">Account Info</string>
+    <string name="account_id_label">Account ID</string>
+    <string name="account_location_label">Location</string>
+
     <!-- data -->
     <string name="delimiter" translatable="false">%%%</string>
+
     <string name="location_photo_empty" translatable="false">location_photo_empty</string> <!-- also linked to default value in WeatherDbHelper -->
     <string name="picture_empty" translatable="false">picture_empty</string>
+
     <string name="location_empty" translatable="false">location_empty</string>
     <string name="location_default">Unknown</string>
+
     <string name="description_empty" translatable="false">description_empty</string> <!-- also linked to default value in WeatherDbHelper -->
     <string name="description_default">No Weather</string>
+
+    <string name="forecast_times_empty" translatable="false">forecast_times_empty</string>
+    <string name="forecast_ids_empty" translatable="false">forecast_ids_empty</string>
+    <string name="forecast_descriptions_empty" translatable="false">forecast_descriptions_empty</string>
+    <string name="forecast_min_temps_empty" translatable="false">forecast_min_temps_empty</string>
+    <string name="forecast_max_temps_empty" translatable="false">forecast_max_temps_empty</string>
+    <string name="forecast_pressures_empty" translatable="false">forecast_pressures_empty</string>
+    <string name="forecast_humidities_empty" translatable="false">forecast_humidities_empty</string>
+    <string name="forecast_wind_speeds_empty" translatable="false">forecast_wind_speeds_empty</string>
+
     <string name="forecast_position_key">forecast_position</string>
 
     <!-- Permission Canceled Toast Messages -->

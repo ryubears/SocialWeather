@@ -50,24 +50,6 @@ public class WeatherContract {
         //list of friend pictures
         public static final String COLUMN_FRIEND_PICTURES = "friend_pictures";
 
-        //current weather id
-        public static final String COLUMN_CURRENT_WEATHER_ID = "current_weather_id";
-
-        //current weather description
-        public static final String COLUMN_CURRENT_WEATHER_DESCRIPTION = "current_weather_description";
-
-        //current weather current temperature
-        public static final String COLUMN_CURRENT_WEATHER_TEMP = "current_weather_temp";
-
-        //current weather pressure
-        public static final String COLUMN_CURRENT_WEATHER_PRESSURE = "current_weather_pressure";
-
-        //current weather humidity
-        public static final String COLUMN_CURRENT_WEATHER_HUMIDITY = "current_weather_humidity";
-
-        //current weather wind speed
-        public static final String COLUMN_CURRENT_WEATHER_WIND_SPEED = "current_weather_wind_speed";
-
         //forecast weather time
         public static final String COLUMN_FORECAST_WEATHER_TIMES = "forecast_weather_time";
 

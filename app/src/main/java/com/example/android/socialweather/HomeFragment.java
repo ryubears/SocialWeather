@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.home_empty_view) TextView mHomeEmptyView;
     @BindView(R.id.home_progress_bar) ProgressBar mHomeProgressBar;
 
-
     private static final String LOG_TAG = HomeFragment.class.getSimpleName(); //log tag for debugging
     private static final String INITIALIZE_KEY = "initialize"; //string key for storing whether friend data has been initialized
     private static final int WEATHER_LOADER_ID = 33; //loader id for weather data
@@ -327,8 +326,9 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.setClickable(true);
-        mHomeSwipeRefreshLayout.setRefreshing(false);
+        mAdapter.cancelLoadingToast(); //cancel loading toast if exist
+        mAdapter.setClickable(true); //make clicking on weather items possible
+        mHomeSwipeRefreshLayout.setRefreshing(false); //hide loading indicator for sync
         //change data in weather adapter
         mAdapter.swapCursor(data);
         if(data == null || data.getCount() == 0) {
