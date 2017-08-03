@@ -60,6 +60,7 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 WeatherEntry.COLUMN_LOCATION_PHOTO + " TEXT DEFAULT 'location_photo_empty', " +
 
                 WeatherEntry.COLUMN_FRIEND_NAMES + " TEXT NOT NULL, " +
+                        //TODO: ADD FRIEND PICTURES
 
                 WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES + " STRING DEFAULT 'forecast_times_empty', " +
                 WeatherEntry.COLUMN_FORECAST_WEATHER_IDS + " STRING DEFAULT 'forecast_ids_empty', " +

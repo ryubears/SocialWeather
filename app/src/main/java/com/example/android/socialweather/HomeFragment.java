@@ -1,10 +1,12 @@
 package com.example.android.socialweather;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -36,11 +38,13 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class HomeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.home_swipe_refresh_layout) SwipeRefreshLayout mHomeSwipeRefreshLayout;
     @BindView(R.id.home_recycler_view) RecyclerView mHomeRecyclerView;
     @BindView(R.id.home_empty_view) TextView mHomeEmptyView;
+    @BindView(R.id.home_fab) FloatingActionButton mAddFab;
 
     private static final String LOG_TAG = HomeFragment.class.getSimpleName(); //log tag for debugging
     private static final String INITIALIZE_KEY = "initialize"; //string key for storing whether friend data has been initialized
@@ -87,8 +91,12 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                 && mAccessToken.getPermissions().contains("user_location")) {
             //when user logged in with facebook with all permissions
 
-            //get whether user logged in with facebook
+            //save whether user logged in with facebook
             mIsFacebook = true;
+            mAddFab.setVisibility(View.GONE);
+        } else {
+            mIsFacebook = false;
+            mAddFab.setVisibility(View.VISIBLE);
         }
 
         //sets adapter to recycler view
@@ -121,6 +129,12 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         }
     }
 
+    @OnClick(R.id.home_fab)
+    public void onFabClick() {
+        Intent intent = new Intent(getContext(), AccountActivity.class);
+        startActivity(intent);
+    }
+
     //method that calls async task that checks if weather data is empty or outdated
     private void checkData() {
         new DataCheckQuery().execute();
@@ -135,6 +149,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         protected Integer doInBackground(Void... voids) {
             //query weather data to check if it is empty or outdated
             Cursor cursor;
+            //TODO: query in descending order of last update time
             if(mIsFacebook) {
                 cursor = getContext().getContentResolver().query(
                         WeatherContract.WeatherEntry.FACEBOOK_CONTENT_URI,

@@ -80,8 +80,19 @@
 
     <!-- Account Activity -->
     <string name="activity_title_account">Account Info</string>
-    <string name="account_id_label">Account ID</string>
+    <string name="account_name_label">Name</string>
+    <string name="account_name_hint">Name</string>
     <string name="account_location_label">Location</string>
+    <string name="account_location_hint">Location</string>
+    <string name="account_save_title">Save</string>
+    <string name="account_delete_title">Delete</string>
+    <string name="account_fill_fields_toast">Please fill all required fields</string>
+
+    <string name="account_profile_key" translatable="false">account_profile</string>
+    <string name="account_name_key" translatable="false">account_name</string>
+    <string name="account_location_key" translatable="false">account_location</string>
+
+    <string name="account_position_key" translatable="false">account_position</string>
 
     <!-- data -->
     <string name="delimiter" translatable="false">%%%</string>
@@ -106,7 +117,7 @@
     <string name="forecast_humidities_empty" translatable="false">forecast_humidities_empty</string>
     <string name="forecast_wind_speeds_empty" translatable="false">forecast_wind_speeds_empty</string>
 
-    <string name="forecast_position_key">forecast_position</string>
+    <string name="forecast_position_key" translatable="false">forecast_position</string>
 
     <!-- Permission Canceled Toast Messages -->
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>

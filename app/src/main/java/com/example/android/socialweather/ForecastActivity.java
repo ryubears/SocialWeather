@@ -38,6 +38,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
     private boolean mIsFacebook;
 
     private int mId = -1;
+    private String mLocationName;
     private String[] mFriendNames;
     private String[] mFriendProfiles;
     private String[] mWeatherTimes;
@@ -78,7 +79,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         mFriendRecyclerView.setLayoutManager(friendLayoutManager);
 
         //set adapter to friend recycler view
-        mFriendAdapter = new FriendAdapter(null, null);
+        mFriendAdapter = new FriendAdapter(mIsFacebook, null, null, null);
         mFriendRecyclerView.setAdapter(mFriendAdapter);
 
         //set layout manager for forecast recycler view
@@ -131,6 +132,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         //get data from cursor and attach it to adapter
         data.moveToFirst();
 
+        int indexLocationName = data.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
         int indexFriendNames = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
         int indexFriendProfiles = -1;
         if(mIsFacebook) {
@@ -142,6 +144,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         int indexWeatherMinTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
         int indexWeatherMaxTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
 
+        mLocationName = data.getString(indexLocationName);
         mFriendNames = data.getString(indexFriendNames).split(getString(R.string.delimiter));
         if(indexFriendProfiles != -1) {
             mFriendProfiles = data.getString(indexFriendProfiles).split(getString(R.string.delimiter));
@@ -152,7 +155,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         mWeatherMinTemps = data.getString(indexWeatherMinTemps).split(getString(R.string.delimiter));
         mWeatherMaxTemps = data.getString(indexWeatherMaxTemps).split(getString(R.string.delimiter));
 
-        mFriendAdapter.swapData(mFriendNames, mFriendProfiles);
+        mFriendAdapter.swapData(mLocationName, mFriendNames, mFriendProfiles);
         mForecastAdapter.swapData(mId, mWeatherTimes, mWeatherIds, mWeatherDescriptions, mWeatherMinTemps, mWeatherMaxTemps);
     }
 

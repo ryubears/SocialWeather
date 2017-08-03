@@ -1,5 +1,8 @@
 package com.example.android.socialweather;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +16,21 @@ import com.squareup.picasso.Transformation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Yehyun Ryu on 8/2/2017.
  */
 
 public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendViewHolder> {
+    private boolean mIsFacebook;
+    private String mLocationName;
     private String[] mFriendNames;
     private String[] mFriendProfiles;
 
-    public FriendAdapter(String[] friendNames, String[] friendProfiles) {
+    public FriendAdapter(boolean isFacebook, String locationName, String[] friendNames, String[] friendProfiles) {
+        mIsFacebook = isFacebook;
+        mLocationName = locationName;
         mFriendNames = friendNames;
         mFriendProfiles = friendProfiles;
     }
@@ -53,8 +61,9 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
         return mFriendNames.length;
     }
 
-    public void swapData(String[] friendNames, String[] friendProfiles) {
+    public void swapData(String locationName, String[] friendNames, String[] friendProfiles) {
         //change data
+        mLocationName = locationName;
         mFriendNames = friendNames;
         mFriendProfiles = friendProfiles;
 
@@ -64,33 +73,58 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
     }
 
     public class FriendViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.friend_item) ConstraintLayout mFriendItem;
         @BindView(R.id.friend_item_profile) ImageView mProfileImageView;
         @BindView(R.id.friend_item_name) TextView mNameTextView;
+
+        private Context mContext;
+        private int mPosition;
+        private String mProfile;
+        private String mName;
 
         public FriendViewHolder(View itemView) {
             super(itemView);
 
             //bind views with butterknife
             ButterKnife.bind(this, itemView);
+
+            mContext = itemView.getContext();
         }
 
         public void bind(int position) {
-            //transform profile picture in a circular frame
-            Transformation transformation = new RoundedTransformationBuilder()
-                    .cornerRadiusDp(50)
-                    .oval(false)
-                    .build();
+            mPosition = position;
+            if(mIsFacebook) mProfile = mFriendProfiles[position];
+            mName = mFriendNames[position];
 
-            if(mFriendProfiles != null) {
+            if(mIsFacebook) {
+                //transform profile picture in a circular frame
+                Transformation transformation = new RoundedTransformationBuilder()
+                        .cornerRadiusDp(50)
+                        .oval(false)
+                        .build();
+
                 //load friend profile picture
-                Picasso.with(itemView.getContext())
-                        .load(mFriendProfiles[position])
+                Picasso.with(mContext)
+                        .load(mProfile)
                         .transform(transformation)
                         .into(mProfileImageView);
+            } else {
+                mProfileImageView.setImageResource(R.drawable.profile_color);
             }
 
             //set friend name
-            mNameTextView.setText(mFriendNames[position]);
+            mNameTextView.setText(mName);
+        }
+
+        @OnClick(R.id.friend_item)
+        public void onClick() {
+            Intent intent = new Intent(mContext, AccountActivity.class);
+            intent.putExtra(mContext.getString(R.string.is_facebook_key), mIsFacebook);
+            intent.putExtra(mContext.getString(R.string.account_position_key), mPosition);
+            intent.putExtra(mContext.getString(R.string.account_profile_key), mProfile);
+            intent.putExtra(mContext.getString(R.string.account_name_key), mName);
+            intent.putExtra(mContext.getString(R.string.account_location_key), mLocationName);
+            mContext.startActivity(intent);
         }
     }
 }
