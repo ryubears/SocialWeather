@@ -4,6 +4,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 
 import com.example.android.socialweather.R;
 import com.example.android.socialweather.data.WeatherContract.WeatherEntry;
@@ -43,21 +44,49 @@ public class WeatherSyncTask {
                 );
             }
 
+
+            int unknownIndex = -1; //index at which invalid locations are stored
+            int unknownPosition = -1; //position at which invalid locations are stored
+            boolean isValid = false;
             for(int i = 0; i < cursor.getCount(); i ++) {
+                //checks both weather and photo because there are cases when should-be-invalid cases return a valid json response
+                boolean emptyWeather = false; //whether a valid json response was sent back from weather query
+                boolean emptyPhoto = false; //whether a valid json response was sent back from place search query
+                String invalidFriendName = ""; //friend name of newly added invalid location
+
                 cursor.moveToPosition(i);
+                //get row id and location
                 int indexId = cursor.getColumnIndex(WeatherEntry._ID);
                 int indexLocation = cursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
-
                 int id = cursor.getInt(indexId);
                 String locationName = cursor.getString(indexLocation);
+                System.out.println(locationName);
 
+                //fetch weather
                 ContentValues contentValues = NetworkUtils.fetchWeather(locationName); //NetworkUtils handles empty location, wrong location
+                System.out.println(contentValues == null);
+                if(contentValues == null) {
+                    //if no weather was fetched
+                    emptyWeather = true;
+                }
 
+                //fetch photo
                 String photoUrl = NetworkUtils.fetchPhoto(locationName);
+                if(photoUrl.equals(context.getString(R.string.picture_empty))) {
+                    //if no photo was fetched
+                    emptyPhoto = true;
+                }
+
+                //add location photo
+                if(contentValues == null) contentValues = new ContentValues();
                 contentValues.put(WeatherEntry.COLUMN_LOCATION_PHOTO, photoUrl);
+
+                System.out.println(emptyWeather);
+                System.out.println(emptyPhoto);
 
                 //update row
                 if(isFacebook) {
+                    if(!emptyWeather && !emptyPhoto) isValid = true;
                     context.getContentResolver().update(
                             ContentUris.withAppendedId(WeatherEntry.FACEBOOK_CONTENT_URI, id),
                             contentValues,
@@ -65,12 +94,62 @@ public class WeatherSyncTask {
                             null
                     );
                 } else {
-                    context.getContentResolver().update(
-                            ContentUris.withAppendedId(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, id),
-                            contentValues,
-                            null,
-                            null
-                    );
+                    if(emptyWeather || emptyPhoto) {
+                        if(locationName.equals(context.getString(R.string.location_empty))) {
+                            //save unknown index and position
+                            unknownIndex = id;
+                            unknownPosition = i;
+                        } else {
+                            //save invalid friend name
+                            int indexFriendNames = cursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
+                            invalidFriendName = cursor.getString(indexFriendNames);
+                            //delete row
+                            context.getContentResolver().delete(
+                                    ContentUris.withAppendedId(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, id),
+                                    null,
+                                    null
+                            );
+                        }
+                    } else {
+                        //update row
+                        isValid = true;
+                        context.getContentResolver().update(
+                                ContentUris.withAppendedId(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, id),
+                                contentValues,
+                                null,
+                                null
+                        );
+                    }
+                }
+
+                //if newly added location was invalid
+                if(!TextUtils.isEmpty(invalidFriendName)) {
+                    ContentValues invalidContentValues = new ContentValues();
+                    if(unknownIndex == -1) {
+                        //if no invalid location were added before
+                        invalidContentValues.put(WeatherEntry.COLUMN_LAST_UPDATE_TIME, System.currentTimeMillis());
+                        invalidContentValues.put(WeatherEntry.COLUMN_LOCATION_NAME, context.getString(R.string.location_empty));
+                        invalidContentValues.put(WeatherEntry.COLUMN_FRIEND_NAMES, invalidFriendName);
+                        //insert unknown location
+                        context.getContentResolver().insert(
+                                WeatherEntry.ACCOUNT_KIT_CONTENT_URI,
+                                invalidContentValues
+                        );
+                    } else {
+                        //if there already is an unknown(invalid) location
+                        cursor.moveToPosition(unknownPosition);
+                        int indexFriendNames = cursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
+                        String friendNames = cursor.getString(indexFriendNames);
+                        friendNames += context.getString(R.string.delimiter) + invalidFriendName;
+                        invalidContentValues.put(WeatherEntry.COLUMN_FRIEND_NAMES, friendNames);
+                        //update friend names at unknown location row
+                        context.getContentResolver().update(
+                                ContentUris.withAppendedId(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, unknownIndex),
+                                invalidContentValues,
+                                null,
+                                null
+                        );
+                    }
                 }
             }
 
@@ -78,12 +157,14 @@ public class WeatherSyncTask {
             cursor.close();
 
             //show update notification
-            if(WeatherPreferences.isUpdateNotificationEnabled(context)) {
-                String updateNotificationTimeKey = context.getString(R.string.pref_update_notification_time_key);
-                long currentTime = System.currentTimeMillis();
-                long lastNotificationTime = WeatherPreferences.getLastNotificationTime(context, updateNotificationTimeKey);
-                if(currentTime - lastNotificationTime >= TimeUnit.HOURS.toMillis(12)) { //check if there were any update notification in the past 24 hours
-                    NotificationUtils.notifyUpdateWeather(context);
+            if(isValid) {
+                if(WeatherPreferences.isUpdateNotificationEnabled(context)) {
+                    String updateNotificationTimeKey = context.getString(R.string.pref_update_notification_time_key);
+                    long currentTime = System.currentTimeMillis();
+                    long lastNotificationTime = WeatherPreferences.getLastNotificationTime(context, updateNotificationTimeKey);
+                    if(currentTime - lastNotificationTime >= TimeUnit.HOURS.toMillis(12)) { //check if there were any update notification in the past 24 hours
+                        NotificationUtils.notifyUpdateWeather(context);
+                    }
                 }
             }
 
@@ -107,19 +188,25 @@ public class WeatherSyncTask {
                 );
             }
 
+            //store friends that are experiencing rain, snow, extreme
             ArrayList<String> rainFriends = new ArrayList<>();
             ArrayList<String> snowFriends = new ArrayList<>();
             ArrayList<String> extremeFriends = new ArrayList<>();
             for(int i = 0; i < cursor.getCount(); i++) {
                 cursor.moveToPosition(i);
 
+                //get name and weather id
                 int indexNames = cursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
                 int indexWeatherIds = cursor.getColumnIndex(WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
-
                 String names = cursor.getString(indexNames);
                 String[] nameArray = names.split(context.getString(R.string.delimiter));
                 String[] weatherIds = cursor.getString(indexWeatherIds).split(context.getString(R.string.delimiter));
-                int currentWeatherId = Integer.valueOf(weatherIds[0]);
+                
+                //check if there is a valid weather id
+                int currentWeatherId = -1;
+                if(!weatherIds[0].equals(context.getString(R.string.forecast_ids_empty))) {
+                    currentWeatherId = Integer.valueOf(weatherIds[0]);
+                }
 
                 //keep track of friend experiencing rain, snow, and extreme weather
                 if(currentWeatherId >= 200 && currentWeatherId <= 232) {

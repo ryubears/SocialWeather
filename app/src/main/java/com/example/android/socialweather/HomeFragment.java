@@ -122,9 +122,13 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     //refresh data
     @Override
     public void onRefresh() {
+        //set clicking on weather items to false to prevent errors
+        mAdapter.setClickable(false);
         if(mIsFacebook) {
+            //refresh friend data and query weather and photo info
             syncFriends();
         } else {
+            //refresh weather and photo info
             WeatherSyncUtils.initialize(getContext(), mIsFacebook);
         }
     }
@@ -149,14 +153,13 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         protected Integer doInBackground(Void... voids) {
             //query weather data to check if it is empty or outdated
             Cursor cursor;
-            //TODO: query in descending order of last update time
             if(mIsFacebook) {
                 cursor = getContext().getContentResolver().query(
                         WeatherContract.WeatherEntry.FACEBOOK_CONTENT_URI,
                         new String[] {WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME}, //just one column since this is just to check if data is empty or outdated
                         null,
                         null,
-                        null
+                        WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME + " ASC" //in ascending order to get the oldest(smallest) update time
                 );
             } else {
                 cursor = getContext().getContentResolver().query(
@@ -164,7 +167,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                         new String[] {WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME}, //just one column since this is just to check if data is empty or outdated
                         null,
                         null,
-                        null
+                        WeatherContract.WeatherEntry.COLUMN_LAST_UPDATE_TIME + " ASC" //in ascending order to get the oldest(smallest) update time
                 );
             }
 
@@ -212,7 +215,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
     //method that makes the API call to fetch friends list
     public void syncFriends() {
-        mAdapter.setClickable(false);
         Bundle parameters = new Bundle();
         parameters.putString("fields", "name,picture.height(200).width(200),location"); //fields to extract data from
         parameters.putInt("limit", 100); //limit number of friends in list to 100
@@ -256,8 +258,10 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                 String locationId = "";
                                 String locationName = "";
                                 if(jsonUser.isNull("location")) {
-                                    //location = getString(R.string.location_empty);
-                                    //temporary testing
+                                    locationName = getString(R.string.location_empty);
+                                    locationId = "-1";
+                                    //TODO: remove temporary testing
+                                    /**
                                     int randomInt = (int) (Math.random() * 3);
                                     if(randomInt == 0) {
                                         locationName = "Minneapolis, Minnesota";
@@ -269,6 +273,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                         locationName = "Seoul, South Korea";
                                         locationId = "3";
                                     }
+                                     **/
                                 } else {
                                     JSONObject locationJson = jsonUser.getJSONObject("location");
                                     locationId = locationJson.getString("id");

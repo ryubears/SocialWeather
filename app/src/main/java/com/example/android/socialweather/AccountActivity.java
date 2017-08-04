@@ -213,8 +213,8 @@ public class AccountActivity extends AppCompatActivity {
 
         //set content in discard dialog
         mDiscardDialogBuilder
-                .setTitle("Discard Changes")
-                .setMessage("Are you sure you want to discard these changes?")
+                .setTitle(getString(R.string.discard_title))
+                .setMessage(getString(R.string.discard_message))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -233,13 +233,13 @@ public class AccountActivity extends AppCompatActivity {
         if(mIsAdd) {
             //for adding
             mSaveDialogBuilder
-                    .setTitle("Add Friend Info")
-                    .setMessage("Are you sure you want to add this friend info?");
+                    .setTitle(getString(R.string.add_title))
+                    .setMessage(getString(R.string.add_message));
         } else {
             //for editing
             mSaveDialogBuilder
-                    .setTitle("Edit Friend Info")
-                    .setMessage("Are you sure you want to edit this friend info?");
+                    .setTitle(getString(R.string.edit_title))
+                    .setMessage(getString(R.string.edit_message));
         }
 
         //set negative, positive button
@@ -272,8 +272,8 @@ public class AccountActivity extends AppCompatActivity {
 
         //set content for delete dialog
         mDeleteDialogBuilder
-                .setTitle("Delete Friend Info")
-                .setMessage("Are you sure you want to delete this friend info?")
+                .setTitle(getString(R.string.delete_title))
+                .setMessage(getString(R.string.delete_message))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -28,11 +28,8 @@ import static com.example.android.socialweather.data.WeatherContract.WeatherEntr
 public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    private static final int CURRENT_WEATHER = 11;
-    private static final int FORECAST_WEATHER = 12;
-
     //base url for weather
-    private static final String WEATHER_BASE_URL = "http://api.openweathermap.org/data/2.5/";
+    private static final String WEATHER_BASE_URL = "http://api.openweathermap.org/data/2.5/forecast?q=";
 
     //base url of google places search
     private static final String PLACES_SEARCH_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
@@ -50,7 +47,7 @@ public class NetworkUtils {
     private static URL createWeatherUrl(String location) {
         Log.d(LOG_TAG, "createWeatherUrl");
 
-        String stringUrl = WEATHER_BASE_URL + "forecast?q=" + location + WEATHER_API_KEY;
+        String stringUrl = WEATHER_BASE_URL + location + WEATHER_API_KEY;
 
         URL url = null;
         try {
@@ -141,6 +138,7 @@ public class NetworkUtils {
 
         //return null content value if json response is empty
         if(TextUtils.isEmpty(jsonResponse)) {
+            Log.e(LOG_TAG, "Empty json response");
             return null;
         }
 
@@ -204,17 +202,6 @@ public class NetworkUtils {
             contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_PRESSURES, pressures.substring(0, pressures.length() - 3));
             contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_HUMIDITIES, humidities.substring(0, humidities.length() - 3));
             contentValues.put(WeatherEntry.COLUMN_FORECAST_WEATHER_WIND_SPEEDS, windSpeeds.substring(0, windSpeeds.length() - 3));
-
-            //for debugging
-            Log.d(LOG_TAG, timeStamps.substring(0, timeStamps.length() - 3));
-            Log.d(LOG_TAG, weatherIds.substring(0, weatherIds.length() - 3));
-            Log.d(LOG_TAG, weatherDescriptions.substring(0, weatherDescriptions.length() - 3));
-            Log.d(LOG_TAG, minTemps.substring(0, minTemps.length() - 3));
-            Log.d(LOG_TAG, maxTemps.substring(0, maxTemps.length() - 3));
-            Log.d(LOG_TAG, pressures.substring(0, pressures.length() - 3));
-            Log.d(LOG_TAG, humidities.substring(0, humidities.length() - 3));
-            Log.d(LOG_TAG, windSpeeds.substring(0, windSpeeds.length() - 3));
-
         } catch(JSONException e) {
             Log.e(LOG_TAG, "Error extracting forecast from JSON: " + e);
         }
@@ -231,7 +218,7 @@ public class NetworkUtils {
         }
 
         //photo url to return
-        String photoUrl = "location_photo_empty";
+        String photoUrl = "location_photo_empty"; //linked to strings.xml and default value in WeatherDbHelper
         try {
             JSONObject baseJson = new JSONObject(jsonResponse);
             JSONArray results = baseJson.getJSONArray("results");
@@ -270,9 +257,7 @@ public class NetworkUtils {
         }
 
         //get content values from json response
-        ContentValues contentValues = extractForecastWeatherFromJSON(forecastJsonResponse);
-
-        return contentValues;
+        return extractForecastWeatherFromJSON(forecastJsonResponse);
     }
 
     //returns content value of place photo

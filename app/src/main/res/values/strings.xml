@@ -36,6 +36,7 @@
     <!-- Home Fragment -->
     <string name="home_empty_view">It looks pretty lonely here.\nWhy not share this app with your friends?</string>
     <string name="loading_message">Loading...</string>
+    <string name="empty_message">Location is unknown</string>
 
     <!-- Weather Item -->
     <string name="weather_item_lives">lives currently</string>
@@ -88,10 +89,18 @@
     <string name="account_delete_title">Delete</string>
     <string name="account_fill_fields_toast">Please fill all required fields</string>
 
+    <string name="discard_title">Discard Changes</string>
+    <string name="discard_message">Are you sure you want to discard these changes?</string>
+    <string name="add_title">Add Friend Info</string>
+    <string name="add_message">Are you sure you want to add this friend info?</string>
+    <string name="edit_title">Edit Friend Info</string>
+    <string name="edit_message">Are you sure you want to edit this friend info?</string>
+    <string name="delete_title">Delete Friend Info</string>
+    <string name="delete_message">Are you sure you want to delete this friend info?</string>
+
     <string name="account_profile_key" translatable="false">account_profile</string>
     <string name="account_name_key" translatable="false">account_name</string>
     <string name="account_location_key" translatable="false">account_location</string>
-
     <string name="account_position_key" translatable="false">account_position</string>
 
     <!-- data -->
