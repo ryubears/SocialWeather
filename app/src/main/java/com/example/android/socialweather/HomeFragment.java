@@ -261,7 +261,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                     locationName = getString(R.string.location_empty);
                                     locationId = "-1";
                                     //TODO: remove temporary testing
-                                    /**
                                     int randomInt = (int) (Math.random() * 3);
                                     if(randomInt == 0) {
                                         locationName = "Minneapolis, Minnesota";
@@ -273,7 +272,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
                                         locationName = "Seoul, South Korea";
                                         locationId = "3";
                                     }
-                                     **/
                                 } else {
                                     JSONObject locationJson = jsonUser.getJSONObject("location");
                                     locationId = locationJson.getString("id");

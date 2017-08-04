@@ -1,13 +1,16 @@
 package com.example.android.socialweather;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -97,6 +100,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
     public class WeatherViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.weather_item_card_view) CardView mCardView;
+        @BindView(R.id.weather_item_delete) ImageButton mDeleteButton;
         @BindView(R.id.weather_item_background) ImageView mBackgroundImageView;
         @BindView(R.id.weather_item_location_name) TextView mLocationTextView;
         @BindView(R.id.weather_item_description) TextView mDescriptionTextView;
@@ -147,6 +151,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             mFriend1ImageView.setImageResource(R.drawable.profile_color);
 
             if(mIsFacebook) {
+                mDeleteButton.setVisibility(View.GONE);
                 //set friend pictures and number of friends living in the location
                 String[] friendNames = mNames.split(mContext.getString(R.string.delimiter));
                 int numFriends = friendNames.length;
@@ -186,6 +191,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                 } else {
                     mFriend2ImageView.setVisibility(View.GONE);
                 }
+            } else {
+                mDeleteButton.setVisibility(View.VISIBLE);
             }
 
             //if location is invalid or empty
@@ -238,6 +245,18 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             mLivesTextView.setText(String.valueOf(numFriends));
         }
 
+        @OnClick(R.id.weather_item_delete)
+        public void onDelete() {
+            if(mClickable) {
+                deleteItem();
+                if(mToast != null) {
+                    mToast.cancel();
+                }
+                mToast = Toast.makeText(mContext, "Deleted Item", Toast.LENGTH_SHORT);
+                mToast.show();
+            }
+        }
+
         @OnClick(R.id.weather_item_card_view)
         public void onClick() {
             if(mClickable && mIsValid) {
@@ -260,6 +279,22 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                     mToast = Toast.makeText(mContext, toastMessage, Toast.LENGTH_SHORT);
                     mToast.show();
                 }
+            }
+        }
+
+        private void deleteItem() {
+            new DeleteItemTask().execute();
+        }
+
+        private class DeleteItemTask extends AsyncTask<Void, Void, Void> {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                mContext.getContentResolver().delete(
+                        ContentUris.withAppendedId(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, mId),
+                        null,
+                        null
+                );
+                return null;
             }
         }
     }
