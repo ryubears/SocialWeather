@@ -34,6 +34,7 @@
     <string name="nav_location_default">Unknown</string>
 
     <!-- Home Fragment -->
+    <string name="home_add_menu">Add Friend</string>
     <string name="home_empty_view">It looks pretty lonely here.\nWhy not share this app with your friends?</string>
     <string name="loading_message">Loading...</string>
     <string name="empty_message">Location is unknown</string>

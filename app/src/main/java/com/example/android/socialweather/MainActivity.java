@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -53,8 +55,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-//App Launcher Icons made by "https://www.flaticon.com/authors/gregor-cresnar" "Gregor Cresnar"
-//Weather and Profile Icons made by "https://www.flaticon.com/authors/madebyoliver" "Madebyoliver"
+//App launcher icons made by "https://www.flaticon.com/authors/gregor-cresnar" "Gregor Cresnar"
+//Weather, profile, and other icons made by "https://www.flaticon.com/authors/madebyoliver" "Madebyoliver"
 
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
@@ -506,5 +508,16 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return phoneNumber;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(navItemIndex == 0 && CURRENT_TAG.equals(TAG_HOME)) {
+            //create add menu
+            MenuInflater menuInflater = new MenuInflater(this);
+            menuInflater.inflate(R.menu.home_menu, menu);
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 }

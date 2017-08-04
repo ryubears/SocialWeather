@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -16,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,13 +38,11 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class HomeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.home_swipe_refresh_layout) SwipeRefreshLayout mHomeSwipeRefreshLayout;
     @BindView(R.id.home_recycler_view) RecyclerView mHomeRecyclerView;
     @BindView(R.id.home_empty_view) TextView mHomeEmptyView;
-    @BindView(R.id.home_fab) FloatingActionButton mAddFab;
 
     private static final String LOG_TAG = HomeFragment.class.getSimpleName(); //log tag for debugging
     private static final String INITIALIZE_KEY = "initialize"; //string key for storing whether friend data has been initialized
@@ -93,11 +91,15 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
             //save whether user logged in with facebook
             mIsFacebook = true;
-            mAddFab.setVisibility(View.GONE);
+            //hide add menu
+            setHasOptionsMenu(false);
         } else {
             mIsFacebook = false;
-            mAddFab.setVisibility(View.VISIBLE);
+            //show add menu
+            setHasOptionsMenu(true);
         }
+
+
 
         //sets adapter to recycler view
         mAdapter = new WeatherAdapter(mIsFacebook);
@@ -131,12 +133,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             //refresh weather and photo info
             WeatherSyncUtils.initialize(getContext(), mIsFacebook);
         }
-    }
-
-    @OnClick(R.id.home_fab)
-    public void onFabClick() {
-        Intent intent = new Intent(getContext(), AccountActivity.class);
-        startActivity(intent);
     }
 
     //method that calls async task that checks if weather data is empty or outdated
@@ -404,5 +400,18 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onSaveInstanceState(outState);
         //save friend initialization state
         outState.putBoolean(INITIALIZE_KEY, mFriendInitialized);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.home_add:
+                //handles add menu
+                Intent intent = new Intent(getContext(), AccountActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
