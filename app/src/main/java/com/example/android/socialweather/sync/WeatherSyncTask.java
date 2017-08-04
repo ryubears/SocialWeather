@@ -60,11 +60,9 @@ public class WeatherSyncTask {
                 int indexLocation = cursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
                 int id = cursor.getInt(indexId);
                 String locationName = cursor.getString(indexLocation);
-                System.out.println(locationName);
 
                 //fetch weather
                 ContentValues contentValues = NetworkUtils.fetchWeather(locationName); //NetworkUtils handles empty location, wrong location
-                System.out.println(contentValues == null);
                 if(contentValues == null) {
                     //if no weather was fetched
                     emptyWeather = true;
@@ -80,9 +78,6 @@ public class WeatherSyncTask {
                 //add location photo
                 if(contentValues == null) contentValues = new ContentValues();
                 contentValues.put(WeatherEntry.COLUMN_LOCATION_PHOTO, photoUrl);
-
-                System.out.println(emptyWeather);
-                System.out.println(emptyPhoto);
 
                 //update row
                 if(isFacebook) {

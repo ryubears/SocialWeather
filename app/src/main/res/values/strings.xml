@@ -67,6 +67,7 @@
 
     <!-- Forecast Activity -->
     <string name="activity_title_forecast">Weather Forecast</string>
+    <string name="forecast_empty_view_text">No Weather</string>
 
     <!-- Forecast Drawer -->
     <string name="friend_menu_title">Friends</string>
@@ -107,6 +108,7 @@
     <string name="delimiter" translatable="false">%%%</string>
 
     <string name="is_facebook_key">is_facebook</string>
+    <string name="is_invalid_key">is_invalid</string>
 
     <string name="location_photo_empty" translatable="false">location_photo_empty</string> <!-- also linked to default value in WeatherDbHelper -->
     <string name="picture_empty" translatable="false">picture_empty</string>

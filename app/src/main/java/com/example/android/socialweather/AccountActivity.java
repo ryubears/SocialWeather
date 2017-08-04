@@ -129,7 +129,11 @@ public class AccountActivity extends AppCompatActivity {
 
             //save and display original location
             mOriginalLocation = intent.getStringExtra(getString(R.string.account_location_key));
-            mLocationEditText.setText(mOriginalLocation);
+            if(mOriginalLocation.equals(getString(R.string.location_empty))) {
+                mLocationEditText.setText(getString(R.string.location_default));
+            } else {
+                mLocationEditText.setText(mOriginalLocation);
+            }
         } else {
             //save that this activity was opened for adding
             mIsAdd = true;

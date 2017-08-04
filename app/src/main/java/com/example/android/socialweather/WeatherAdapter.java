@@ -114,7 +114,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         private String[] mWeatherIds;
         private String[] mWeatherDescriptions;
 
-        private boolean mEmptyLocation;
+        private boolean mIsValid;
 
         public WeatherViewHolder(View view) {
             super(view);
@@ -125,6 +125,9 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         }
 
         private void bind() {
+            //reset values
+            mIsValid = true;
+
             //extract data from cursor
             int indexId = mCursor.getColumnIndex(WeatherEntry._ID);
             int indexLocationName = mCursor.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
@@ -140,6 +143,51 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             mWeatherIds = mCursor.getString(indexWeatherId).split(itemView.getContext().getString(R.string.delimiter));
             mWeatherDescriptions = mCursor.getString(indexWeatherDescription).split(itemView.getContext().getString(R.string.delimiter));
 
+            //set default profile
+            mFriend1ImageView.setImageResource(R.drawable.profile_color);
+
+            if(mIsFacebook) {
+                //set friend pictures and number of friends living in the location
+                String[] friendNames = mNames.split(mContext.getString(R.string.delimiter));
+                int numFriends = friendNames.length;
+                mLivesTextView.setText(String.valueOf(numFriends));
+                //get friend profile pictures
+                int indexFriendPictures = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
+                mProfilePics = mCursor.getString(indexFriendPictures);
+                String[] friendPics = mProfilePics.split(mContext.getString(R.string.delimiter));
+
+                //transform profile picture in a circular frame
+                Transformation transformation = new RoundedTransformationBuilder()
+                        .cornerRadiusDp(50)
+                        .oval(false)
+                        .build();
+
+                //set first friend picture
+                if(friendPics[0].equals(mContext.getString(R.string.picture_empty))) {
+                    mFriend1ImageView.setImageResource(R.drawable.profile_color);
+                } else {
+                    Picasso.with(mContext)
+                            .load(friendPics[0])
+                            .transform(transformation)
+                            .into(mFriend1ImageView);
+                }
+
+                //set second friend picture
+                if(numFriends >= 2) {
+                    mFriend2ImageView.setVisibility(View.VISIBLE);
+                    if(friendPics[1].equals(mContext.getString(R.string.picture_empty))) {
+                        mFriend2ImageView.setImageResource(R.drawable.profile_color);
+                    } else {
+                        Picasso.with(mContext)
+                                .load(friendPics[1])
+                                .transform(transformation)
+                                .into(mFriend2ImageView);
+                    }
+                } else {
+                    mFriend2ImageView.setVisibility(View.GONE);
+                }
+            }
+
             //if location is invalid or empty
             if(mLocationName.equals(mContext.getString(R.string.location_empty))) {
                 //set default values
@@ -149,8 +197,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                 mIconImageView.setImageResource(R.drawable.no_weather_color);
                 int numFriends = mNames.split(mContext.getString(R.string.delimiter)).length;
                 mLivesTextView.setText(String.valueOf(numFriends));
-                mFriend1ImageView.setImageResource(R.drawable.profile_color);
-                mEmptyLocation = true;
+                mIsValid = false;
                 return;
             }
 
@@ -189,71 +236,31 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             String[] friendNames = mNames.split(mContext.getString(R.string.delimiter));
             int numFriends = friendNames.length;
             mLivesTextView.setText(String.valueOf(numFriends));
-
-            //set default friend profile
-            mFriend1ImageView.setImageResource(R.drawable.profile_color);
-
-            if(mIsFacebook) {
-                //get friend profile pictures
-                int indexFriendPictures = mCursor.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
-                mProfilePics = mCursor.getString(indexFriendPictures);
-                String[] friendPics = mProfilePics.split(mContext.getString(R.string.delimiter));
-
-                //transform profile picture in a circular frame
-                Transformation transformation = new RoundedTransformationBuilder()
-                        .cornerRadiusDp(50)
-                        .oval(false)
-                        .build();
-
-                //set first friend picture
-                if(friendPics[0].equals(mContext.getString(R.string.picture_empty))) {
-                    mFriend1ImageView.setImageResource(R.drawable.profile_color);
-                } else {
-                    Picasso.with(mContext)
-                            .load(friendPics[0])
-                            .transform(transformation)
-                            .into(mFriend1ImageView);
-                }
-
-                //set second friend picture
-                if(numFriends >= 2) {
-                    mFriend2ImageView.setVisibility(View.VISIBLE);
-                    if(friendPics[1].equals(mContext.getString(R.string.picture_empty))) {
-                        mFriend2ImageView.setImageResource(R.drawable.profile_color);
-                    } else {
-                        Picasso.with(mContext)
-                                .load(friendPics[1])
-                                .transform(transformation)
-                                .into(mFriend2ImageView);
-                    }
-                } else {
-                    mFriend2ImageView.setVisibility(View.GONE);
-                }
-            }
         }
 
         @OnClick(R.id.weather_item_card_view)
         public void onClick() {
-            if(mClickable && !mEmptyLocation) {
+            if(mClickable && mIsValid) {
                 Intent intent = new Intent(itemView.getContext(), ForecastActivity.class);
                 intent.putExtra(WeatherEntry._ID, mId);
                 intent.putExtra(mContext.getString(R.string.is_facebook_key), mIsFacebook);
-                itemView.getContext().startActivity(intent);
+                mContext.startActivity(intent);
             } else {
-                if(mToast != null) {
-                    mToast.cancel();
-                }
-
-                String toastMessage = mContext.getString(R.string.loading_message);
-                if(mEmptyLocation) {
-                    toastMessage = mContext.getString(R.string.empty_message);
+                if(!mIsValid) {
+                    Intent intent = new Intent(mContext, ForecastActivity.class);
+                    intent.putExtra(WeatherEntry._ID, mId);
+                    intent.putExtra(mContext.getString(R.string.is_facebook_key), mIsFacebook);
+                    intent.putExtra(mContext.getString(R.string.is_invalid_key), mIsValid);
+                    mContext.startActivity(intent);
                 } else {
-                    toastMessage = mContext.getString(R.string.loading_message);
+                    if(mToast != null) {
+                        mToast.cancel();
+                    }
+                    String toastMessage = mContext.getString(R.string.loading_message);
+                    mToast = Toast.makeText(mContext, toastMessage, Toast.LENGTH_SHORT);
+                    mToast.show();
                 }
-                mToast = Toast.makeText(mContext, toastMessage, Toast.LENGTH_SHORT);
-                mToast.show();
             }
-
         }
     }
 }

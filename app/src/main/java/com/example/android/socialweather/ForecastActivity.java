@@ -16,6 +16,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.android.socialweather.data.WeatherContract;
 import com.example.android.socialweather.data.WeatherContract.WeatherEntry;
@@ -27,6 +29,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
     @BindView(R.id.forecast_drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.friend_recycler_view) RecyclerView mFriendRecyclerView;
     @BindView(R.id.forecast_recycler_view) RecyclerView mForecastRecyclerView;
+    @BindView(R.id.forecast_empty_view) TextView mForecastEmptyView;
 
     private static final int FORECAST_LOADER_ID = 45;
 
@@ -36,6 +39,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
     private ForecastAdapter mForecastAdapter;
 
     private boolean mIsFacebook;
+    private boolean mIsInvalid;
 
     private int mId = -1;
     private String mLocationName;
@@ -69,9 +73,12 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
         if(intent != null) {
             //get row id passed in from main activity
             mId = intent.getIntExtra(WeatherEntry._ID, -1);
-
             //get how user logged in
             mIsFacebook = intent.getBooleanExtra(getString(R.string.is_facebook_key), false);
+            //get whether current row is valid
+            if(intent.hasExtra(getString(R.string.is_invalid_key))) {
+                mIsInvalid = true;
+            }
         }
 
         //set layout manager for friend recycler view
@@ -130,33 +137,57 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //get data from cursor and attach it to adapter
+
+        //check if data is empty
+        if(data.getCount() == 0) {
+            return;
+        }
         data.moveToFirst();
 
+        //get friend and location data
         int indexLocationName = data.getColumnIndex(WeatherEntry.COLUMN_LOCATION_NAME);
         int indexFriendNames = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_NAMES);
         int indexFriendProfiles = -1;
         if(mIsFacebook) {
             indexFriendProfiles = data.getColumnIndex(WeatherEntry.COLUMN_FRIEND_PICTURES);
         }
-        int indexWeatherTimes = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES);
-        int indexWeatherIds = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
-        int indexWeatherDescriptions = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
-        int indexWeatherMinTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
-        int indexWeatherMaxTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
 
+        if(!mIsInvalid) {
+            //if current row is valid
+
+            //get forecast data
+            int indexWeatherTimes = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_TIMES);
+            int indexWeatherIds = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_IDS);
+            int indexWeatherDescriptions = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_DESCRIPTIONS);
+            int indexWeatherMinTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MIN_TEMPS);
+            int indexWeatherMaxTemps = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_FORECAST_WEATHER_MAX_TEMPS);
+            mWeatherTimes = data.getString(indexWeatherTimes).split(getString(R.string.delimiter));
+            mWeatherIds = data.getString(indexWeatherIds).split(getString(R.string.delimiter));
+            mWeatherDescriptions = data.getString(indexWeatherDescriptions).split(getString(R.string.delimiter));
+            mWeatherMinTemps = data.getString(indexWeatherMinTemps).split(getString(R.string.delimiter));
+            mWeatherMaxTemps = data.getString(indexWeatherMaxTemps).split(getString(R.string.delimiter));
+
+            //refresh forecast data
+            mForecastAdapter.swapData(mId, mWeatherTimes, mWeatherIds, mWeatherDescriptions, mWeatherMinTemps, mWeatherMaxTemps);
+
+            //show recycler view and hide empty view
+            mForecastRecyclerView.setVisibility(View.VISIBLE);
+            mForecastEmptyView.setVisibility(View.GONE);
+        } else {
+            //hide recycler view and show empty view
+            mForecastRecyclerView.setVisibility(View.GONE);
+            mForecastEmptyView.setVisibility(View.VISIBLE);
+        }
+
+        //extract friend and location data
         mLocationName = data.getString(indexLocationName);
         mFriendNames = data.getString(indexFriendNames).split(getString(R.string.delimiter));
         if(indexFriendProfiles != -1) {
             mFriendProfiles = data.getString(indexFriendProfiles).split(getString(R.string.delimiter));
         }
-        mWeatherTimes = data.getString(indexWeatherTimes).split(getString(R.string.delimiter));
-        mWeatherIds = data.getString(indexWeatherIds).split(getString(R.string.delimiter));
-        mWeatherDescriptions = data.getString(indexWeatherDescriptions).split(getString(R.string.delimiter));
-        mWeatherMinTemps = data.getString(indexWeatherMinTemps).split(getString(R.string.delimiter));
-        mWeatherMaxTemps = data.getString(indexWeatherMaxTemps).split(getString(R.string.delimiter));
 
+        //refresh friend data
         mFriendAdapter.swapData(mLocationName, mFriendNames, mFriendProfiles);
-        mForecastAdapter.swapData(mId, mWeatherTimes, mWeatherIds, mWeatherDescriptions, mWeatherMinTemps, mWeatherMaxTemps);
     }
 
     @Override
