@@ -26,7 +26,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/place_holder" />
+                tools:src="@drawable/place_holder"
+                android:background="@color/gray"/>
 
             <ImageButton
                 android:id="@+id/weather_item_delete"

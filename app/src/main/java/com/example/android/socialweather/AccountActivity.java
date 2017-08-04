@@ -2,9 +2,12 @@ package com.example.android.socialweather;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -254,16 +257,25 @@ public class AccountActivity extends AppCompatActivity {
                         //get info from edit texts
                         String[] info = new String[] {mNameEditText.getText().toString(), mLocationEditText.getText().toString()};
                         if(mIsAdd) {
-                            //add friend info
-                            addFriend(info);
-                            //return to previous activity
-                            finish();
+                            //check network connection
+                            if(!isNetworkAvailable()) {
+                                Toast.makeText(getApplicationContext(), getString(R.string.network_message), Toast.LENGTH_SHORT).show();
+                            } else {
+                                //add friend info
+                                addFriend(info);
+                                //return to previous activity
+                                finish();
+                            }
                         } else {
-                            //edit friend info
-                            editFriend(info);
-                            //return to main activity to prevent errors when location itself is deleted
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
+                            if(!isNetworkAvailable()) {
+                                Toast.makeText(getApplicationContext(), getString(R.string.network_message), Toast.LENGTH_SHORT).show();
+                            } else {
+                                //edit friend info
+                                editFriend(info);
+                                //return to main activity to prevent errors when location itself is deleted
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                            }
                         }
                     }
                 })
@@ -281,11 +293,15 @@ public class AccountActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //delete friend
-                        deleteFriend();
-                        //return to main activity to prevent errors when location itself is deleted
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
+                        if(!isNetworkAvailable()) {
+                            Toast.makeText(getApplicationContext(), getString(R.string.network_message), Toast.LENGTH_SHORT).show();
+                        } else {
+                            //delete friend
+                            deleteFriend();
+                            //return to main activity to prevent errors when location itself is deleted
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -651,5 +667,15 @@ public class AccountActivity extends AppCompatActivity {
             cursor.close();
             return null;
         }
+    }
+
+    //code snippet from stack overflow https://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+    private boolean isNetworkAvailable() {
+        //create connectivity manager
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        //get active network info
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        //return state of active network
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

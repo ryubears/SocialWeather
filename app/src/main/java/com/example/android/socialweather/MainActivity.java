@@ -1,6 +1,9 @@
 package com.example.android.socialweather;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,8 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -114,21 +115,21 @@ public class MainActivity extends AppCompatActivity {
         //callback manager for login permissions
         mCallbackManager = CallbackManager.Factory.create();
 
-        //tracks changes to profile
-        new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                if(currentProfile != null) {
-                    //displays the changed profile info
-                    displayProfileInfo(currentProfile);
-                }
-            }
-        };
-
         //facebook access token
         mAccessToken = AccessToken.getCurrentAccessToken();
         if(mAccessToken != null) {
             //if user logged in through facebook
+
+            //tracks changes to profile
+            new ProfileTracker() {
+                @Override
+                protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                    if(currentProfile != null) {
+                        //displays the changed profile info
+                        displayProfileInfo(currentProfile);
+                    }
+                }
+            };
 
             //get current profile and display profile info in navigation header
             Profile profile = Profile.getCurrentProfile();
@@ -436,6 +437,13 @@ public class MainActivity extends AppCompatActivity {
 
     //helper method that fetches user location and displays it
     private void fetchLocation() {
+        //check network connection
+        if(!isNetworkAvailable()) {
+            //show network message
+            Toast.makeText(this, getString(R.string.network_message), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Bundle parameters = new Bundle();
         parameters.putString("fields", "location");
         new GraphRequest(
@@ -510,14 +518,13 @@ public class MainActivity extends AppCompatActivity {
         return phoneNumber;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if(navItemIndex == 0 && CURRENT_TAG.equals(TAG_HOME)) {
-            //create add menu
-            MenuInflater menuInflater = new MenuInflater(this);
-            menuInflater.inflate(R.menu.home_menu, menu);
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
+    //code snippet from stack overflow https://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+    private boolean isNetworkAvailable() {
+        //create connectivity manager
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        //get active network info
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        //return state of active network
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

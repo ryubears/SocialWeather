@@ -38,6 +38,7 @@
     <string name="home_empty_view">It looks pretty lonely here.\nWhy not share this app with your friends?</string>
     <string name="loading_message">Loading...</string>
     <string name="empty_message">Location is unknown</string>
+    <string name="network_message">Network needs to be connected</string>
 
     <!-- Weather Item -->
     <string name="weather_item_lives">lives currently</string>

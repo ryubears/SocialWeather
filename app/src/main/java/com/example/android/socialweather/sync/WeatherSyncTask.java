@@ -266,6 +266,13 @@ public class WeatherSyncTask {
                     NotificationUtils.notifyExtremeWeather(context, extremeFriends);
                 }
             }
+
+            //to trigger loader refresh to remove refresh animation
+            if(isFacebook) {
+                context.getContentResolver().notifyChange(WeatherEntry.FACEBOOK_CONTENT_URI, null);
+            } else {
+                context.getContentResolver().notifyChange(WeatherEntry.ACCOUNT_KIT_CONTENT_URI, null);
+            }
         } catch(Exception e) {
             e.printStackTrace();
         }

@@ -1,9 +1,12 @@
 package com.example.android.socialweather;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +18,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,8 +104,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             setHasOptionsMenu(true);
         }
 
-
-
         //sets adapter to recycler view
         mAdapter = new WeatherAdapter(mIsFacebook);
         mHomeRecyclerView.setAdapter(mAdapter);
@@ -124,6 +127,14 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     //refresh data
     @Override
     public void onRefresh() {
+        //check network connection
+        if(!isNetworkAvailable()) {
+            //show network message
+            Toast.makeText(getContext(), getString(R.string.network_message), Toast.LENGTH_SHORT).show();
+            mHomeSwipeRefreshLayout.setRefreshing(false); //hide refresh indicator
+            return;
+        }
+
         //set clicking on weather items to false to prevent errors
         mAdapter.setClickable(false);
         if(mIsFacebook) {
@@ -199,12 +210,22 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
 
             if(dataState == DATA_EMPTY) {
                 if(mIsFacebook) {
-                    //sync with friend data if data is empty
-                    syncFriends();
+                    //check network connection
+                    if(!isNetworkAvailable()) {
+                        Toast.makeText(getContext(), getString(R.string.network_message), Toast.LENGTH_SHORT).show();
+                    } else {
+                        //sync with friend data if data is empty
+                        syncFriends();
+                    }
                 }
             } else if(dataState == DATA_OUTDATED) {
-                //update facebook weather data if data is outdated
-                WeatherSyncUtils.initialize(getContext(), mIsFacebook);
+                //check network connection
+                if(!isNetworkAvailable()) {
+                    Toast.makeText(getContext(), getString(R.string.network_message), Toast.LENGTH_SHORT).show();
+                } else {
+                    //update facebook weather data if data is outdated
+                    WeatherSyncUtils.initialize(getContext(), mIsFacebook);
+                }
             }
         }
     }
@@ -370,7 +391,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.cancelLoadingToast(); //cancel loading toast if exist
         mAdapter.setClickable(true); //make clicking on weather items possible
-        mHomeSwipeRefreshLayout.setRefreshing(false); //hide loading indicator for sync
+        mHomeSwipeRefreshLayout.setRefreshing(false); //hide refreshing animation
         //change data in weather adapter
         mAdapter.swapCursor(data);
         if(data == null || data.getCount() == 0) {
@@ -403,6 +424,12 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.home_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.home_add:
@@ -413,5 +440,15 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    //code snippet from stack overflow https://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+    private boolean isNetworkAvailable() {
+        //create connectivity manager
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        //get active network info
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        //return state of active network
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
