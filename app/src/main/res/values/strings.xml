@@ -83,7 +83,9 @@
     <string name="details_wind_label">Wind Speed</string>
 
     <!-- Account Activity -->
-    <string name="activity_title_account">Account Info</string>
+    <string name="account_view_title">Friend Info</string>
+    <string name="account_edit_title">Edit Friend</string>
+    <string name="account_add_title">Add Friend</string>
     <string name="account_name_label">Name</string>
     <string name="account_name_hint">Name</string>
     <string name="account_location_label">Location</string>

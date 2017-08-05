@@ -95,6 +95,9 @@ public class AccountActivity extends AppCompatActivity {
             if(mIsFacebook) {
                 //if user logged in with facebook
 
+                //set title
+                getSupportActionBar().setTitle(getString(R.string.account_view_title));
+
                 //get profile url
                 mProfileUrl = intent.getStringExtra(getString(R.string.account_profile_key));
 
@@ -123,6 +126,8 @@ public class AccountActivity extends AppCompatActivity {
             //save that this activity was opened for editing
             mIsAdd = false;
 
+            getSupportActionBar().setTitle(getString(R.string.account_edit_title));
+
             //set friend position
             mPosition = intent.getIntExtra(getString(R.string.account_position_key), -1);
 
@@ -140,6 +145,7 @@ public class AccountActivity extends AppCompatActivity {
         } else {
             //save that this activity was opened for adding
             mIsAdd = true;
+            getSupportActionBar().setTitle(getString(R.string.account_add_title));
         }
 
         //add text change listener
@@ -263,6 +269,8 @@ public class AccountActivity extends AppCompatActivity {
                             } else {
                                 //add friend info
                                 addFriend(info);
+                                //display toast
+                                Toast.makeText(getApplicationContext(), "Added Friend", Toast.LENGTH_SHORT).show();
                                 //return to previous activity
                                 finish();
                             }
@@ -272,6 +280,8 @@ public class AccountActivity extends AppCompatActivity {
                             } else {
                                 //edit friend info
                                 editFriend(info);
+                                //display toast
+                                Toast.makeText(getApplicationContext(), "Edit Successful", Toast.LENGTH_SHORT).show();
                                 //return to main activity to prevent errors when location itself is deleted
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
@@ -298,6 +308,8 @@ public class AccountActivity extends AppCompatActivity {
                         } else {
                             //delete friend
                             deleteFriend();
+                            //display toast
+                            Toast.makeText(getApplicationContext(), "Friend Deleted", Toast.LENGTH_SHORT).show();
                             //return to main activity to prevent errors when location itself is deleted
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);

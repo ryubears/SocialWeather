@@ -31,8 +31,8 @@
 
             <ImageButton
                 android:id="@+id/weather_item_delete"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="end|top"
                 android:layout_margin="8dp"
                 android:background="@drawable/cancel" />

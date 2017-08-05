@@ -105,7 +105,6 @@
         </activity>
         <activity
             android:name=".AccountActivity"
-            android:label="@string/activity_title_account"
             android:launchMode="singleTop" />
 
         <!-- Content Provider -->

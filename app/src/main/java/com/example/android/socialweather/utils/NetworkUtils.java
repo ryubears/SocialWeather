@@ -221,11 +221,25 @@ public class NetworkUtils {
         String photoUrl = "location_photo_empty"; //linked to strings.xml and default value in WeatherDbHelper
         try {
             JSONObject baseJson = new JSONObject(jsonResponse);
-            JSONArray results = baseJson.getJSONArray("results");
-            if(results.length() == 0) {
+
+            //check status
+            String status = baseJson.getString("status");
+            Log.d(LOG_TAG, "Place Query Status: " + status);
+            if(!status.equals("OK")) {
                 return photoUrl;
             }
+
+            //get results
+            JSONArray results = baseJson.getJSONArray("results");
+            if(results.length() == 0) { //check if there are results
+                return photoUrl;
+            }
+
+            //get photo
             JSONObject result = results.getJSONObject(0);
+            if(result.isNull("photos")) { //check if there are photos
+                return photoUrl;
+            }
             JSONArray photos = result.getJSONArray("photos");
             JSONObject photo = photos.getJSONObject(0);
 

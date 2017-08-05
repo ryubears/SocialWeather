@@ -70,7 +70,7 @@ public class WeatherSyncTask {
 
                 //fetch photo
                 String photoUrl = NetworkUtils.fetchPhoto(locationName);
-                if(photoUrl.equals(context.getString(R.string.picture_empty))) {
+                if(photoUrl.equals(context.getString(R.string.location_photo_empty))) {
                     //if no photo was fetched
                     emptyPhoto = true;
                 }
