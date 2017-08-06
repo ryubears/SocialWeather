@@ -251,7 +251,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
                 mToast = Toast.makeText(mContext, "Deleted Item", Toast.LENGTH_SHORT);
                 mToast.show();
                 deleteItem();
-
             }
         }
 

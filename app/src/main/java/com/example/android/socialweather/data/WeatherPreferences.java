@@ -86,4 +86,18 @@ public class WeatherPreferences {
             throw new RuntimeException("Key not recognized for SharedPreferences: " + key);
         }
     }
+
+    //saves how user logged in to the app
+    public static void saveLoginType(Context context, boolean isFacebook) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(context.getString(R.string.pref_login_type_key), isFacebook);
+        editor.apply();
+    }
+
+    //returns how user logged in to the app
+    public static boolean getLoginType(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(context.getString(R.string.pref_login_type_key), false);
+    }
 }

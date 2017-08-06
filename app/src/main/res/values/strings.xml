@@ -66,6 +66,8 @@
     <string name="pref_rain_notification_time_key">rain_notification_time</string>
     <string name="pref_snow_notification_time_key">snow_notification_time</string>
     <string name="pref_extreme_notification_time_key">extreme_notification_time</string>
+    
+    <string name="pref_login_type_key">login_type</string>
 
     <!-- Forecast Activity -->
     <string name="activity_title_forecast">Weather Forecast</string>
@@ -107,6 +109,9 @@
     <string name="account_name_key" translatable="false">account_name</string>
     <string name="account_location_key" translatable="false">account_location</string>
     <string name="account_position_key" translatable="false">account_position</string>
+
+    <!-- widget -->
+    <string name="widget_empty_text">No Weather Available</string>
 
     <!-- data -->
     <string name="delimiter" translatable="false">%%%</string>

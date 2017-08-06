@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.android.socialweather.data.WeatherPreferences;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -48,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
         mFacebookButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                //save login type
+                WeatherPreferences.saveLoginType(getApplicationContext(), true);
                 launchMainActivity();
             }
 
@@ -88,7 +91,9 @@ public class LoginActivity extends AppCompatActivity {
                 String toastMessage = loginResult.getError().getErrorType().getMessage();
                 Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
             } else if(loginResult.getAccessToken() != null) {
-                //proceed to social activity if login was successful
+                //save login type
+                WeatherPreferences.saveLoginType(getApplicationContext(), false);
+                //proceed to main activity if login was successful
                 launchMainActivity();
             }
         }
