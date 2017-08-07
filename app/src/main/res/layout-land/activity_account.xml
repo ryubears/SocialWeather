@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.socialweather.AccountActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/account_horizontal_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"
+        tools:layout_editor_absoluteY="156dp"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/account_vertical_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="296dp" />
+    
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimaryLight"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/account_vertical_guideline"/>
+
+    <ImageView
+        android:id="@+id/account_profile"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:src="@drawable/profile_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/account_vertical_guideline" />
+
+    <TextView
+        android:id="@+id/account_name_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/account_name_label"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/account_name_value"
+        app:layout_constraintLeft_toRightOf="@id/account_vertical_guideline"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <EditText
+        android:id="@+id/account_name_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/account_name_hint"
+        android:textColor="@color/textSecondary"
+        android:fontFamily="sans-serif-light"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/account_horizontal_guideline"
+        app:layout_constraintLeft_toLeftOf="@+id/account_vertical_guideline"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/account_location_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/account_location_label"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintTop_toTopOf="@+id/account_horizontal_guideline"
+        app:layout_constraintLeft_toRightOf="@+id/account_vertical_guideline"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <EditText
+        android:id="@+id/account_location_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/account_location_hint"
+        android:textColor="@color/textSecondary"
+        android:fontFamily="sans-serif-light"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        app:layout_constraintTop_toBottomOf="@+id/account_location_label"
+        app:layout_constraintLeft_toRightOf="@+id/account_vertical_guideline"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>
