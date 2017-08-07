@@ -613,7 +613,6 @@ public class AccountActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-
             //query account kit table
             String[] projection = new String[] {WeatherEntry._ID, WeatherEntry.COLUMN_LOCATION_NAME, WeatherEntry.COLUMN_FRIEND_NAMES};
             Cursor cursor = getContentResolver().query(
@@ -675,6 +674,7 @@ public class AccountActivity extends AppCompatActivity {
                         null
                 );
             }
+
             //close cursor to prevent memory leaks
             cursor.close();
             return null;

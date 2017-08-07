@@ -89,6 +89,7 @@ public class WeatherPreferences {
 
     //saves how user logged in to the app
     public static void saveLoginType(Context context, boolean isFacebook) {
+        //save login type
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(context.getString(R.string.pref_login_type_key), isFacebook);

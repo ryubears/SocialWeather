@@ -9,6 +9,7 @@ import android.widget.RemoteViewsService;
 
 import com.example.android.socialweather.R;
 import com.example.android.socialweather.data.WeatherContract;
+import com.example.android.socialweather.data.WeatherPreferences;
 import com.example.android.socialweather.utils.WeatherUtils;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -71,6 +72,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews row = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
+        boolean isInvalid = false;
 
         //set profile picture
         if(mProfileUrls.get(position) != null) {
@@ -91,12 +93,31 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
 
         //set name and location
         row.setTextViewText(R.id.widget_name, mFriendNames.get(position));
-        row.setTextViewText(R.id.widget_location, mLocationNames.get(position));
+        if(!mLocationNames.get(position).equals(mContext.getString(R.string.location_empty))) {
+            row.setTextViewText(R.id.widget_location, mLocationNames.get(position));
+        } else {
+            row.setTextViewText(R.id.widget_location, mContext.getString(R.string.location_default));
+            isInvalid = true;
+        }
+
 
         //set weather icon
-        int weatherId = Integer.valueOf(mWeatherIds.get(position));
-        int weatherIcon = WeatherUtils.getColorWeatherIcon(weatherId);
-        row.setImageViewResource(R.id.widget_weather_icon, weatherIcon);
+        if(!mWeatherIds.get(position).equals(mContext.getString(R.string.forecast_ids_empty))) {
+            int weatherId = Integer.valueOf(mWeatherIds.get(position));
+            int weatherIcon = WeatherUtils.getColorWeatherIcon(weatherId);
+            row.setImageViewResource(R.id.widget_weather_icon, weatherIcon);
+        } else {
+            row.setImageViewResource(R.id.widget_weather_icon, R.drawable.no_weather_color);
+        }
+
+        //set fill in intent
+        Intent fillInIntent = new Intent();
+        fillInIntent.putExtra(WeatherContract.WeatherEntry._ID, mIds.get(position));
+        fillInIntent.putExtra(mContext.getString(R.string.is_facebook_key), WeatherPreferences.getLoginType(mContext));
+        if(isInvalid) {
+            fillInIntent.putExtra(mContext.getString(R.string.is_invalid_key), isInvalid);
+        }
+        row.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
 
         //return remote view
         return row;
