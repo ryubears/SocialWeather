@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +50,8 @@ import butterknife.ButterKnife;
 public class HomeFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.home_swipe_refresh_layout) SwipeRefreshLayout mHomeSwipeRefreshLayout;
     @BindView(R.id.home_recycler_view) RecyclerView mHomeRecyclerView;
-    @BindView(R.id.home_empty_view) TextView mHomeEmptyView;
+    @BindView(R.id.home_empty_view) LinearLayout mHomeEmptyView;
+    @BindView(R.id.home_empty_text_view) TextView mHomeEmptyTextView;
     @BindView(R.id.home_banner_adview) AdView mHomeBanner;
 
     private static final String LOG_TAG = HomeFragment.class.getSimpleName(); //log tag for debugging
@@ -74,7 +76,10 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         ButterKnife.bind(this, rootView);
 
         //build ad request and load the ad
-        AdRequest request = new AdRequest.Builder().build();
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("54eb41092a1cb4c")
+                .build();
         mHomeBanner.loadAd(request);
 
         //sets layout manager to recycler view
@@ -421,6 +426,13 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     private void showEmptyView() {
         mHomeRecyclerView.setVisibility(View.GONE);
         mHomeEmptyView.setVisibility(View.VISIBLE);
+
+        //set appropriate empty text
+        if(mIsFacebook) {
+            mHomeEmptyTextView.setText(getString(R.string.home_empty_view_facebook));
+        } else {
+            mHomeEmptyTextView.setText(getString(R.string.home_empty_view_account_kit));
+        }
     }
 
     @Override

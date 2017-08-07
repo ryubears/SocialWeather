@@ -17,7 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.example.android.socialweather.data.WeatherContract;
 import com.example.android.socialweather.data.WeatherContract.WeatherEntry;
@@ -29,7 +29,7 @@ public class ForecastActivity extends AppCompatActivity implements LoaderManager
     @BindView(R.id.forecast_drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.friend_recycler_view) RecyclerView mFriendRecyclerView;
     @BindView(R.id.forecast_recycler_view) RecyclerView mForecastRecyclerView;
-    @BindView(R.id.forecast_empty_view) TextView mForecastEmptyView;
+    @BindView(R.id.forecast_empty_view) LinearLayout mForecastEmptyView;
 
     private static final int FORECAST_LOADER_ID = 45;
 

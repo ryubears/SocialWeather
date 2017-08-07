@@ -36,7 +36,8 @@
 
     <!-- Home Fragment -->
     <string name="home_add_menu">Add Friend</string>
-    <string name="home_empty_view">It looks pretty lonely here.\nWhy not share this app with your friends?</string>
+    <string name="home_empty_view_facebook">It looks a bit lonely here...\nWhy not share this app with your friends?</string>
+    <string name="home_empty_view_account_kit">It looks a bit lonely here...\nWhy not start by adding some friends?</string>
     <string name="loading_message">Loading...</string>
     <string name="empty_message">Location is unknown</string>
     <string name="network_message">Network needs to be connected</string>
@@ -128,7 +129,7 @@
     <string name="widget_profile_content_description">Profile Picture</string>
     <string name="widget_weather_icon_content_description">Weather Icon</string>
 
-    <!-- Admob -->
+    <!-- Ads -->
     <string name="admob_app_id">ca-app-pub-4336412680099916~5292675931</string>
     <string name="admob_banner_id">ca-app-pub-4336412680099916/3237358236</string>
 
