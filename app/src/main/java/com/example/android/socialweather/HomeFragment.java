@@ -73,9 +73,8 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
 
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
+        //build ad request and load the ad
+        AdRequest request = new AdRequest.Builder().build();
         mHomeBanner.loadAd(request);
 
         //sets layout manager to recycler view

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "631508766724",
+    "firebase_url": "https://socialweather-f4dd1.firebaseio.com",
+    "project_id": "socialweather-f4dd1",
+    "storage_bucket": "socialweather-f4dd1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631508766724:android:973f6cd56a85e82e",
+        "android_client_info": {
+          "package_name": "com.example.android.socialweather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "631508766724-dce8d483ftssuhlgcmbnp4d92s1d9sen.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6c6QHzNRM7huox2PAnPE2Q21JHbA6Gyc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

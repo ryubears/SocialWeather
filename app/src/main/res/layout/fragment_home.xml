@@ -38,5 +38,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-4336412680099916/3237358236" />
+        ads:adUnitId="@string/admob_banner_id" />
 </RelativeLayout>

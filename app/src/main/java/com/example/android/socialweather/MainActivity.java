@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
 
         //initialize mobile ads
-        MobileAds.initialize(this, "ca-app-pub-4336412680099916~5292675931");
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
 
         //initialize handler
         mHandler = new Handler();

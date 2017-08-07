@@ -113,6 +113,10 @@
     <!-- widget -->
     <string name="widget_empty_text">No Weather Available</string>
 
+    <!-- Admob -->
+    <string name="admob_app_id">ca-app-pub-4336412680099916~5292675931</string>
+    <string name="admob_banner_id">ca-app-pub-4336412680099916/3237358236</string>
+
     <!-- data -->
     <string name="delimiter" translatable="false">%%%</string>
 
