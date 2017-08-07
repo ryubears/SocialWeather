@@ -33,6 +33,8 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +50,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.home_swipe_refresh_layout) SwipeRefreshLayout mHomeSwipeRefreshLayout;
     @BindView(R.id.home_recycler_view) RecyclerView mHomeRecyclerView;
     @BindView(R.id.home_empty_view) TextView mHomeEmptyView;
+    @BindView(R.id.home_banner_adview) AdView mHomeBanner;
 
     private static final String LOG_TAG = HomeFragment.class.getSimpleName(); //log tag for debugging
     private static final String INITIALIZE_KEY = "initialize"; //string key for storing whether friend data has been initialized
@@ -69,6 +72,11 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         //inflate layout for this fragment and bind views using butterknife
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
+
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mHomeBanner.loadAd(request);
 
         //sets layout manager to recycler view
         int orientation = getResources().getConfiguration().orientation;

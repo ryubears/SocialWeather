@@ -40,6 +40,7 @@ import com.facebook.accountkit.AccountKitError;
 import com.facebook.accountkit.PhoneNumber;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.ads.MobileAds;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -99,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
 
         //set action bar to use customized toolbar
         setSupportActionBar(mToolbar);
+
+        //initialize mobile ads
+        MobileAds.initialize(this, "ca-app-pub-4336412680099916~5292675931");
 
         //initialize handler
         mHandler = new Handler();
