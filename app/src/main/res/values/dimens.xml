@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Login Activity -->
-    <dimen name="login_logo_image_width">60dp</dimen>
-    <dimen name="login_logo_image_height">60dp</dimen>
-    <dimen name="login_button_height">50dp</dimen>
-    <dimen name="login_title_margin_top">60dp</dimen>
-    <dimen name="facebook_login_padding_top">14dp</dimen>
-    <dimen name="facebook_login_padding_bottom">14dp</dimen>
-    <dimen name="facebook_login_padding_left">16dp</dimen>
-    <dimen name="facebook_login_padding_right">16dp</dimen>
+    <dimen name="login_logo_image_width">72dp</dimen>
+    <dimen name="login_logo_image_height">72dp</dimen>
+    <dimen name="login_button_height">48dp</dimen>
+    <dimen name="login_button_side_margin">24dp</dimen>
+    <dimen name="login_button_bottom_margin">8dp</dimen>
+    <dimen name="facebook_login_bottom_margin">16dp</dimen>
+    <dimen name="facebook_login_padding_top">16dp</dimen>
+    <dimen name="facebook_login_padding_bottom">12dp</dimen>
+    <dimen name="facebook_login_padding_side">16dp</dimen>
 
     <!-- Navigation Drawer -->
-    <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="nav_profile_width">75dp</dimen>
-    <dimen name="nav_profile_height">75dp</dimen>
+    <dimen name="nav_profile_width">64dp</dimen>
+    <dimen name="nav_profile_height">64dp</dimen>
 
     <!-- Weather Recycler View -->
     <dimen name="weather_item_temperature_margin_top">8dp</dimen>
@@ -27,6 +27,13 @@
     <dimen name="weather_item_background_height">184dp</dimen>
     <dimen name="weather_item_content_height">64dp</dimen>
     <dimen name="weather_item_text_margin_bottom">16dp</dimen>
+
+    <!-- Friend Navigation Drawer" -->
+    <dimen name="friend_header_width">280dp</dimen>
+
+    <!-- Account Activity -->
+    <dimen name="account_profile_width">200dp</dimen>
+    <dimen name="account_profile_height">200dp</dimen>
 
     <!--General -->
     <dimen name="margin_small">8dp</dimen>

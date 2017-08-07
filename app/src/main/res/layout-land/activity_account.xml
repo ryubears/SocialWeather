@@ -35,9 +35,10 @@
 
     <ImageView
         android:id="@+id/account_profile"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="@dimen/account_profile_width"
+        android:layout_height="@dimen/account_profile_height"
         android:src="@drawable/profile_white"
+        android:contentDescription="@string/account_profile_content_description"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

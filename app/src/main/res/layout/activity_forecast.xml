@@ -27,10 +27,10 @@
     <!-- friend drawer -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/friend_recycler_view"
-        android:layout_width="280dp"
+        android:layout_width="@dimen/friend_header_width"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:background="@color/colorPrimaryBackground" />
+        android:background="@color/gray_background" />
 
 
 </android.support.v4.widget.DrawerLayout>

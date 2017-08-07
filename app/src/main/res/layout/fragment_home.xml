@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/home_ad_content_description"
         ads:adSize="SMART_BANNER"
         ads:adUnitId="@string/admob_banner_id" />
 </RelativeLayout>

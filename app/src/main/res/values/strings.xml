@@ -12,6 +12,7 @@
     <string name="login_app_name">Social Weather</string>
     <string name="login_phone_button_text">Login With Phone</string>
     <string name="login_email_button_text">Login With Email</string>
+    <string name="login_logo_content_description">Logo</string>
 
     <!-- Main Navigation Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -39,9 +40,17 @@
     <string name="loading_message">Loading...</string>
     <string name="empty_message">Location is unknown</string>
     <string name="network_message">Network needs to be connected</string>
+    <string name="home_ad_content_description">Google Ad</string>
 
     <!-- Weather Item -->
     <string name="weather_item_lives">lives currently</string>
+    <string name="weather_item_delete_content_description">Delete</string>
+    <string name="weather_item_background_content_description">Location Background</string>
+    <string name="weather_item_weather_icon_content_description">Weather Icon</string>
+    <string name="weather_item_friend1_content_description">Friend Profile Picture</string>
+    <string name="weather_item_friend2_content_description">Friend Profile Picture</string>
+    <string name="weather_item_num_friend_content_description">Number of friends living in this location.</string>
+    <string name="weather_item_lives_content_description">Lives Currently</string>
 
     <!-- Settings Fragment/SharedPreference-->
     <string name="pref_weather_category_title">Weather</string>
@@ -72,17 +81,20 @@
     <!-- Forecast Activity -->
     <string name="activity_title_forecast">Weather Forecast</string>
     <string name="forecast_empty_view_text">No Weather</string>
+    <string name="forecast_weather_icon_content_description">Weather Icon</string>
 
     <!-- Forecast Drawer -->
     <string name="friend_menu_title">Friends</string>
     <string name="friend_drawer_open">Open friend drawer</string>
     <string name="friend_drawer_close">Close friend drawer</string>
+    <string name="friend_profile_content_description">Profile Picture</string>
 
     <!-- Details Activity -->
     <string name="activity_title_details">Details</string>
     <string name="details_pressure_label">Pressure</string>
     <string name="details_humidity_label">Humidity</string>
     <string name="details_wind_label">Wind Speed</string>
+    <string name="details_weather_icon_content_description">Weather Icon</string>
 
     <!-- Account Activity -->
     <string name="account_view_title">Friend Info</string>
@@ -95,6 +107,7 @@
     <string name="account_save_title">Save</string>
     <string name="account_delete_title">Delete</string>
     <string name="account_fill_fields_toast">Please fill all required fields</string>
+    <string name="account_profile_content_description">Profile Picture</string>
 
     <string name="discard_title">Discard Changes</string>
     <string name="discard_message">Are you sure you want to discard these changes?</string>
@@ -112,6 +125,8 @@
 
     <!-- widget -->
     <string name="widget_empty_text">No Weather Available</string>
+    <string name="widget_profile_content_description">Profile Picture</string>
+    <string name="widget_weather_icon_content_description">Weather Icon</string>
 
     <!-- Admob -->
     <string name="admob_app_id">ca-app-pub-4336412680099916~5292675931</string>
