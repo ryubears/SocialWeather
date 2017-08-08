@@ -12,6 +12,7 @@
     <string name="login_app_name">Social Weather</string>
     <string name="login_phone_button_text">Login With Phone</string>
     <string name="login_email_button_text">Login With Email</string>
+    <string name="login_background_content_description">Background</string>
     <string name="login_logo_content_description">Logo</string>
 
     <!-- Main Navigation Drawer -->
@@ -33,6 +34,8 @@
     <string name="activity_title_about_us">About Us</string>
     <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="nav_location_default">Unknown</string>
+    <string name="nav_header_background_content_description">Header Background</string>
+    <string name="nav_header_profile_content_description">Profile Picture</string>
 
     <!-- Home Fragment -->
     <string name="home_add_menu">Add Friend</string>
@@ -42,6 +45,7 @@
     <string name="empty_message">Location is unknown</string>
     <string name="network_message">Network needs to be connected</string>
     <string name="home_ad_content_description">Google Ad</string>
+    <string name="home_empty_view_content_description">No Friends To Show</string>
 
     <!-- Weather Item -->
     <string name="weather_item_lives">lives currently</string>
@@ -82,6 +86,7 @@
     <!-- Forecast Activity -->
     <string name="activity_title_forecast">Weather Forecast</string>
     <string name="forecast_empty_view_text">No Weather</string>
+    <string name="forecast_empty_view_content_description">No Weather</string>
     <string name="forecast_weather_icon_content_description">Weather Icon</string>
 
     <!-- Forecast Drawer -->
@@ -128,6 +133,7 @@
     <string name="widget_empty_text">No Weather Available</string>
     <string name="widget_profile_content_description">Profile Picture</string>
     <string name="widget_weather_icon_content_description">Weather Icon</string>
+    <string name="widget_empty_content_description">No Weather To Show</string>
 
     <!-- Ads -->
     <string name="admob_app_id">ca-app-pub-4336412680099916~5292675931</string>

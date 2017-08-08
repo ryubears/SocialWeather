@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/widget_name"
-            android:layout_width="wrap_content"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             tools:text="Yehyun Ryu"
             android:textSize="20sp"
@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/widget_location"
-            android:layout_width="wrap_content"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             tools:text="Seoul, South Korea"
             android:textSize="16sp"

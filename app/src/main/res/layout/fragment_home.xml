@@ -39,7 +39,8 @@
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:src="@drawable/no_friend"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:contentDescription="@string/home_empty_view_content_description"/>
 
         <TextView
             android:id="@+id/home_empty_text_view"
