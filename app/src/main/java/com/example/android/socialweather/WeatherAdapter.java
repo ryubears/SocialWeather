@@ -248,7 +248,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         @OnClick(R.id.weather_item_delete)
         public void onDelete() {
             if(mClickable) {
-                mToast = Toast.makeText(mContext, "Deleted Item", Toast.LENGTH_SHORT);
+                mToast = Toast.makeText(mContext, mContext.getString(R.string.home_delete_toast), Toast.LENGTH_SHORT);
                 mToast.show();
                 deleteItem();
             }

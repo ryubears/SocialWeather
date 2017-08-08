@@ -58,7 +58,7 @@ public class WeatherUtils {
     }
 
     //formats weather date
-    public static String formatDate(long timeStamp) {
+    public static String formatDate(Context context, long timeStamp) {
         Date resultDate = new Date(timeStamp * 1000);
 
         Calendar calendar = Calendar.getInstance();
@@ -74,10 +74,10 @@ public class WeatherUtils {
         String dateString = "";
         if(timeApartFromMidnight < 0) {
             SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-            dateString = "Today, " + sdf.format(resultDate);
+            dateString = context.getString(R.string.date_today) + sdf.format(resultDate);
         } else if(timeApartFromMidnight < TimeUnit.DAYS.toMillis(1)) {
             SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-            dateString = "Tomorrow, " + sdf.format(resultDate);
+            dateString = context.getString(R.string.date_tommorow) + sdf.format(resultDate);
         } else {
             SimpleDateFormat sdf = new SimpleDateFormat("EEEE, h:mm a");
             dateString = sdf.format(resultDate);

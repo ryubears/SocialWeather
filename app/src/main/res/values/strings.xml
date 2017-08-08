@@ -46,6 +46,7 @@
     <string name="network_message">Network needs to be connected</string>
     <string name="home_ad_content_description">Google Ad</string>
     <string name="home_empty_view_content_description">No Friends To Show</string>
+    <string name="home_delete_toast">Item Deleted</string>
 
     <!-- Weather Item -->
     <string name="weather_item_lives">lives currently</string>
@@ -117,12 +118,16 @@
 
     <string name="discard_title">Discard Changes</string>
     <string name="discard_message">Are you sure you want to discard these changes?</string>
+
     <string name="add_title">Add Friend Info</string>
     <string name="add_message">Are you sure you want to add this friend info?</string>
+    <string name="add_toast">Added Friend</string>
     <string name="edit_title">Edit Friend Info</string>
     <string name="edit_message">Are you sure you want to edit this friend info?</string>
+    <string name="edit_toast">Edit Successful</string>
     <string name="delete_title">Delete Friend Info</string>
     <string name="delete_message">Are you sure you want to delete this friend info?</string>
+    <string name="delete_toast">Friend Deleted</string>
 
     <string name="account_profile_key" translatable="false">account_profile</string>
     <string name="account_name_key" translatable="false">account_name</string>
@@ -168,6 +173,25 @@
     <!-- Permission Canceled Toast Messages -->
     <string name="friends_permission_message">Social Weather requires permission to access your friend list.</string>
     <string name="location_permission_message">Your friends won\'t be able to see your weather info.</string>
+
+    <!-- Notification -->
+    <string name="notification_update_text">New Weather Available!</string>
+    <string name="notification_comma">,\u0020</string>
+    <string name="notification_and">\u0020and\u0020</string>
+    <string name="notification_and_comma">\u0020,and\u0020</string>
+    <string name="notification_rain_text_single">\u0020is experiencing rain.</string>
+    <string name="notification_rain_text_two">\u0020are experiencing rain.</string>
+    <string name="notification_rain_text_three">\u0020others are experiencing rain.</string>
+    <string name="notification_snow_text_single">\u0020is experiencing snow.</string>
+    <string name="notification_snow_text_two">\u0020are experiencing snow.</string>
+    <string name="notification_snow_text_three">\u0020others are experiencing extreme weather.</string>
+    <string name="notification_extreme_text_single">\u0020is experiencing extreme weather.</string>
+    <string name="notification_extreme_text_two">\u0020are experiencing extreme weather.</string>
+    <string name="notification_extreme_text_three">\u0020others are experiencing extreme weather.</string>
+
+    <!-- Date Format -->
+    <string name="date_today">Today,\u0020</string>
+    <string name="date_tommorow">Tomorrow,\u0020</string>
 
     <!-- temperature format -->
     <string name="format_temperature">

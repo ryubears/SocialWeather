@@ -32,7 +32,7 @@ public class NotificationUtils {
     public static void notifyUpdateWeather(Context context) {
         //title and text
         String notificationTitle = context.getString(R.string.app_name);
-        String notificationText = "New Weather Available!";
+        String notificationText = context.getString(R.string.notification_update_text);
 
         //icon to be displayed at the top
         int smallIconId = R.mipmap.ic_launcher;
@@ -68,11 +68,11 @@ public class NotificationUtils {
         String notificationTitle = context.getString(R.string.app_name);
         String notificationText = "";
         if(rainFriends.size() == 1) {
-            notificationText = rainFriends.get(0) + " is experiencing rain.";
+            notificationText = rainFriends.get(0) + context.getString(R.string.notification_rain_text_single);
         } else if(rainFriends.size() == 2){
-            notificationText = rainFriends.get(0) + " and " + rainFriends.get(1) + " are experiencing rain.";
+            notificationText = rainFriends.get(0) + context.getString(R.string.notification_and) + rainFriends.get(1) + context.getString(R.string.notification_rain_text_two);
         } else {
-            notificationText = rainFriends.get(0) + ", " + rainFriends.get(1) + ", and " + (rainFriends.size() - 2) + " others are experiencing rain.";
+            notificationText = rainFriends.get(0) + context.getString(R.string.notification_comma) + rainFriends.get(1) + context.getString(R.string.notification_and_comma) + (rainFriends.size() - 2) + context.getString(R.string.notification_rain_text_three);
         }
 
         //large icon to be displayed at the right
@@ -114,11 +114,11 @@ public class NotificationUtils {
         String notificationTitle = context.getString(R.string.app_name);
         String notificationText = "";
         if(snowFriends.size() == 1) {
-            notificationText = snowFriends.get(0) + " is experiencing snow.";
+            notificationText = snowFriends.get(0) + context.getString(R.string.notification_snow_text_single);
         } else if(snowFriends.size() == 2){
-            notificationText = snowFriends.get(0) + " and " + snowFriends.get(1) + " are experiencing snow.";
+            notificationText = snowFriends.get(0) + context.getString(R.string.notification_and) + snowFriends.get(1) + context.getString(R.string.notification_snow_text_two);
         } else {
-            notificationText = snowFriends.get(0) + ", " + snowFriends.get(1) + ", and " + (snowFriends.size() - 2) + " others are experiencing snow.";
+            notificationText = snowFriends.get(0) + context.getString(R.string.notification_comma) + snowFriends.get(1) + context.getString(R.string.notification_and_comma) + (snowFriends.size() - 2) + context.getString(R.string.notification_snow_text_three);
         }
 
         //large icon to be displayed at the right
@@ -160,11 +160,11 @@ public class NotificationUtils {
         String notificationTitle = context.getString(R.string.app_name);
         String notificationText = "";
         if(extremeFriends.size() == 1) {
-            notificationText = extremeFriends.get(0) + " is experiencing extreme weather.";
+            notificationText = extremeFriends.get(0) + context.getString(R.string.notification_extreme_text_single);
         } else if(extremeFriends.size() == 2){
-            notificationText = extremeFriends.get(0) + " and " + extremeFriends.get(1) + " are experiencing extreme weather.";
+            notificationText = extremeFriends.get(0) + context.getString(R.string.notification_and) + extremeFriends.get(1) + context.getString(R.string.notification_extreme_text_two);
         } else {
-            notificationText = extremeFriends.get(0) + ", " + extremeFriends.get(1) + ", and " + (extremeFriends.size() - 2) + " others are experiencing extreme weather.";
+            notificationText = extremeFriends.get(0) + context.getString(R.string.notification_comma) + extremeFriends.get(1) + context.getString(R.string.notification_and_comma) + (extremeFriends.size() - 2) + context.getString(R.string.notification_extreme_text_three);
         }
 
         //large icon to be displayed at the right

@@ -78,7 +78,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         //build ad request and load the ad
         AdRequest request = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("54eb41092a1cb4c")
                 .build();
         mHomeBanner.loadAd(request);
 

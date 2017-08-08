@@ -270,7 +270,7 @@ public class AccountActivity extends AppCompatActivity {
                                 //add friend info
                                 addFriend(info);
                                 //display toast
-                                Toast.makeText(getApplicationContext(), "Added Friend", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.add_toast), Toast.LENGTH_SHORT).show();
                                 //return to previous activity
                                 finish();
                             }
@@ -281,7 +281,7 @@ public class AccountActivity extends AppCompatActivity {
                                 //edit friend info
                                 editFriend(info);
                                 //display toast
-                                Toast.makeText(getApplicationContext(), "Edit Successful", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.edit_toast), Toast.LENGTH_SHORT).show();
                                 //return to main activity to prevent errors when location itself is deleted
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
@@ -309,7 +309,7 @@ public class AccountActivity extends AppCompatActivity {
                             //delete friend
                             deleteFriend();
                             //display toast
-                            Toast.makeText(getApplicationContext(), "Friend Deleted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.delete_toast), Toast.LENGTH_SHORT).show();
                             //return to main activity to prevent errors when location itself is deleted
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);

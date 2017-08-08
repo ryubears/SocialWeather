@@ -111,7 +111,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
             //set weather date
             long weatherTime = Long.valueOf(mWeatherTimes[position]);
-            String timeString = WeatherUtils.formatDate(weatherTime);
+            String timeString = WeatherUtils.formatDate(mContext, weatherTime);
             mDateTextView.setText(timeString);
 
             //set weather description

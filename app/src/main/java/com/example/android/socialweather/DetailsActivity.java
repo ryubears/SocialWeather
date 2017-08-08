@@ -129,7 +129,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
         //set time
         long time = Long.valueOf(weatherTimes[mPosition]);
-        String dateString = WeatherUtils.formatDate(time);
+        String dateString = WeatherUtils.formatDate(this, time);
         mDateTextView.setText(dateString);
 
         //set pressure
