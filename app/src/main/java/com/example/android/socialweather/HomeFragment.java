@@ -54,7 +54,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.home_empty_text_view) TextView mHomeEmptyTextView;
     @BindView(R.id.home_banner_adview) AdView mHomeBanner;
 
-    private static final String LOG_TAG = HomeFragment.class.getSimpleName(); //log tag for debugging
     private static final String INITIALIZE_KEY = "initialize"; //string key for storing whether friend data has been initialized
     private static final int WEATHER_LOADER_ID = 33; //loader id for weather data
 
@@ -96,22 +95,15 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         mHomeSwipeRefreshLayout.setOnRefreshListener(this);
 
         //get state of friend initialization
-        if(savedInstanceState != null) {
-            mFriendInitialized = savedInstanceState.getBoolean(INITIALIZE_KEY);
-        }
-
         mAccessToken = AccessToken.getCurrentAccessToken();
+
+        //hide or show add menu depending on how user logged in
         if(mAccessToken != null && mAccessToken.getPermissions().contains("user_friends")
                 && mAccessToken.getPermissions().contains("user_location")) {
-            //when user logged in with facebook with all permissions
-
-            //save whether user logged in with facebook
             mIsFacebook = true;
-            //hide add menu
             setHasOptionsMenu(false);
         } else {
             mIsFacebook = false;
-            //show add menu
             setHasOptionsMenu(true);
         }
 

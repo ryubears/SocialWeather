@@ -26,8 +26,6 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
@@ -39,7 +37,6 @@ import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
 import com.facebook.accountkit.PhoneNumber;
 import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.google.android.gms.ads.MobileAds;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -51,7 +48,6 @@ import com.squareup.picasso.Transformation;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -89,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     //facebook access token and a callback manager to handle permission dialogs
     private AccessToken mAccessToken;
     private CallbackManager mCallbackManager;
+    private boolean mIsFacebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,78 +140,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 //fetch updated profile and triggers onCurrentProfileChanged
                 Profile.fetchProfileForCurrentAccessToken();
-            }
-
-            //check user-friends permission
-            if(!mAccessToken.getPermissions().contains("user_friends")) {
-                //if user-friends permission is not granted, open permission dialog
-                LoginManager loginManager = LoginManager.getInstance();
-                loginManager.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        //when granted permission
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        //canceled dialog, display that app couldn't access user friend's list
-                        String permissionMessage = getResources().getString(R.string.friends_permission_message);
-                        Toast.makeText(MainActivity.this, permissionMessage, Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        //display error message
-                        String toastMessage = error.getMessage();
-                        Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
-
-                        //automatically logout
-                        AccountKit.logOut();
-                        LoginManager.getInstance().logOut();
-                        launchLoginActivity();
-                    }
-                });
-
-                //login with the permission whether granted or not
-                loginManager.logInWithReadPermissions(this, Arrays.asList("user_friends"));
-            }
-
-            //check user-location permission
-            if(mAccessToken.getPermissions().contains("user_location")) {
-                //permission granted
-                fetchLocation();
-            } else {
-                //if user did not grant user_location permission, open permission dialog
-                LoginManager loginManager = LoginManager.getInstance();
-                loginManager.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        //success
-                        fetchLocation();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        //canceled dialog, display that user's weather info would not be available to user's friends
-                        String toastMessage = getResources().getString(R.string.location_permission_message);
-                        Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        //display error message
-                        String toastMessage = error.getMessage();
-                        Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_LONG).show();
-
-                        //automatically logout
-                        AccountKit.logOut();
-                        LoginManager.getInstance().logOut();
-                        launchLoginActivity();
-                    }
-                });
-
-                //login with the permission whether granted or not
-                loginManager.logInWithReadPermissions(this, Arrays.asList("user_location"));
             }
         } else {
             //if user logged in through account kit

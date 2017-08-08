@@ -24,6 +24,8 @@ import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -54,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         mTracker = application.getDefaultTracker();
 
         //set facebook login permissions
-        mFacebookButton.setReadPermissions("email");
+        mFacebookButton.setReadPermissions(Arrays.asList("user_friends", "user_location"));
 
         //register callback for facebook login
         mCallbackManager = CallbackManager.Factory.create();
