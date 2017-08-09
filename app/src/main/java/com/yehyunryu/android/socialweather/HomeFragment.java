@@ -27,15 +27,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yehyunryu.android.socialweather.data.Friend;
-import com.yehyunryu.android.socialweather.data.WeatherContract;
-import com.yehyunryu.android.socialweather.sync.WeatherSyncUtils;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.yehyunryu.android.socialweather.data.Friend;
+import com.yehyunryu.android.socialweather.data.WeatherContract;
+import com.yehyunryu.android.socialweather.sync.WeatherSyncUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,7 +66,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.home_recycler_view) RecyclerView mHomeRecyclerView;
     @BindView(R.id.home_empty_view) LinearLayout mHomeEmptyView;
     @BindView(R.id.home_empty_text_view) TextView mHomeEmptyTextView;
-    @BindView(R.id.home_banner_adview) AdView mHomeBanner;
 
     private static final String INITIALIZE_KEY = "initialize"; //string key for storing whether friend data has been initialized
     private static final int WEATHER_LOADER_ID = 33; //loader id for weather data
@@ -89,12 +86,6 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
         //inflate layout for this fragment and bind views using butterknife
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, rootView);
-
-        //build ad request and load the ad
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-        mHomeBanner.loadAd(request);
 
         //sets layout manager to recycler view
         int orientation = getResources().getConfiguration().orientation;

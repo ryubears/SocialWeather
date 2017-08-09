@@ -37,7 +37,6 @@ import com.facebook.accountkit.AccountKitCallback;
 import com.facebook.accountkit.AccountKitError;
 import com.facebook.accountkit.PhoneNumber;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.ads.MobileAds;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -113,9 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
         //set action bar to use customized toolbar
         setSupportActionBar(mToolbar);
-
-        //initialize mobile ads
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
 
         //initialize handler
         mHandler = new Handler();
