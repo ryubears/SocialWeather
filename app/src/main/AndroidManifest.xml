@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.android.socialweather">
+    package="com.yehyunryu.android.socialweather">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".analytics.AnalyticsApplication"
+        android:name="com.yehyunryu.android.socialweather.analytics.AnalyticsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="com.yehyunryu.android.socialweather.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/FullScreenTheme">
             <intent-filter>
@@ -64,71 +64,71 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.yehyunryu.android.socialweather.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AboutUsActivity"
+            android:name="com.yehyunryu.android.socialweather.AboutUsActivity"
             android:label="@string/activity_title_about_us"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.yehyunryu.android.socialweather.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.yehyunryu.android.socialweather.MainActivity" />
         </activity>
         <activity
-            android:name=".PrivacyPolicyActivity"
+            android:name="com.yehyunryu.android.socialweather.PrivacyPolicyActivity"
             android:label="@string/activity_title_privacy_policy"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.yehyunryu.android.socialweather.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.yehyunryu.android.socialweather.MainActivity" />
         </activity>
         <activity
-            android:name=".ForecastActivity"
+            android:name="com.yehyunryu.android.socialweather.ForecastActivity"
             android:label="@string/activity_title_forecast"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.yehyunryu.android.socialweather.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.yehyunryu.android.socialweather.MainActivity" />
         </activity>
         <activity
-            android:name=".DetailsActivity"
+            android:name="com.yehyunryu.android.socialweather.DetailsActivity"
             android:label="@string/activity_title_details"
             android:launchMode="singleTop"
-            android:parentActivityName=".ForecastActivity">
+            android:parentActivityName="com.yehyunryu.android.socialweather.ForecastActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ForecastActivity" />
+                android:value="com.yehyunryu.android.socialweather.ForecastActivity" />
         </activity>
         <activity
-            android:name=".AccountActivity"
+            android:name="com.yehyunryu.android.socialweather.AccountActivity"
             android:launchMode="singleTop" />
 
         <!-- Content Provider -->
         <provider
-            android:name=".data.WeatherProvider"
+            android:name="com.yehyunryu.android.socialweather.data.WeatherProvider"
             android:authorities="@string/content_authority"
             android:exported="false" />
 
         <!-- Immediate Sync Service -->
         <service
-            android:name=".sync.WeatherSyncIntentService"
+            android:name="com.yehyunryu.android.socialweather.sync.WeatherSyncIntentService"
             android:exported="false" />
 
         <!-- Schedule Sync Service -->
         <service
-            android:name=".sync.FacebookWeatherFirebaseJobService"
+            android:name="com.yehyunryu.android.socialweather.sync.FacebookWeatherFirebaseJobService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
         <service
-            android:name=".sync.AccountKitWeatherFirebaseJobService"
+            android:name="com.yehyunryu.android.socialweather.sync.AccountKitWeatherFirebaseJobService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
@@ -136,7 +136,7 @@
         </service>
 
         <!-- Widget -->
-        <receiver android:name=".widget.WidgetProvider">
+        <receiver android:name="com.yehyunryu.android.socialweather.widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -145,10 +145,10 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <service android:name=".widget.WidgetService"
+        <service android:name="com.yehyunryu.android.socialweather.widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <service android:name=".widget.WidgetUpdateService" />
+        <service android:name="com.yehyunryu.android.socialweather.widget.WidgetUpdateService" />
 
     </application>
 

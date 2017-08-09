@@ -6,7 +6,7 @@
     android:id="@+id/forecast_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.socialweather.ForecastActivity">
+    tools:context="com.yehyunryu.android.socialweather.ForecastActivity">
 
     <!-- main content -->
     <android.support.constraint.ConstraintLayout
