@@ -134,13 +134,31 @@
     <string name="account_location_key" translatable="false">account_location</string>
     <string name="account_position_key" translatable="false">account_position</string>
 
-    <!-- Account Activity -->
+    <!-- About Us Activity -->
     <string name="version_text">Version 1.3</string>
     <string name="email_text">Contact us through Email</string>
     <string name="facebook_text">Like us on Facebook</string>
     <string name="github_text">Follow us on Github</string>
     <string name="playstore_text">Rate us on Play Store</string>
 
+    <!-- Privacy Policy Activity -->
+    <string name="privacy_policy_facebook_permissions">Facebook Permissions We Ask</string>
+    <string name="public_profile_permission">Public Profile</string>
+    <string name="public_profile_subtext">Provides Access to a User\'s Basic Information</string>
+    <string name="friends_permission">User Friends</string>
+    <string name="friends_subtext">Provides Access to User\'s List of Friends that Use this App</string>
+    <string name="email_permission">Email</string>
+    <string name="email_subtext">Provides Access to User\'s Primary Email Address</string>
+    <string name="location_permission">Location</string>
+    <string name="location_subtext">Provides Access to User\'s Current City Listed in Timeline</string>
+    <string name="privacy_policy_others">Others</string>
+    <string name="google_analytics">Google Analytics</string>
+    <string name="google_analytics_subtext">Personal Data: Cookies and Usage Data</string>
+    <string name="google_admob">Google Admob</string>
+    <string name="google_admob_subtext">Personal Data: Cookies and Usage Data</string>
+    <string name="privacy_policy_more_info">More Info</string>
+    <string name="privacy_policy_link">Privacy Policy Link</string>
+    <string name="privacy_policy_link_subtext" translatable="false">https://www.iubenda.com/privacy-policy/8193003</string>
 
     <!-- widget -->
     <string name="widget_empty_text">No Weather Available</string>

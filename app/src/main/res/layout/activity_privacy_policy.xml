@@ -1,18 +1,297 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.yehyunryu.android.socialweather.PrivacyPolicyActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PRIVACY POLICY"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/privacy_policy_facebook_permissions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_policy_facebook_permissions"
+            android:textSize="24sp"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <ImageView
+            android:id="@+id/public_profile_logo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/profile_black"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/privacy_policy_facebook_permissions"
+            app:layout_constraintLeft_toLeftOf="@id/privacy_policy_facebook_permissions"/>
+
+        <TextView
+            android:id="@+id/public_profile_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/public_profile_permission"
+            android:textSize="20sp"
+            android:textColor="@color/textPrimary"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@id/public_profile_logo"
+            app:layout_constraintBottom_toBottomOf="@id/public_profile_logo"
+            app:layout_constraintLeft_toRightOf="@id/public_profile_logo" />
+
+        <TextView
+            android:id="@+id/public_profile_subtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/public_profile_subtext"
+            android:textSize="12sp"
+            android:textColor="@color/textSecondary"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/public_profile_text"
+            app:layout_constraintLeft_toLeftOf="@id/public_profile_logo"/>
+
+        <ImageView
+            android:id="@+id/friends_logo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/friends_black"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/public_profile_subtext"
+            app:layout_constraintLeft_toLeftOf="@id/public_profile_logo"/>
+
+        <TextView
+            android:id="@+id/friends_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/friends_permission"
+            android:textSize="20sp"
+            android:textColor="@color/textPrimary"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@id/friends_logo"
+            app:layout_constraintBottom_toBottomOf="@id/friends_logo"
+            app:layout_constraintLeft_toRightOf="@id/friends_logo" />
+
+        <TextView
+            android:id="@+id/friends_subtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/friends_subtext"
+            android:textSize="12sp"
+            android:textColor="@color/textSecondary"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/friends_text"
+            app:layout_constraintLeft_toLeftOf="@id/friends_logo"/>
+
+        <ImageView
+            android:id="@+id/email_logo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/email"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/friends_subtext"
+            app:layout_constraintLeft_toLeftOf="@id/friends_logo"/>
+
+        <TextView
+            android:id="@+id/email_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email_permission"
+            android:textSize="20sp"
+            android:textColor="@color/textPrimary"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@id/email_logo"
+            app:layout_constraintBottom_toBottomOf="@id/email_logo"
+            app:layout_constraintLeft_toRightOf="@id/email_logo" />
+
+        <TextView
+            android:id="@+id/email_subtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email_subtext"
+            android:textSize="12sp"
+            android:textColor="@color/textSecondary"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/email_text"
+            app:layout_constraintLeft_toLeftOf="@id/email_logo"/>
+
+        <ImageView
+            android:id="@+id/location_logo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/location"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/email_subtext"
+            app:layout_constraintLeft_toLeftOf="@id/email_logo"/>
+
+        <TextView
+            android:id="@+id/location_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/location_permission"
+            android:textSize="20sp"
+            android:textColor="@color/textPrimary"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@id/location_logo"
+            app:layout_constraintBottom_toBottomOf="@id/location_logo"
+            app:layout_constraintLeft_toRightOf="@id/location_logo" />
+
+        <TextView
+            android:id="@+id/location_subtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/location_subtext"
+            android:textSize="12sp"
+            android:textColor="@color/textSecondary"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/location_text"
+            app:layout_constraintLeft_toLeftOf="@id/location_logo"/>
+
+        <TextView
+            android:id="@+id/privacy_policy_others"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_policy_others"
+            android:textSize="24sp"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/location_subtext"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <ImageView
+            android:id="@+id/google_analytics_logo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/google_black"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/privacy_policy_others"
+            app:layout_constraintLeft_toLeftOf="@id/privacy_policy_others"/>
+
+        <TextView
+            android:id="@+id/google_analytics_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/google_analytics"
+            android:textSize="20sp"
+            android:textColor="@color/textPrimary"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@id/google_analytics_logo"
+            app:layout_constraintBottom_toBottomOf="@id/google_analytics_logo"
+            app:layout_constraintLeft_toRightOf="@id/google_analytics_logo" />
+
+        <TextView
+            android:id="@+id/google_analytics_subtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/google_analytics_subtext"
+            android:textSize="12sp"
+            android:textColor="@color/textSecondary"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/google_analytics_text"
+            app:layout_constraintLeft_toLeftOf="@id/google_analytics_logo"/>
+
+        <ImageView
+            android:id="@+id/google_admob_logo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/google_black"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/google_analytics_subtext"
+            app:layout_constraintLeft_toLeftOf="@id/google_analytics_logo"/>
+
+        <TextView
+            android:id="@+id/google_admob_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/google_admob"
+            android:textSize="20sp"
+            android:textColor="@color/textPrimary"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@id/google_admob_logo"
+            app:layout_constraintBottom_toBottomOf="@id/google_admob_logo"
+            app:layout_constraintLeft_toRightOf="@id/google_admob_logo" />
+
+        <TextView
+            android:id="@+id/google_admob_subtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/google_admob_subtext"
+            android:textSize="12sp"
+            android:textColor="@color/textSecondary"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/google_admob_logo"
+            app:layout_constraintLeft_toLeftOf="@id/google_admob_logo"/>
+
+        <TextView
+            android:id="@+id/privacy_policy_more_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_policy_more_info"
+            android:textSize="24sp"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/google_admob_subtext"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <ImageView
+            android:id="@+id/privacy_policy_link_logo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/link"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/privacy_policy_more_info"
+            app:layout_constraintLeft_toLeftOf="@id/privacy_policy_more_info"/>
+
+        <TextView
+            android:id="@+id/privacy_policy_link_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_policy_link"
+            android:textSize="20sp"
+            android:textColor="@color/textPrimary"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="@id/privacy_policy_link_logo"
+            app:layout_constraintBottom_toBottomOf="@id/privacy_policy_link_logo"
+            app:layout_constraintLeft_toRightOf="@id/privacy_policy_link_logo" />
+
+        <TextView
+            android:id="@+id/privacy_policy_link_subtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_policy_link_subtext"
+            android:textSize="12sp"
+            android:textColor="@color/textSecondary"
+            android:autoLink="web"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/privacy_policy_link_logo"
+            app:layout_constraintLeft_toLeftOf="@id/privacy_policy_link_logo"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
