@@ -243,7 +243,7 @@ public class HomeFragment extends Fragment implements LoaderManager.LoaderCallba
     //method that makes the API call to fetch friends list
     public void syncFriends() {
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "name,picture.height(200).width(200),location"); //fields to extract data from
+        parameters.putString("fields", "name,picture.height(240).width(240),location"); //fields to extract data from
         parameters.putInt("limit", 100); //limit number of friends in list to 100
         new GraphRequest(
                 mAccessToken,

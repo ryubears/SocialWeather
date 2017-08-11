@@ -6,13 +6,177 @@
     android:layout_height="match_parent"
     tools:context="com.yehyunryu.android.socialweather.AboutUsActivity">
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ABOUT US"
+        android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/version_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="28sp"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="16dp"/>
+
+        <ImageView
+            android:id="@+id/about_us_logo"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/app_logo" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/version_view"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:text="@string/version_text"
+        android:textSize="20sp"
+        android:textColor="@color/textPrimary"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toTopOf="@+id/email_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/email_view"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@drawable/about_us_item_selector"
+        app:layout_constraintBottom_toTopOf="@+id/facebook_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/email_logo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/gmail"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/email_view"
+        app:layout_constraintBottom_toBottomOf="@id/email_view"
+        app:layout_constraintLeft_toLeftOf="@id/email_view" />
+
+    <TextView
+        android:id="@+id/email_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email_text"
+        android:textSize="16sp"
+        android:textColor="@color/textPrimary"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/email_view"
+        app:layout_constraintBottom_toBottomOf="@id/email_view"
+        app:layout_constraintLeft_toRightOf="@id/email_logo" />
+
+    <Button
+        android:id="@+id/facebook_view"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@drawable/about_us_item_selector"
+        app:layout_constraintBottom_toTopOf="@+id/github_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/facebook_logo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/facebook"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/facebook_view"
+        app:layout_constraintBottom_toBottomOf="@id/facebook_view"
+        app:layout_constraintLeft_toLeftOf="@id/facebook_view" />
+
+    <TextView
+        android:id="@+id/facebook_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/facebook_text"
+        android:textSize="16sp"
+        android:textColor="@color/textPrimary"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/facebook_view"
+        app:layout_constraintBottom_toBottomOf="@id/facebook_view"
+        app:layout_constraintLeft_toRightOf="@id/facebook_logo" />
+
+    <Button
+        android:id="@+id/github_view"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@drawable/about_us_item_selector"
+        app:layout_constraintBottom_toTopOf="@+id/playstore_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/github_logo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/github"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/github_view"
+        app:layout_constraintBottom_toBottomOf="@id/github_view"
+        app:layout_constraintLeft_toLeftOf="@id/github_view" />
+
+    <TextView
+        android:id="@+id/github_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/github_text"
+        android:textSize="16sp"
+        android:textColor="@color/textPrimary"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/github_view"
+        app:layout_constraintBottom_toBottomOf="@id/github_view"
+        app:layout_constraintLeft_toRightOf="@id/github_logo" />
+
+    <Button
+        android:id="@+id/playstore_view"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@drawable/about_us_item_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/playstore_logo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/playstore"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/playstore_view"
+        app:layout_constraintBottom_toBottomOf="@id/playstore_view"
+        app:layout_constraintLeft_toLeftOf="@id/playstore_view" />
+
+    <TextView
+        android:id="@+id/playstore_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/playstore_text"
+        android:textSize="16sp"
+        android:textColor="@color/textPrimary"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="@id/playstore_view"
+        app:layout_constraintBottom_toBottomOf="@id/playstore_view"
+        app:layout_constraintLeft_toRightOf="@id/playstore_logo" />
 
 </android.support.constraint.ConstraintLayout>
