@@ -276,8 +276,11 @@ public class AccountActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //get info from edit texts
-                        String[] info = new String[] {mNameEditText.getText().toString(), mLocationEditText.getText().toString()};
+                        //get info from edit texts, trim leading and trailing whitespaces
+                        String nameInput = mNameEditText.getText().toString().trim();
+                        String locationInput = mLocationEditText.getText().toString().trim();
+
+                        String[] info = new String[] {nameInput, locationInput};
                         if(mIsAdd) {
                             //check network connection
                             if(!isNetworkAvailable()) {

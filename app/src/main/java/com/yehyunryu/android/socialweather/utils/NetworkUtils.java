@@ -99,6 +99,13 @@ public class NetworkUtils {
             return jsonResponse;
         }
 
+        //google places api returns an error response of 400 if there is a space in the query
+        String stringUrl = url.toString();
+        if(stringUrl.contains(" ")) {
+            stringUrl = stringUrl.replace(" ", "&20");
+            url = new URL(stringUrl);
+        }
+
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         try {
@@ -113,6 +120,7 @@ public class NetworkUtils {
                 inputStream = connection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
+                Log.e(LOG_TAG, "URL: " + url);
                 Log.e(LOG_TAG, "Bad Response Code: " + connection.getResponseCode());
             }
         } catch(Exception e) {
