@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
     //facebook access token and a callback manager to handle permission dialogs
     private AccessToken mAccessToken;
     private CallbackManager mCallbackManager;
-    private boolean mIsFacebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -430,6 +429,10 @@ public class MainActivity extends AppCompatActivity {
         //set user profile picture
         Uri profilePicUri = profile.getProfilePictureUri(100, 100);
         displayProfilePic(profilePicUri);
+
+        if(mAccessToken.getPermissions().contains("user_location")) {
+            fetchLocation();
+        }
     }
 
     //helper method for displaying profile pictures
