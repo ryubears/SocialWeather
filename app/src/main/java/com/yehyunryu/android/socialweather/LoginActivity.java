@@ -3,26 +3,23 @@ package com.yehyunryu.android.socialweather;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.yehyunryu.android.socialweather.analytics.AnalyticsApplication;
-import com.yehyunryu.android.socialweather.data.WeatherPreferences;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitLoginResult;
+import com.facebook.accountkit.Tracker;
 import com.facebook.accountkit.ui.AccountKitActivity;
 import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+import com.yehyunryu.android.socialweather.data.WeatherPreferences;
 
 import java.util.Arrays;
 
@@ -67,10 +64,6 @@ public class LoginActivity extends AppCompatActivity {
         //bind views with butterknife
         ButterKnife.bind(this);
 
-        //obtain shared Tracker instance
-        AnalyticsApplication application = (AnalyticsApplication) getApplication();
-        mTracker = application.getDefaultTracker();
-
         //set facebook login permissions
         mFacebookButton.setReadPermissions(Arrays.asList("user_friends", "user_location"));
 
@@ -104,16 +97,6 @@ public class LoginActivity extends AppCompatActivity {
             //if previously logged in, proceed to social activity
             launchMainActivity();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        String name = "LoginActivity";
-        Log.d(LOG_TAG, "Setting screen name: " + name);
-        mTracker.setScreenName(name);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
